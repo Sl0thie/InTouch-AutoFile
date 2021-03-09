@@ -84,7 +84,7 @@ namespace InTouch_AutoFile
 
                             if (emailContact.HasPicture)
                             {
-                                Globals.Ribbons.RibExplorer.buttonContact.Image = Image.FromFile(GetContactPicturePath(emailContact));
+                                Globals.Ribbons.RibExplorer.buttonContact.Image = Image.FromFile(emailContact.GetContactPicturePath());
                             }
                             else
                             {
@@ -121,51 +121,6 @@ namespace InTouch_AutoFile
                 Globals.Ribbons.RibExplorer.buttonAddContact.Visible = false;
                 Globals.Ribbons.RibExplorer.buttonAddContact.Visible = false;
                 Globals.Ribbons.RibExplorer.buttonAttention.Visible = false;
-            }
-        }
-
-        /// <summary>
-        /// Gets the path to the contacts picture to be used in the ribbon's button.
-        /// </summary>
-        /// <param name="contact"></param>
-        /// <returns></returns>
-        public static string GetContactPicturePath(Outlook._ContactItem contact)
-        {
-            if(contact is object)
-            {
-                string picturePath = "";
-                if (contact.HasPicture)
-                {
-                    foreach (Outlook.Attachment att in contact.Attachments)
-                    {
-                        if (att.DisplayName == "ContactPicture.jpg")
-                        {
-                            try
-                            {
-                                picturePath = System.IO.Path.GetDirectoryName(System.IO.Path.GetTempPath()) + "\\Contact_" + contact.EntryID + ".jpg";
-                                if (!System.IO.File.Exists(picturePath))
-                                {
-                                    att.SaveAsFile(picturePath);
-                                }
-                            }
-                            catch (COMException)
-                            {
-                                picturePath = "";
-                            }
-                            catch (Exception ex)
-                            {
-                                Op.LogError(ex);
-                                picturePath = "";
-                                throw;
-                            }
-                        }
-                    }
-                }
-                return picturePath;
-            }
-            else
-            {
-                return null;
             }
         }
 

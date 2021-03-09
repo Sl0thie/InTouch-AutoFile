@@ -965,9 +965,9 @@ namespace InTouch_AutoFile
 
         #endregion
 
-        public Bitmap GetContactPicture()
+        public string GetContactPicturePath()
         {
-            //string picturePath = "";
+            string picturePath = "";
             if (contact.HasPicture)
             {
                 foreach (Attachment nextAttachment in contact.Attachments)
@@ -976,26 +976,26 @@ namespace InTouch_AutoFile
                     {
                         try
                         {
-                            string picturePath = System.IO.Path.GetDirectoryName(System.IO.Path.GetTempPath()) + "\\Contact_" + contact.EntryID + ".jpg";
+                            picturePath = System.IO.Path.GetDirectoryName(System.IO.Path.GetTempPath()) + "\\Contact_" + contact.EntryID + ".jpg";
                             if (!System.IO.File.Exists(picturePath))
                             {
                                 nextAttachment.SaveAsFile(picturePath);
-                                return (Bitmap)Image.FromFile(picturePath);
                             }
                         }
-                        catch (COMException ex)
+                        catch (COMException)
                         {
-                            Op.LogError(ex);
+                            picturePath = "";
                         }
                         catch (System.Exception ex)
                         {
                             Op.LogError(ex);
+                            picturePath = "";
                             throw;
                         }
                     }
                 }
             }
-            return null;
+            return picturePath;
         }
 
         /// <summary>
