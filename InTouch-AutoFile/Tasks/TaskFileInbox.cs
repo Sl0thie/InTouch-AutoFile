@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Outlook = Microsoft.Office.Interop.Outlook;
@@ -22,7 +21,7 @@ namespace InTouch_AutoFile
             //If task is enabled in the settings then start task.
             if (Properties.Settings.Default.TaskInbox)
             {
-                Op.LogMessage("Starting TaskFileInbox Task.");
+                Op.LogMessage("Starting FileInbox Task.");
                 Thread backgroundThread = new Thread(new ThreadStart(BackgroundProcess))
                 {
                     Name = "AF.FileInbox",
@@ -31,18 +30,13 @@ namespace InTouch_AutoFile
                 };
                 backgroundThread.SetApartmentState(ApartmentState.STA);
                 backgroundThread.Start();
-            }
-            else
-            {
-                Op.LogMessage("Skipping TaskFileInbox Task. (disabled in settings)");
-            }        
+            }     
         }
 
         private void BackgroundProcess()
         {            
             CreateListOfInboxItems();
             ProcessListOfItems();
-
             callBack?.Invoke();
         }
 
