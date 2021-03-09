@@ -169,7 +169,11 @@ namespace InTouch_AutoFile
                                 Op.LogMessage("On Behalf: " + onBehalfEmailAddress);
                                 Op.LogMessage("");
                             }
-                            catch (Exception ex) { Op.LogError(ex); throw; }
+                            catch (Exception ex) 
+                            { 
+                                Op.LogError(ex); 
+                                throw; 
+                            }
                         }
                     }
                 }
@@ -177,6 +181,7 @@ namespace InTouch_AutoFile
             catch (Exception ex)
             {
                 Op.LogError(ex);
+                throw;
             }
         }
 
@@ -215,18 +220,20 @@ namespace InTouch_AutoFile
             }
             catch (COMException)
             {
-                Op.LogMessage("Exception : Object Can't be found. The folder is missing.");
+                Op.LogMessage("Move Email : Object Can't be found. The folder is missing. Can't move the Email.");
             }
             catch (Exception ex)
             {
                 if (ex.Message != "The attempted operation failed.  An object could not be found.")
                 {
                     Op.LogError(ex);
+                    throw;
                 }
                 else
                 {
                     Op.LogMessage("Inbox MoveMail : " + folderPath);
                     Op.LogError(ex);
+                    throw;
                 }
                 throw;
             }

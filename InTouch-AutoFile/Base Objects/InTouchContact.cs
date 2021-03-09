@@ -936,6 +936,7 @@ namespace InTouch_AutoFile
             catch(System.Exception ex)
             {
                 Op.LogError(ex);
+                throw;
             }
         }
 

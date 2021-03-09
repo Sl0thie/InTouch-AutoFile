@@ -54,7 +54,11 @@ namespace InTouch_AutoFile
                 CreateListOfInboxItems();
                 ProcessListOfITems();
             }
-            catch (Exception ex) { Op.LogError(ex); throw; }
+            catch (Exception ex) 
+            { 
+                Op.LogError(ex); 
+                throw; 
+            }
             callBack?.Invoke();
         }
 
@@ -77,7 +81,11 @@ namespace InTouch_AutoFile
                         mailToProcess.Add(item);
                     }
                 }
-                catch (Exception ex) { Op.LogError(ex); throw; }
+                catch (Exception ex) 
+                { 
+                    Op.LogError(ex); 
+                    throw; 
+                }
             }
         }
 

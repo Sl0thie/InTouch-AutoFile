@@ -87,7 +87,6 @@ namespace InTouch_AutoFile
                         
                         if (folder == null)
                         {
-                            if (folder is object) { Marshal.ReleaseComObject(folder); }
                             return false;
                         }
                     }

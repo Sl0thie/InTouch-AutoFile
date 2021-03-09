@@ -57,6 +57,7 @@ namespace InTouch_AutoFile
                     catch(Exception ex)
                     {
                         Op.LogError(ex);
+                        throw;
                     }
                 }
             }
