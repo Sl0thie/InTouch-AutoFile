@@ -91,6 +91,100 @@ namespace InTouch_AutoFile
                     RadioButtonSendFile.Checked = true;
                     break;
             }
+
+            CheckBoxUseSamePathDelivery.Checked = contact.SamePath;
+            CheckBoxUseSamePathRead.Checked = contact.SamePath;
+
+            AdjustForm();
+        }
+
+        private void AdjustForm()
+        {
+            //Read actions are dependant on delivery actions.
+            if (RadioButtonDeliveryNoAction.Checked)
+            {
+                RadioButtonReadDelete.Enabled = true;
+                RadioButtonReadFile.Enabled = true;
+
+                ButtonDeliveryPath.Visible = false;
+                LabelDeliveryPathTitle.Visible = false;
+                LabelDeliveryPath.Visible = false;
+                CheckBoxUseSamePathDelivery.Visible = false;
+            }
+            else if (RadioButtonDeliveryDelete.Checked)
+            {
+                RadioButtonReadNoAction.Checked = true; 
+                RadioButtonReadDelete.Enabled = false;
+                RadioButtonReadFile.Enabled = false;
+
+                ButtonDeliveryPath.Visible = false;
+                LabelDeliveryPathTitle.Visible = false;
+                LabelDeliveryPath.Visible = false;
+                CheckBoxUseSamePathDelivery.Visible = false;
+            }
+            else
+            {
+                RadioButtonReadNoAction.Checked = true;
+                RadioButtonReadDelete.Enabled = false;
+                RadioButtonReadFile.Enabled = false;
+
+                ButtonDeliveryPath.Visible = true;
+                LabelDeliveryPathTitle.Visible = true;
+                LabelDeliveryPath.Visible = true;
+                CheckBoxUseSamePathDelivery.Visible = true;
+            }
+
+            if (RadioButtonReadNoAction.Checked)
+            {
+                ButtonReadPath.Visible = false;
+                LabelPath.Visible = false;
+                LabelReadPath.Visible = false;
+                CheckBoxUseSamePathRead.Visible = false;
+
+            }
+            else if (RadioButtonReadDelete.Checked)
+            {
+                ButtonReadPath.Visible = false;
+                LabelPath.Visible = false;
+                LabelReadPath.Visible = false;
+                CheckBoxUseSamePathRead.Visible = false;
+            }
+            else
+            {
+                ButtonReadPath.Visible = true;
+                LabelPath.Visible = true;
+                LabelReadPath.Visible = true;
+                CheckBoxUseSamePathRead.Visible = true;
+            }
+
+            if (RadioButtonSendNoAction.Checked)
+            {
+                ButtonSendPath.Visible = false;
+                LabelSendPathTitle.Visible = false;
+                LabelSendPathValue.Visible = false;
+
+            }
+            else if (RadioButtonSendDelete.Checked)
+            {
+                ButtonSendPath.Visible = false;
+                LabelSendPathTitle.Visible = false;
+                LabelSendPathValue.Visible = false;
+            }
+            else
+            {
+                if ((CheckBoxUseSamePathDelivery.Checked) || (CheckBoxUseSamePathRead.Checked))
+                {
+                    ButtonSendPath.Visible = false;
+                    LabelSendPathTitle.Visible = false;
+                    LabelSendPathValue.Visible = false;
+                }
+                else
+                {
+                    ButtonSendPath.Visible = true;
+                    LabelSendPathTitle.Visible = true;
+                    LabelSendPathValue.Visible = true;
+                }
+            }
         }
 
         // Occurs when the form region is closed.
@@ -123,7 +217,7 @@ namespace InTouch_AutoFile
                 }
 
                 LabelDeliveryPath.Text = folderPath;
-                if (CheckBoxUseSamePath.Checked)
+                if (CheckBoxUseSamePathRead.Checked)
                 {
                     LabelSendPathValue.Text = folderPath;
                 }
@@ -131,7 +225,7 @@ namespace InTouch_AutoFile
             else
             {
                 LabelDeliveryPath.Text = "";
-                if (CheckBoxUseSamePath.Checked)
+                if (CheckBoxUseSamePathRead.Checked)
                 {
                     LabelSendPathValue.Text = "";
                 }
@@ -150,11 +244,7 @@ namespace InTouch_AutoFile
             if (RadioButtonDeliveryNoAction.Checked)
             {
                 contact.DeliveryAction = EmailAction.None;
-
-                ButtonDeliveryPath.Visible = false;
-                LabelDeliveryPathTitle.Visible = false;
-                LabelDeliveryPath.Visible = false;
-                CheckBoxUseSamePath.Visible = false;
+                AdjustForm();
             }
         }
 
@@ -163,11 +253,7 @@ namespace InTouch_AutoFile
             if (RadioButtonDeliveryDelete.Checked)
             {
                 contact.DeliveryAction = EmailAction.Delete;
-
-                ButtonDeliveryPath.Visible = false;
-                LabelDeliveryPathTitle.Visible = false;
-                LabelDeliveryPath.Visible = false;
-                CheckBoxUseSamePath.Visible = false;
+                AdjustForm();
             }
         }
 
@@ -176,12 +262,14 @@ namespace InTouch_AutoFile
             if (RadioButtonDeliveryFile.Checked)
             {
                 contact.DeliveryAction = EmailAction.Move;
-
-                ButtonDeliveryPath.Visible = true;
-                LabelDeliveryPathTitle.Visible = true;
-                LabelDeliveryPath.Visible = true;
-                CheckBoxUseSamePath.Visible = true;
+                AdjustForm();
             }
+        }
+
+        private void CheckBoxUseSamePathDelivery_CheckedChanged(object sender, EventArgs e)
+        {
+            contact.SamePath = CheckBoxUseSamePathDelivery.Checked;
+            AdjustForm();
         }
 
         #endregion
@@ -224,10 +312,7 @@ namespace InTouch_AutoFile
             if (RadioButtonReadNoAction.Checked)
             {
                 contact.ReadAction = EmailAction.None;
-
-                ButtonReadPath.Visible = false;
-                LabelPath.Visible = false;
-                LabelReadPath.Visible = false;
+                AdjustForm();
             }
         }
 
@@ -236,10 +321,7 @@ namespace InTouch_AutoFile
             if (RadioButtonReadDelete.Checked)
             {
                 contact.ReadAction = EmailAction.Delete;
-
-                ButtonReadPath.Visible = false;
-                LabelPath.Visible = false;
-                LabelReadPath.Visible = false;
+                AdjustForm();
             }
         }
 
@@ -248,16 +330,14 @@ namespace InTouch_AutoFile
             if (RadioButtonReadFile.Checked)
             {
                 contact.ReadAction = EmailAction.Move;
-
-                ButtonReadPath.Visible = true;
-                LabelPath.Visible = true;
-                LabelReadPath.Visible = true;
+                AdjustForm();
             }
         }
 
         private void CheckBoxUseSamePath_CheckedChanged(object sender, EventArgs e)
         {
-            //TODO Wire this up.
+            contact.SamePath = CheckBoxUseSamePathRead.Checked;
+            AdjustForm();
         }
 
         #endregion
@@ -300,10 +380,7 @@ namespace InTouch_AutoFile
             if (RadioButtonSendNoAction.Checked)
             {
                 contact.SentAction = EmailAction.None;
-
-                ButtonSendPath.Visible = false;
-                LabelSendPathTitle.Visible = false;
-                LabelSendPathValue.Visible = false;
+                AdjustForm();
             }
         }
 
@@ -312,10 +389,7 @@ namespace InTouch_AutoFile
             if (RadioButtonSendDelete.Checked)
             {
                 contact.SentAction = EmailAction.Delete;
-
-                ButtonSendPath.Visible = false;
-                LabelSendPathTitle.Visible = false;
-                LabelSendPathValue.Visible = false;
+                AdjustForm();
             }
         }
 
@@ -324,15 +398,15 @@ namespace InTouch_AutoFile
             if (RadioButtonSendFile.Checked)
             {
                 contact.SentAction = EmailAction.Move;
-
-                ButtonSendPath.Visible = true;
-                LabelSendPathTitle.Visible = true;
-                LabelSendPathValue.Visible = true;
+                AdjustForm();
             }
         }
 
+
         #endregion
 
         #endregion
+
+        
     }
 }

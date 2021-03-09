@@ -25,7 +25,7 @@ namespace InTouch_AutoFile
                 Op.LogMessage("Starting TaskFileInbox Task.");
                 Thread backgroundThread = new Thread(new ThreadStart(BackgroundProcess))
                 {
-                    Name = "InTouch-AutoFile.TaskFileInbox",
+                    Name = "AF.FileInbox",
                     IsBackground = true,
                     Priority = ThreadPriority.Normal
                 };
@@ -89,91 +89,94 @@ namespace InTouch_AutoFile
             //Find contact.
             try
             {
-                //Check if the email has a Sender.
-                if (email.Sender is object)
+                //Email may have been deleted or moved so check if it exists first.
+                if (email is object)
                 {
-                    //Find the Contact accociated with the Sender.
-                    InTouchContact mailContact = null;
-                    Outlook.ContactItem contact = InTouch.Contacts.FindContactFromEmailAddress(email.Sender.Address);
-                    if (contact is object)
+                    //Check if the email has a Sender.
+                    if (email.Sender is object)
                     {
-                        mailContact = new InTouchContact(contact);
-                    }
-
-                    //If found then try to process the email.
-                    if (mailContact is object)
-                    {
-                        //If unread the process delivery option else process read option.
-                        if (email.UnRead)
+                        //Find the Contact accociated with the Sender.
+                        InTouchContact mailContact = null;
+                        Outlook.ContactItem contact = InTouch.Contacts.FindContactFromEmailAddress(email.Sender.Address);
+                        if (contact is object)
                         {
-                            switch (mailContact.DeliveryAction)
-                            {
-                                case EmailAction.None: //Don't do anything to the email.
-                                    Op.LogMessage("Move Email : Delivery Action set to None. " + email.Sender.Address);
-                                    break;
-
-                                case EmailAction.Delete: //Delete the email if it is passed its action date.
-                                    Op.LogMessage("Move Email : Deleting email from " + email.Sender.Address);
-                                    email.Delete();
-                                    break;
-
-                                case EmailAction.Move: //Move the email if its passed its action date.
-                                    Op.LogMessage("Move Email : Moving email from " + email.Sender.Address);
-                                    MoveEmailToFolder(mailContact.InboxPath, email);
-                                    break;
-                            }
+                            mailContact = new InTouchContact(contact);
                         }
-                        else
+
+                        //If found then try to process the email.
+                        if (mailContact is object)
                         {
-                            switch (mailContact.ReadAction)
+                            //If unread the process delivery option else process read option.
+                            if (email.UnRead)
                             {
-                                case EmailAction.None: //Don't do anything to the email.
-                                    Op.LogMessage("Move Email : Read Action set to None. " + email.Sender.Address);
-                                    break;
+                                switch (mailContact.DeliveryAction)
+                                {
+                                    case EmailAction.None: //Don't do anything to the email.
+                                        Op.LogMessage("Move Email : Delivery Action set to None. " + email.Sender.Address);
+                                        break;
 
-                                case EmailAction.Delete: //Delete the email.
-                                    Op.LogMessage("Move Email : Deleting email from " + email.Sender.Address);
-                                    email.Delete();
-                                    break;
+                                    case EmailAction.Delete: //Delete the email if it is passed its action date.
+                                        Op.LogMessage("Move Email : Deleting email from " + email.Sender.Address);
+                                        email.Delete();
+                                        break;
 
-                                case EmailAction.Move: //Move the email.
-                                    Op.LogMessage("Move Email : Moving email from " + email.Sender.Address);
-                                    MoveEmailToFolder(mailContact.InboxPath, email);
-                                    break;
+                                    case EmailAction.Move: //Move the email if its passed its action date.
+                                        Op.LogMessage("Move Email : Moving email from " + email.Sender.Address);
+                                        MoveEmailToFolder(mailContact.InboxPath, email);
+                                        break;
+                                }
                             }
+                            else
+                            {
+                                switch (mailContact.ReadAction)
+                                {
+                                    case EmailAction.None: //Don't do anything to the email.
+                                        Op.LogMessage("Move Email : Read Action set to None. " + email.Sender.Address);
+                                        break;
+
+                                    case EmailAction.Delete: //Delete the email.
+                                        Op.LogMessage("Move Email : Deleting email from " + email.Sender.Address);
+                                        email.Delete();
+                                        break;
+
+                                    case EmailAction.Move: //Move the email.
+                                        Op.LogMessage("Move Email : Moving email from " + email.Sender.Address);
+                                        MoveEmailToFolder(mailContact.InboxPath, email);
+                                        break;
+                                }
+                            }
+                            mailContact.SaveAndDispose();
                         }
-                        mailContact.SaveAndDispose();
-                    }
-                    else //If not found then just log it for the moment.
-                    {
-                        try
+                        else //If not found then just log it for the moment.
                         {
-                            //Get the 'On Behalf' property from the email.
-                            Outlook.PropertyAccessor mapiPropertyAccessor;
-                            string propertyName = "http://schemas.microsoft.com/mapi/proptag/0x0065001F";
-                            mapiPropertyAccessor = email.PropertyAccessor;
-                            string onBehalfEmailAddress = mapiPropertyAccessor.GetProperty(propertyName).ToString();
-                            if (mapiPropertyAccessor is object)
+                            try
                             {
-                                Marshal.ReleaseComObject(mapiPropertyAccessor);
-                            }
+                                //Get the 'On Behalf' property from the email.
+                                Outlook.PropertyAccessor mapiPropertyAccessor;
+                                string propertyName = "http://schemas.microsoft.com/mapi/proptag/0x0065001F";
+                                mapiPropertyAccessor = email.PropertyAccessor;
+                                string onBehalfEmailAddress = mapiPropertyAccessor.GetProperty(propertyName).ToString();
+                                if (mapiPropertyAccessor is object)
+                                {
+                                    Marshal.ReleaseComObject(mapiPropertyAccessor);
+                                }
 
-                            //Log the details.                           
-                            Op.LogMessage("Move Email : No Contact for " + email.SenderEmailAddress);
-                            Op.LogMessage("SenderName         : " + email.SenderName);
-                            Op.LogMessage("SentOnBehalfOfName : " + email.SentOnBehalfOfName);
-                            Op.LogMessage("ReplyRecipientNames: " + email.ReplyRecipientNames);
-                            Op.LogMessage("On Behalf: " + onBehalfEmailAddress);
-                            Op.LogMessage("");
+                                //Log the details.                           
+                                Op.LogMessage("Move Email : No Contact for " + email.SenderEmailAddress);
+                                Op.LogMessage("SenderName         : " + email.SenderName);
+                                Op.LogMessage("SentOnBehalfOfName : " + email.SentOnBehalfOfName);
+                                Op.LogMessage("ReplyRecipientNames: " + email.ReplyRecipientNames);
+                                Op.LogMessage("On Behalf: " + onBehalfEmailAddress);
+                                Op.LogMessage("");
+                            }
+                            catch (Exception ex) { Op.LogError(ex); throw; }
                         }
-                        catch (Exception ex) { Op.LogError(ex); throw; }
                     }
                 }
             }
             catch (Exception ex)
             {
                 Op.LogError(ex);
-                throw;
             }
         }
 

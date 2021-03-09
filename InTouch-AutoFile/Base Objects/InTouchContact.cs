@@ -858,6 +858,14 @@ namespace InTouch_AutoFile
             set { sentAction = value; }
         }
 
+        private bool samePath = true;
+
+        public bool SamePath
+        {
+            get { return samePath; }
+            set { samePath = value; }
+        }
+
         #endregion
 
         public InTouchContact(ContactItem contact) : base()
@@ -893,7 +901,7 @@ namespace InTouch_AutoFile
                     data += "0|";
                     data += "0|";
                     data += "0|";
-                    //data += "0|";
+                    data += "True|";
 
                     contact.UserProperties["InTouchContact"].Value = data;
                     contact.Save();
@@ -907,6 +915,7 @@ namespace InTouch_AutoFile
                 data += "0|";
                 data += "0|";
                 data += "0|";
+                data += "True|";
             }
 
             string[] values = data.Split('|');            
@@ -918,6 +927,11 @@ namespace InTouch_AutoFile
                 deliveryAction = (EmailAction)int.Parse(values[2]);
                 readAction = (EmailAction)int.Parse(values[3]);
                 sentAction = (EmailAction)int.Parse(values[4]);
+                samePath = bool.Parse(values[5]);
+            }
+            catch(FormatException)
+            {
+                //Contact data is from an older format. It will be saved in the newer format when the contact is saved.
             }
             catch(System.Exception ex)
             {
@@ -933,6 +947,7 @@ namespace InTouch_AutoFile
             data += (int)deliveryAction + "|";
             data += (int)readAction + "|";
             data += (int)sentAction + "|";
+            data += samePath.ToString() + "|";
 
             UserProperty customProperty = contact.UserProperties.Find("InTouchContact");
             if (customProperty is object)

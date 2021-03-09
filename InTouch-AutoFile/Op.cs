@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Threading;
 using System.Diagnostics;
+using System.Reflection;
 using Outlook = Microsoft.Office.Interop.Outlook;
 using System.Runtime.InteropServices;
+using System.Collections;
 
 namespace InTouch_AutoFile
 {
@@ -60,7 +62,29 @@ namespace InTouch_AutoFile
                     Outlook.Folders subFolders = folder.Folders;
                     if (subFolders is object)
                     {
-                        folder = subFolders[folders[i]] as Outlook.Folder;
+                        try
+                        {
+                            folder = subFolders[folders[i]] as Outlook.Folder;
+                        }
+                        catch (COMException ex)
+                        {
+                            if (ex.HResult != -2147221233) //Folder can't be found so return false.
+                            {
+                                Op.LogError(ex);
+                                throw;
+                            }
+                            else
+                            {
+                                if (folder is object) { Marshal.ReleaseComObject(folder); }
+                                return false;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Op.LogError(ex);
+                            throw;
+                        }
+                        
                         if (folder == null)
                         {
                             if (folder is object) { Marshal.ReleaseComObject(folder); }
@@ -74,11 +98,8 @@ namespace InTouch_AutoFile
                     }
                 }
             }
-            else
-            {
-                throw new Exception("Root folder is null");
-            }
 
+            //Folder was found with no errors so return true.
             if (folder is object) { Marshal.ReleaseComObject(folder); }
             return true;
         }
@@ -97,16 +118,16 @@ namespace InTouch_AutoFile
                 {
                     if (Thread.CurrentThread.Name is object)
                     {
-                        Debug.WriteLine(DateTime.Now.ToString("h:mm:ss:fff") + " : " + Thread.CurrentThread.Name.PadRight(30) + " : INFO      : " + message);
+                        Debug.WriteLine(DateTime.Now.ToString("h:mm:ss:fff") + ": " + Thread.CurrentThread.Name.PadRight(15) + ": INFO          : " + message);
                     }
                     else
                     {
-                        Debug.WriteLine(DateTime.Now.ToString("h:mm:ss:fff") + " : " + "Unknown Thread    " + " : INFO      : " + message);
+                        Debug.WriteLine(DateTime.Now.ToString("h:mm:ss:fff") + ": " + "Unknown Thread " + ": INFO          : " + message);
                     }
                 }
                 else
                 {
-                    Debug.WriteLine(DateTime.Now.ToString("h:mm:ss:fff") + " : " + "Unknown Thread    " + " : INFO      : " + message);
+                    Debug.WriteLine(DateTime.Now.ToString("h:mm:ss:fff") + ": " + "Unknown Thread " + ": INFO          : " + message);
                 }
             }
         }
@@ -117,52 +138,111 @@ namespace InTouch_AutoFile
         /// <param name="ex">The Exception to be logged.</param>
         public static void LogError(Exception ex)
         {
-            if (ex is object)
+            if(ex is object)
             {
+                string timeAndThreadName = DateTime.Now.ToString("h:mm:ss:fff");
+                
                 if (Thread.CurrentThread.Name is object)
                 {
-                    if (ex.Message is object)
-                    {
-                        Debug.WriteLine(DateTime.Now.ToString("h:mm:ss:fff") + " : " + Thread.CurrentThread.Name.PadRight(30) + " : EXCEPTION :" + ex.Message);
-                    }
-                    else
-                    {
-                        Debug.WriteLine(DateTime.Now.ToString("h:mm:ss:fff") + " : " + Thread.CurrentThread.Name.PadRight(30) + " Message : No Message");
-                    }
-
-                    if (ex.Source is object)
-                    {
-                        Debug.WriteLine(DateTime.Now.ToString("h:mm:ss:fff") + " : " + Thread.CurrentThread.Name.PadRight(30) + " Source : " + ex.Source);
-                    }
-
-                    if (ex.StackTrace is object)
-                    {
-                        Debug.WriteLine(DateTime.Now.ToString("h:mm:ss:fff") + " : " + Thread.CurrentThread.Name.PadRight(30) + " StackTrace : " + ex.StackTrace);
-                    }
-
+                    timeAndThreadName += ": " + Thread.CurrentThread.Name.PadRight(15) + ": ";
                 }
                 else
                 {
-                    if (ex.Message is object)
-                    {
-                        Debug.WriteLine(DateTime.Now.ToString("h:mm:ss:fff") + " : " + "Unknown Thread    " + " : EXCEPTION :" + ex.Message);
-                    }
-                    else
-                    {
-                        Debug.WriteLine(DateTime.Now.ToString("h:mm:ss:fff") + " : " + "Unknown Thread    " + " Message : No Message");
-                    }
-
-                    if (ex.Source is object)
-                    {
-                        Debug.WriteLine(DateTime.Now.ToString("h:mm:ss:fff") + " : " + "Unknown Thread    " + " Source : " + ex.Source);
-                    }
-
-                    if (ex.StackTrace is object)
-                    {
-                        Debug.WriteLine(DateTime.Now.ToString("h:mm:ss:fff") + " : " + "Unknown Thread    " + " StackTrace : " + ex.StackTrace);
-                    }
-
+                    timeAndThreadName += ": Unknown Thread : ";
                 }
+
+                Debug.WriteLine(timeAndThreadName + "EXCEPTION     : ");
+
+
+                if (ex.Message is object)
+                {
+                    Debug.WriteLine(timeAndThreadName + "Message       : " + ex.Message);
+                }
+
+                Debug.WriteLine(timeAndThreadName + "HResult       : " + ex.HResult);
+
+                if (ex.Source is object)
+                {
+                    Debug.WriteLine(timeAndThreadName + "Source        : " + ex.Source);
+                }
+
+                if(ex.TargetSite is object)
+                {
+                    Debug.WriteLine(timeAndThreadName + "TargetSite    : " + ex.TargetSite.Name);
+                    
+                    //ParameterInfo[] parameters = ex.TargetSite.GetParameters();
+                    //if(parameters.Length > 0)
+                    //{
+                    //    Debug.WriteLine(timeAndThreadName + "TargetSite.Parameters (" + parameters.Length + ")");
+                    //    foreach (ParameterInfo parameter in parameters)
+                    //    {
+                    //        Debug.WriteLine(timeAndThreadName + "    " + parameter.Name + " " + parameter.ParameterType.FullName);
+                    //    }
+                    //}
+                }
+
+                if((ex.Data is object) && (ex.Data.Count > 0))
+                {
+                    Debug.WriteLine(timeAndThreadName + "Data : ");
+                    foreach(DictionaryEntry nextPair in ex.Data)
+                    {
+                        Debug.WriteLine(timeAndThreadName + "Key : " + nextPair.Key.ToString() + " value : " + nextPair.Value.ToString());
+                    }
+                }
+
+                if (ex.StackTrace is object)
+                {
+                    string[] lines = ex.StackTrace.Split('\n');
+                    if(lines.Length > 0)
+                    {
+                        Debug.WriteLine(timeAndThreadName + "StackTrace    :");
+                        foreach (string nextLine in lines)
+                        {
+                            string line = nextLine.Replace('\n', ' ');
+                            line = line.Replace('\r', ' ');
+                            line = line.Trim();
+                            Debug.WriteLine(timeAndThreadName + "              : " + line);
+                        }
+                    }
+                }
+
+                if (ex.InnerException is object)
+                {
+                    Debug.WriteLine(timeAndThreadName + "InnerException: ");
+
+                    if (ex.InnerException.Message is object)
+                    {
+                        Debug.WriteLine(timeAndThreadName + "               Message : " + ex.InnerException.Message);
+                    }
+
+                    Debug.WriteLine(timeAndThreadName + "               HResult : " + ex.InnerException.HResult);
+
+                    if (ex.InnerException.Source is object)
+                    {
+                        Debug.WriteLine(timeAndThreadName + "               Source : " + ex.InnerException.Source);
+                    }
+
+                    if (ex.InnerException.TargetSite is object)
+                    {
+                        Debug.WriteLine(timeAndThreadName + "               TargetSite : " + ex.InnerException.TargetSite.Name);
+                    }
+
+                    if (ex.InnerException.Data is object)
+                    {
+                        Debug.WriteLine(timeAndThreadName + "               Data : ");
+                        foreach (DictionaryEntry nextPair in ex.InnerException.Data)
+                        {
+                            Debug.WriteLine(timeAndThreadName + "               Key : " + nextPair.Key.ToString() + " value : " + nextPair.Value.ToString());
+                        }
+                    }
+
+                    if (ex.InnerException.StackTrace is object)
+                    {
+                        Debug.WriteLine(timeAndThreadName + "               StackTrace : " + ex.InnerException.StackTrace);
+                    }
+                }
+
+                Debug.WriteLine("");
             }
         }
 

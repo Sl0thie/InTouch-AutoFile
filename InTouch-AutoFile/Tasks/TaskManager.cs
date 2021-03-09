@@ -30,7 +30,7 @@ namespace InTouch_AutoFile
             //Configure and start a background thread.
             Thread backgroundThread = new Thread(new ThreadStart(BackgroundProcess))
             {
-                Name = "InTouch-AutoFile.TaskManager",
+                Name = "AF.TaskManager",
                 IsBackground = true,
                 Priority = ThreadPriority.Normal
             };

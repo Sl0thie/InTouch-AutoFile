@@ -19,7 +19,7 @@ namespace InTouch_AutoFile
         {
             Thread backgroundThread = new Thread(new ThreadStart(BackgroundProcess))
             {
-                Name = "InTouch_Backend.TaskFileSentItems",
+                Name = "AF.FileSent",
                 IsBackground = true,
                 Priority = ThreadPriority.Normal
             };

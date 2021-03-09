@@ -214,7 +214,11 @@ namespace InTouch_AutoFile
                     {
                         emailContact = InTouch.Contacts.FindContactFromEmailAddress(email.Sender.Address);
                     }
-                    catch (Exception ex) { Op.LogError(ex); throw; }
+                    catch (Exception ex) 
+                    { 
+                        Op.LogError(ex); 
+                        throw; 
+                    }
 
                     if (emailContact is object)
                     {
@@ -239,7 +243,11 @@ namespace InTouch_AutoFile
                     {
                         emailContact = InTouch.Contacts.FindContactFromEmailAddress(email.Sender.Address);
                     }
-                    catch (Exception ex) { Op.LogError(ex); throw; }
+                    catch (Exception ex) 
+                    { 
+                        Op.LogError(ex);
+                        throw; 
+                    }
 
                     if (emailContact is object)
                     {
