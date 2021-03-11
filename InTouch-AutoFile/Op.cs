@@ -30,14 +30,12 @@ namespace InTouch_AutoFile
             set { nextFormRegion = value; }
         }
 
-        private static string contactCreatedEmail;
-        //TODO Rename this to suit what it has become.
-        public static string ContactCreatedEmail
+        private static string emailForCreatedContact;
+        public static string EmailForCreatedContact
         {
-            get { return contactCreatedEmail; }
-            set { contactCreatedEmail = value; }
+            get { return emailForCreatedContact; }
+            set { emailForCreatedContact = value; }
         }
-
         /// <summary>
         /// Checks if the supplied path is a valid path within the inbox branch.
         /// </summary>
@@ -45,66 +43,36 @@ namespace InTouch_AutoFile
         /// <returns>True if the path is valid/False if it is not.</returns>
         public static bool CheckFolderPath(string folderPath, Outlook.OlDefaultFolders rootFolderType)
         {
+            bool returnValue = true;
             Outlook.MAPIFolder folder = Globals.ThisAddIn.Application.Session.GetDefaultFolder(rootFolderType) as Outlook.Folder;
-            string backslash = @"\";
+            Outlook.Folders subFolders;
+            string[] folders = folderPath.Split('\\');
 
-            if (folderPath is null)
+            try
             {
-                throw new Exception("The parameter 'folderPath' cannot be null.");
-            }
-
-            String[] folders = folderPath.Split(backslash.ToCharArray());
-
-            if (folder is object)
-            {
-                for (int i = 0; i < folders.GetUpperBound(0); i++)
+                for (int i = 0; i <= folders.GetUpperBound(0); i++)
                 {
-                    Outlook.Folders subFolders = folder.Folders;
-                    if (subFolders is object)
-                    {
-                        try
-                        {
-                            folder = subFolders[folders[i]] as Outlook.Folder;
-                        }
-                        catch (COMException ex)
-                        {
-                            if (ex.HResult != -2147221233) //Folder can't be found so return false.
-                            {
-                                Op.LogError(ex);
-                                throw;
-                            }
-                            else
-                            {
-                                if (folder is object) { Marshal.ReleaseComObject(folder); }
-                                return false;
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Op.LogError(ex);
-                            throw;
-                        }
-                        
-                        if (folder == null)
-                        {
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        if (folder is object) { Marshal.ReleaseComObject(folder); }
-                        return false;
-                    }
+                    subFolders = folder.Folders;
+                    folder = subFolders[folders[i]] as Outlook.Folder;
                 }
             }
-
-            //Folder was found with no errors so return true.
+            catch(COMException ex)
+            {
+                if(ex.HResult == -2147221233)
+                {
+                    returnValue = false;
+                    Op.LogMessage("Exception Managed.");
+                }
+                else
+                {
+                    throw;
+                }
+            }
             if (folder is object) { Marshal.ReleaseComObject(folder); }
-            return true;
+            return returnValue;
         }
 
         #region Logging Methods
-
         /// <summary>
         /// Method to centralise message logging. This is to provide a standard message format.
         /// </summary>

@@ -163,14 +163,17 @@ namespace InTouch_AutoFile
         {
             Outlook.MAPIFolder folder = Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderSentMail) as Outlook.Folder;
             string[] folders = folderPath.Split('\\');
+            Outlook.Folders subFolders;
 
             for (int i = 0; i <= folders.GetUpperBound(0); i++)
             {
-                Outlook.Folders subFolders = folder.Folders;
+                subFolders = folder.Folders;
                 folder = subFolders[folders[i]] as Outlook.Folder;
             }
 
             email.Move(folder);
+
+            if (folder is object) { Marshal.ReleaseComObject(folder); }
         }
     }
 }

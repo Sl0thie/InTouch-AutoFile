@@ -142,9 +142,9 @@ namespace InTouch_AutoFile
                             Application.DoEvents();
                             Thread.Sleep(1000);
 
-                            if (Op.ContactCreatedEmail is object) 
+                            if (Op.EmailForCreatedContact is object) 
                             {
-                                Outlook.ContactItem contact = InTouch.Contacts.FindContactFromEmailAddress(Op.ContactCreatedEmail);
+                                Outlook.ContactItem contact = InTouch.Contacts.FindContactFromEmailAddress(Op.EmailForCreatedContact);
                                 if(contact is object)
                                 {
                                     contact.Display();

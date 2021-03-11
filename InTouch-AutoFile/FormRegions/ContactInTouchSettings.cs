@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using Office = Microsoft.Office.Core;
 using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace InTouch_AutoFile
@@ -53,11 +49,11 @@ namespace InTouch_AutoFile
                     RadioButtonDeliveryNoAction.Checked = true;
                     break;
 
-                case EmailAction.Delete:
+                case EmailAction.Delete: 
                     RadioButtonDeliveryDelete.Checked = true;
                     break;
 
-                case EmailAction.Move:
+                case EmailAction.Move: 
                     RadioButtonDeliveryFile.Checked = true;
                     break;
             }
@@ -100,9 +96,12 @@ namespace InTouch_AutoFile
 
         private void AdjustForm()
         {
-            //Read actions are dependant on delivery actions.
+            bool readAction = false;
+            //Read actions are dependant on delivery actions because they happen after.
             if (RadioButtonDeliveryNoAction.Checked)
             {
+                RadioButtonReadNoAction.Enabled = true;
+                
                 RadioButtonReadDelete.Enabled = true;
                 RadioButtonReadFile.Enabled = true;
 
@@ -110,10 +109,14 @@ namespace InTouch_AutoFile
                 LabelDeliveryPathTitle.Visible = false;
                 LabelDeliveryPath.Visible = false;
                 CheckBoxUseSamePathDelivery.Visible = false;
+                readAction = true;
             }
             else if (RadioButtonDeliveryDelete.Checked)
             {
-                RadioButtonReadNoAction.Checked = true; 
+                //Force the read action to be the same.
+                RadioButtonReadDelete.Checked = true;
+
+                RadioButtonReadNoAction.Enabled = false;
                 RadioButtonReadDelete.Enabled = false;
                 RadioButtonReadFile.Enabled = false;
 
@@ -121,10 +124,18 @@ namespace InTouch_AutoFile
                 LabelDeliveryPathTitle.Visible = false;
                 LabelDeliveryPath.Visible = false;
                 CheckBoxUseSamePathDelivery.Visible = false;
+
+                ButtonReadPath.Visible = false;
+                LabelPath.Visible = false;
+                LabelReadPath.Visible = false;
+                CheckBoxUseSamePathRead.Visible = false;
             }
-            else
+            else 
             {
-                RadioButtonReadNoAction.Checked = true;
+                //Force the read action to be the same.
+                RadioButtonReadFile.Checked = true;
+
+                RadioButtonReadNoAction.Enabled = false;
                 RadioButtonReadDelete.Enabled = false;
                 RadioButtonReadFile.Enabled = false;
 
@@ -132,29 +143,36 @@ namespace InTouch_AutoFile
                 LabelDeliveryPathTitle.Visible = true;
                 LabelDeliveryPath.Visible = true;
                 CheckBoxUseSamePathDelivery.Visible = true;
-            }
 
-            if (RadioButtonReadNoAction.Checked)
-            {
-                ButtonReadPath.Visible = false;
-                LabelPath.Visible = false;
-                LabelReadPath.Visible = false;
-                CheckBoxUseSamePathRead.Visible = false;
-
-            }
-            else if (RadioButtonReadDelete.Checked)
-            {
                 ButtonReadPath.Visible = false;
                 LabelPath.Visible = false;
                 LabelReadPath.Visible = false;
                 CheckBoxUseSamePathRead.Visible = false;
             }
-            else
+
+            if (readAction)
             {
-                ButtonReadPath.Visible = true;
-                LabelPath.Visible = true;
-                LabelReadPath.Visible = true;
-                CheckBoxUseSamePathRead.Visible = true;
+                if (RadioButtonReadNoAction.Checked)
+                {
+                    ButtonReadPath.Visible = false;
+                    LabelPath.Visible = false;
+                    LabelReadPath.Visible = false;
+                    CheckBoxUseSamePathRead.Visible = false;
+                }
+                else if (RadioButtonReadDelete.Checked)
+                {
+                    ButtonReadPath.Visible = false;
+                    LabelPath.Visible = false;
+                    LabelReadPath.Visible = false;
+                    CheckBoxUseSamePathRead.Visible = false;
+                }
+                else
+                {
+                    ButtonReadPath.Visible = true;
+                    LabelPath.Visible = true;
+                    LabelReadPath.Visible = true;
+                    CheckBoxUseSamePathRead.Visible = true;
+                }
             }
 
             if (RadioButtonSendNoAction.Checked)
@@ -172,7 +190,7 @@ namespace InTouch_AutoFile
             }
             else
             {
-                if ((CheckBoxUseSamePathDelivery.Checked) || (CheckBoxUseSamePathRead.Checked))
+                if (CheckBoxUseSamePathDelivery.Checked) //Only check the first checkbox as they are tied together.
                 {
                     ButtonSendPath.Visible = false;
                     LabelSendPathTitle.Visible = false;
@@ -192,6 +210,11 @@ namespace InTouch_AutoFile
         // Use this.OutlookFormRegion to get a reference to the form region.
         private void ContactInTouchSettings_FormRegionClosed(object sender, System.EventArgs e)
         {
+            if (contact.SamePath)
+            {
+                contact.SentPath = contact.InboxPath;
+                InTouch.CreatePath(contact.SentPath, Outlook.OlDefaultFolders.olFolderSentMail);
+            }
             contact.SaveAndDispose();
         }
 
@@ -203,11 +226,12 @@ namespace InTouch_AutoFile
         {
             Outlook.NameSpace outlookNameSpace = Globals.ThisAddIn.Application.GetNamespace("MAPI");
             Outlook.MAPIFolder pickedFolder = outlookNameSpace.PickFolder();
+            string folderPath = "";
 
             if (pickedFolder.FolderPath is object)
             {
                 string backslash = @"\";
-                string folderPath = pickedFolder.FolderPath;
+                folderPath = pickedFolder.FolderPath;
                 for (int i = 0; i < 4; i++)
                 {
                     if (folderPath.IndexOf(backslash) >= 0)
@@ -215,28 +239,23 @@ namespace InTouch_AutoFile
                         folderPath = folderPath.Substring(folderPath.IndexOf(backslash) + 1);
                     }
                 }
-
-                LabelDeliveryPath.Text = folderPath;
-                if (CheckBoxUseSamePathRead.Checked)
-                {
-                    LabelSendPathValue.Text = folderPath;
-                }
             }
             else
             {
-                LabelDeliveryPath.Text = "";
-                if (CheckBoxUseSamePathRead.Checked)
-                {
-                    LabelSendPathValue.Text = "";
-                }
+                folderPath = "";
             }
 
-            //TODO Add check to see if this path is in the sent inbox folder.
-            contact.InboxPath = LabelReadPath.Text;
+            LabelDeliveryPath.Text = folderPath;
+            LabelReadPath.Text = folderPath;
+            contact.InboxPath = folderPath;
+            if (contact.SamePath)
+            {
+                LabelSendPathValue.Text = folderPath;
+                contact.SentPath = folderPath;
+            }
 
             if (pickedFolder is object) { Marshal.ReleaseComObject(pickedFolder); }
             if (outlookNameSpace is object) { Marshal.ReleaseComObject(outlookNameSpace); }
-
         }
 
         private void RadioButtonDeliveryNoAction_CheckedChanged(object sender, EventArgs e)
@@ -269,6 +288,7 @@ namespace InTouch_AutoFile
         private void CheckBoxUseSamePathDelivery_CheckedChanged(object sender, EventArgs e)
         {
             contact.SamePath = CheckBoxUseSamePathDelivery.Checked;
+            CheckBoxUseSamePathRead.Checked = CheckBoxUseSamePathDelivery.Checked;
             AdjustForm();
         }
 
@@ -280,11 +300,12 @@ namespace InTouch_AutoFile
         {
             Outlook.NameSpace outlookNameSpace = Globals.ThisAddIn.Application.GetNamespace("MAPI");
             Outlook.MAPIFolder pickedFolder = outlookNameSpace.PickFolder();
+            string folderPath = "";
 
             if (pickedFolder.FolderPath is object)
             {
                 string backslash = @"\";
-                string folderPath = pickedFolder.FolderPath;
+                folderPath = pickedFolder.FolderPath;
                 for (int i = 0; i < 4; i++)
                 {
                     if (folderPath.IndexOf(backslash) >= 0)
@@ -292,15 +313,21 @@ namespace InTouch_AutoFile
                         folderPath = folderPath.Substring(folderPath.IndexOf(backslash) + 1);
                     }
                 }
-
-                LabelReadPath.Text = folderPath;
             }
             else
             {
-                LabelReadPath.Text = "";
+                folderPath = "";
             }
 
-            //TODO Add check to see if this path is in the sent inbox folder.
+            LabelReadPath.Text = folderPath;
+            LabelDeliveryPath.Text = folderPath;
+            contact.InboxPath = folderPath;
+            if (contact.SamePath)
+            {
+                LabelSendPathValue.Text = folderPath;
+                contact.SentPath = folderPath;
+            }
+
             contact.InboxPath = LabelReadPath.Text;
 
             if (pickedFolder is object) { Marshal.ReleaseComObject(pickedFolder); }
@@ -337,6 +364,7 @@ namespace InTouch_AutoFile
         private void CheckBoxUseSamePath_CheckedChanged(object sender, EventArgs e)
         {
             contact.SamePath = CheckBoxUseSamePathRead.Checked;
+            CheckBoxUseSamePathDelivery.Checked = CheckBoxUseSamePathRead.Checked;
             AdjustForm();
         }
 
@@ -348,11 +376,12 @@ namespace InTouch_AutoFile
         {
             Outlook.NameSpace outlookNameSpace = Globals.ThisAddIn.Application.GetNamespace("MAPI");
             Outlook.MAPIFolder pickedFolder = outlookNameSpace.PickFolder();
+            string folderPath;
 
             if (pickedFolder.FolderPath is object)
             {
                 string backslash = @"\";
-                string folderPath = pickedFolder.FolderPath;
+                folderPath = pickedFolder.FolderPath;
                 for (int i = 0; i < 4; i++)
                 {
                     if (folderPath.IndexOf(backslash) >= 0)
@@ -360,16 +389,14 @@ namespace InTouch_AutoFile
                         folderPath = folderPath.Substring(folderPath.IndexOf(backslash) + 1);
                     }
                 }
-
-                LabelSendPathValue.Text = folderPath;
             }
             else
             {
-                LabelSendPathValue.Text = "";
+                folderPath = "";
             }
 
-            //TODO Add check to see if this path is in the sent items folder.
-            contact.SentPath = LabelSendPathValue.Text;
+            LabelSendPathValue.Text = folderPath;
+            contact.SentPath = folderPath;
 
             if (pickedFolder is object) { Marshal.ReleaseComObject(pickedFolder); }
             if (outlookNameSpace is object) { Marshal.ReleaseComObject(outlookNameSpace); }

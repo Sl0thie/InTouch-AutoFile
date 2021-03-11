@@ -31,7 +31,7 @@ namespace InTouch_AutoFile
 
         private void FormInTouchNewContact_Load(object sender, EventArgs e)
         {
-            Op.ContactCreatedEmail = null;
+            Op.EmailForCreatedContact = null;
             ComboBoxContactFolder.Items.Add("Contacts");
             foreach (Outlook.Folder nextContactFolder in InTouch.Contacts.Folders)
             {
@@ -172,6 +172,19 @@ namespace InTouch_AutoFile
                             htmlString = website + htmlString;
                         }
                     }
+                    catch(WebException ex)
+                    {
+                        switch (ex.HResult)
+                        {
+                            case -2146233079:
+                                Op.LogMessage("Exception Managed > The remote name could not be resolved.");
+                                break;
+
+                            default:
+                                Op.LogError(ex);
+                                throw;
+                        }
+                    }
                     catch (Exception ex)
                     {
                         Op.LogError(ex);
@@ -283,7 +296,7 @@ namespace InTouch_AutoFile
                 newContact.Save();
                 Application.DoEvents();
                 Thread.Sleep(100);
-                Op.ContactCreatedEmail = newContact.Email1Address;
+                Op.EmailForCreatedContact = newContact.Email1Address;
                 if (ComboBoxContactFolder.Text != "Contacts")
                 {
                     newContact.Move(InTouch.Contacts.Folders[ComboBoxContactFolder.Text]); ;

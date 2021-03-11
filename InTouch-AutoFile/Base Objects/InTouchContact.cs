@@ -932,6 +932,7 @@ namespace InTouch_AutoFile
             catch(FormatException)
             {
                 //Contact data is from an older format. It will be saved in the newer format when the contact is saved.
+                Op.LogMessage("Exception Managed.");
             }
             catch(System.Exception ex)
             {
