@@ -94,6 +94,15 @@ namespace InTouch_AutoFile
             AdjustForm();
         }
 
+        /// <summary>
+        /// Adjust the Controls on the Form Region
+        /// </summary>
+        /// <remarks>
+        /// This is currently going though trial and error to see what suits best.
+        /// The issue of Inbox/SentItem/Junk folders has come up
+        /// where you can't choose the junk folder as a place to file mail.
+        /// and the sent folder is usally the same as the Inbox folder.
+        /// </remarks>
         private void AdjustForm()
         {
             bool readAction = false;
