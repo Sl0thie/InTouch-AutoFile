@@ -40,7 +40,6 @@ namespace InTouch_AutoFile
             this.buttonContact = this.Factory.CreateRibbonButton();
             this.buttonAddContact = this.Factory.CreateRibbonButton();
             this.buttonAttention = this.Factory.CreateRibbonButton();
-            this.ButtonTasks = this.Factory.CreateRibbonButton();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
             this.SuspendLayout();
@@ -58,7 +57,6 @@ namespace InTouch_AutoFile
             this.group1.Items.Add(this.buttonContact);
             this.group1.Items.Add(this.buttonAddContact);
             this.group1.Items.Add(this.buttonAttention);
-            this.group1.Items.Add(this.ButtonTasks);
             this.group1.Label = "InTouch";
             this.group1.Name = "group1";
             // 
@@ -92,15 +90,6 @@ namespace InTouch_AutoFile
             this.buttonAttention.Visible = false;
             this.buttonAttention.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.ButtonAttention_Click);
             // 
-            // ButtonTasks
-            // 
-            this.ButtonTasks.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.ButtonTasks.Image = global::InTouch_AutoFile.Properties.Resources.options;
-            this.ButtonTasks.Label = "Tasks";
-            this.ButtonTasks.Name = "ButtonTasks";
-            this.ButtonTasks.ShowImage = true;
-            this.ButtonTasks.Visible = false;
-            // 
             // RibExplorer
             // 
             this.Name = "RibExplorer";
@@ -122,7 +111,6 @@ namespace InTouch_AutoFile
         internal Microsoft.Office.Tools.Ribbon.RibbonButton buttonAddContact;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton buttonAttention;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton buttonContact;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton ButtonTasks;
     }
 
     partial class ThisRibbonCollection

@@ -29,7 +29,6 @@ namespace InTouch_AutoFile
 
         void Outlook.PropertyPage.Apply()
         {
-            Properties.Settings.Default.ShowTasksButton = CheckBoxShowTasksButton.Checked;
             Properties.Settings.Default.TaskInbox = CheckBoxTaskInbox.Checked;
             Properties.Settings.Default.TaskSent = CheckBoxTaskSent.Checked;
             Properties.Settings.Default.TaskDuplicates = CheckBoxTaskDuplicates.Checked;
@@ -72,8 +71,6 @@ namespace InTouch_AutoFile
             object myppSite = mi.Invoke(this, null);
             ppSite = (Outlook.PropertyPageSite)myppSite;
 
-
-            CheckBoxShowTasksButton.Checked = Properties.Settings.Default.ShowTasksButton;
             CheckBoxTaskInbox.Checked = Properties.Settings.Default.TaskInbox;
             CheckBoxTaskSent.Checked = Properties.Settings.Default.TaskSent;
             CheckBoxTaskDuplicates.Checked = Properties.Settings.Default.TaskDuplicates;

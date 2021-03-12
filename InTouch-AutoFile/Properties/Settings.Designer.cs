@@ -38,18 +38,6 @@ namespace InTouch_AutoFile.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ShowTasksButton {
-            get {
-                return ((bool)(this["ShowTasksButton"]));
-            }
-            set {
-                this["ShowTasksButton"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool TaskInbox {
             get {
                 return ((bool)(this["TaskInbox"]));

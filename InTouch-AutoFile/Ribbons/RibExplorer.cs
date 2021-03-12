@@ -25,11 +25,6 @@ namespace InTouch_AutoFile
         {
             explorer = Globals.ThisAddIn.Application.ActiveExplorer();
             explorer.SelectionChange += Explorer_SelectionChange;
-
-            if (Properties.Settings.Default.ShowTasksButton)
-            {
-                ButtonTasks.Visible = true;
-            }
         }
 
         /// <summary>

@@ -34,7 +34,6 @@ namespace InTouch_AutoFile
             this.CheckBoxTaskDuplicates = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.CheckBoxShowTasksButton = new System.Windows.Forms.CheckBox();
             this.CheckBoxTaskRouting = new System.Windows.Forms.CheckBox();
             this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -95,18 +94,6 @@ namespace InTouch_AutoFile
             this.label2.TabIndex = 4;
             this.label2.Text = "Options";
             // 
-            // CheckBoxShowTasksButton
-            // 
-            this.CheckBoxShowTasksButton.AutoSize = true;
-            this.CheckBoxShowTasksButton.Location = new System.Drawing.Point(26, 35);
-            this.CheckBoxShowTasksButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.CheckBoxShowTasksButton.Name = "CheckBoxShowTasksButton";
-            this.CheckBoxShowTasksButton.Size = new System.Drawing.Size(134, 21);
-            this.CheckBoxShowTasksButton.TabIndex = 5;
-            this.CheckBoxShowTasksButton.Text = "Show Tasks Button";
-            this.CheckBoxShowTasksButton.UseVisualStyleBackColor = true;
-            this.CheckBoxShowTasksButton.CheckedChanged += new System.EventHandler(this.CheckBoxShowTasksButton_CheckedChanged);
-            // 
             // CheckBoxTaskRouting
             // 
             this.CheckBoxTaskRouting.AutoSize = true;
@@ -134,7 +121,6 @@ namespace InTouch_AutoFile
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.button1);
             this.Controls.Add(this.CheckBoxTaskRouting);
-            this.Controls.Add(this.CheckBoxShowTasksButton);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.CheckBoxTaskDuplicates);
@@ -157,7 +143,6 @@ namespace InTouch_AutoFile
         private System.Windows.Forms.CheckBox CheckBoxTaskDuplicates;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.CheckBox CheckBoxShowTasksButton;
         private System.Windows.Forms.CheckBox CheckBoxTaskRouting;
         private System.Windows.Forms.Button button1;
     }
