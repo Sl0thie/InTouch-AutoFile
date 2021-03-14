@@ -36,6 +36,7 @@ namespace InTouch_AutoFile
             get { return emailForCreatedContact; }
             set { emailForCreatedContact = value; }
         }
+
         /// <summary>
         /// Checks if the supplied path is a valid path within the inbox branch.
         /// </summary>

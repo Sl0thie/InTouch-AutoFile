@@ -235,8 +235,7 @@ namespace InTouch_AutoFile
         {
             Outlook.NameSpace outlookNameSpace = Globals.ThisAddIn.Application.GetNamespace("MAPI");
             Outlook.MAPIFolder pickedFolder = outlookNameSpace.PickFolder();
-            string folderPath = "";
-
+            string folderPath;
             if (pickedFolder.FolderPath is object)
             {
                 string backslash = @"\";

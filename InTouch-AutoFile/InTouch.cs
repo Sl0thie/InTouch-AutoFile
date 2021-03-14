@@ -5,17 +5,32 @@ namespace InTouch_AutoFile
 {
     public static class InTouch
     {
-        private static readonly Contacts contacts = new Contacts();
+        
         public static Contacts Contacts
         {
             get { return contacts; }
         }
+        private static readonly Contacts contacts = new Contacts();
 
-        private static readonly TaskManager taskManager = new TaskManager();
+        
         public static TaskManager TaskManager
         {
             get { return taskManager; }
         }
+        private static readonly TaskManager taskManager = new TaskManager();
+
+
+        public static Stores Stores
+        {
+            get { return stores; }
+            set { stores = value; }
+        }
+        private static Stores stores = new Stores();
+
+
+
+
+
 
         public static void CreatePath(string folderPath, Outlook.OlDefaultFolders rootFolderType)
         {
