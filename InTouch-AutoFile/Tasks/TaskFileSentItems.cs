@@ -161,19 +161,19 @@ namespace InTouch_AutoFile
         /// <param name="email">The mailitem to move.</param>
         private static void MoveEmailToFolder(string folderPath, Outlook.MailItem email)
         {
-            Outlook.MAPIFolder folder = Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderSentMail) as Outlook.Folder;
-            string[] folders = folderPath.Split('\\');
-            Outlook.Folders subFolders;
+            //Outlook.MAPIFolder folder = Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderSentMail) as Outlook.Folder;
+            //string[] folders = folderPath.Split('\\');
+            //Outlook.Folders subFolders;
 
-            for (int i = 0; i <= folders.GetUpperBound(0); i++)
-            {
-                subFolders = folder.Folders;
-                folder = subFolders[folders[i]] as Outlook.Folder;
-            }
+            //for (int i = 0; i <= folders.GetUpperBound(0); i++)
+            //{
+            //    subFolders = folder.Folders;
+            //    folder = subFolders[folders[i]] as Outlook.Folder;
+            //}
 
-            email.Move(folder);
+            //email.Move(folder);
 
-            if (folder is object) { Marshal.ReleaseComObject(folder); }
+            //if (folder is object) { Marshal.ReleaseComObject(folder); }
         }
     }
 }

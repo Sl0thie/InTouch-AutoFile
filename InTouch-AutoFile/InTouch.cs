@@ -11,7 +11,6 @@ namespace InTouch_AutoFile
             get { return contacts; }
         }
         private static readonly Contacts contacts = new Contacts();
-
         
         public static TaskManager TaskManager
         {
@@ -64,5 +63,9 @@ namespace InTouch_AutoFile
 
             }
         }
+
+
+
+
     }
 }

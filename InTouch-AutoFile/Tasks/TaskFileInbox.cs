@@ -268,36 +268,78 @@ namespace InTouch_AutoFile
         /// <param name="email">The mailitem to move.</param>
         private static void MoveEmailToFolder(string folderPath, Outlook.MailItem email)
         {
-            Outlook.MAPIFolder folder = Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderInbox) as Outlook.Folder;
-            Outlook.Folders subFolders;
             string[] folders = folderPath.Split('\\');
-            for (int i = 0; i <= folders.GetUpperBound(0); i++)
+            Outlook.MAPIFolder folder = null;
+            Outlook.Folders subFolders;
+
+            try
             {
-                subFolders = folder.Folders;
-                try
+                folder = InTouch.Stores.StoresLookup[folders[0]].RootFolder;
+            }
+            catch (System.Collections.Generic.KeyNotFoundException)
+            {
+                Op.LogMessage("Exception managed > Store not found. (" + folders[0] + ")");
+                return;
+            }
+
+            try
+            {
+                for (int i = 1; i <= folders.GetUpperBound(0); i++)
                 {
+                    subFolders = folder.Folders;
                     folder = subFolders[folders[i]] as Outlook.Folder;
                 }
-                catch (COMException ex)
+            }
+            catch (COMException ex)
+            {
+                if (ex.HResult == -2147221233)
                 {
-                    if(ex.HResult == -2147221233)
-                    {
-                        Op.LogMessage("Exception Managed: MoveEmailToFolder path not found.");
-                        folder = null;
-                    }
-                    else
-                    {
-                        Op.LogError(ex);
-                        throw;
-                    }
+                    Op.LogMessage("Exception Managed > Folder not found. (" + folderPath + ")");
+                    return;
+                }
+                else
+                {
+                    throw;
                 }
             }
-            
-            if(folder is object) 
+
+            if (folder is object)
             {
                 email.Move(folder);
-                Marshal.ReleaseComObject(folder); 
+                Marshal.ReleaseComObject(folder);
             }
+
+
+            //Outlook.MAPIFolder folder = Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderInbox) as Outlook.Folder;
+            //Outlook.Folders subFolders;
+            //string[] folders = folderPath.Split('\\');
+            //for (int i = 0; i <= folders.GetUpperBound(0); i++)
+            //{
+            //    subFolders = folder.Folders;
+            //    try
+            //    {
+            //        folder = subFolders[folders[i]] as Outlook.Folder;
+            //    }
+            //    catch (COMException ex)
+            //    {
+            //        if(ex.HResult == -2147221233)
+            //        {
+            //            Op.LogMessage("Exception Managed: MoveEmailToFolder path not found.");
+            //            folder = null;
+            //        }
+            //        else
+            //        {
+            //            Op.LogError(ex);
+            //            throw;
+            //        }
+            //    }
+            //}
+
+            //if(folder is object) 
+            //{
+            //    email.Move(folder);
+            //    Marshal.ReleaseComObject(folder); 
+            //}
         }
     }
 }

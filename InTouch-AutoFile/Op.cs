@@ -42,34 +42,49 @@ namespace InTouch_AutoFile
         /// </summary>
         /// <param name="folderPath">The path to test.</param>
         /// <returns>True if the path is valid/False if it is not.</returns>
-        public static bool CheckFolderPath(string folderPath, Outlook.OlDefaultFolders rootFolderType)
+        public static bool CheckFolderPath(string folderPath)
         {
             bool returnValue = true;
-            Outlook.MAPIFolder folder = Globals.ThisAddIn.Application.Session.GetDefaultFolder(rootFolderType) as Outlook.Folder;
-            Outlook.Folders subFolders;
             string[] folders = folderPath.Split('\\');
+            Outlook.MAPIFolder folder = null;
+            Outlook.Folders subFolders;
 
             try
             {
-                for (int i = 0; i <= folders.GetUpperBound(0); i++)
-                {
-                    subFolders = folder.Folders;
-                    folder = subFolders[folders[i]] as Outlook.Folder;
-                }
+                folder = InTouch.Stores.StoresLookup[folders[0]].RootFolder;
             }
-            catch(COMException ex)
+            catch(System.Collections.Generic.KeyNotFoundException)
             {
-                if(ex.HResult == -2147221233)
+                Op.LogMessage("Exception managed > Store not found. (" + folders[0] + ")");
+                returnValue = false;
+            }
+
+            if (returnValue)
+            {
+                try
                 {
-                    returnValue = false;
-                    Op.LogMessage("Exception Managed.");
+                    for (int i = 1; i <= folders.GetUpperBound(0); i++)
+                    {
+                        subFolders = folder.Folders;
+                        folder = subFolders[folders[i]] as Outlook.Folder;
+                    }
                 }
-                else
+                catch (COMException ex)
                 {
-                    throw;
+                    if (ex.HResult == -2147221233)
+                    {
+                        returnValue = false;
+                        Op.LogMessage("Exception Managed > Folder not found. (" + folderPath + ")");
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
             }
+
             if (folder is object) { Marshal.ReleaseComObject(folder); }
+
             return returnValue;
         }
 
