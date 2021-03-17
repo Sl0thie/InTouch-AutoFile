@@ -934,6 +934,17 @@ namespace InTouch_AutoFile
                 //Contact data is from an older format. It will be saved in the newer format when the contact is saved.
                 Op.LogMessage("Exception Managed.");
             }
+            catch(IndexOutOfRangeException)
+            {
+                Op.LogMessage("Exception Managed.");
+
+                inboxPath = "";
+                sentPath = "";
+                deliveryAction = EmailAction.None;
+                readAction = EmailAction.None;
+                sentAction = EmailAction.None;
+                samePath = true;
+            }
             catch(System.Exception ex)
             {
                 Op.LogError(ex);

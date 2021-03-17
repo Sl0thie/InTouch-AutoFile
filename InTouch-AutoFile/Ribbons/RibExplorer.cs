@@ -5,6 +5,7 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace InTouch_AutoFile
 {
@@ -14,6 +15,8 @@ namespace InTouch_AutoFile
     public partial class RibExplorer
     {
         private Outlook.Explorer explorer; //The current explorer object.
+
+        private string lastEntryID = "";
 
         /// <summary>
         /// Constructor for the explorer ribbon.
@@ -35,19 +38,49 @@ namespace InTouch_AutoFile
         {
             if (Globals.ThisAddIn.Application.ActiveExplorer().Selection.Count > 0)
             {
+                //check the first object selected.
+                Object selectedObject = Globals.ThisAddIn.Application.ActiveExplorer().Selection[1];
+
+                //If it's a mail object then manage based on the contacts details.
+                if (selectedObject is Outlook.MailItem)
+                {
+                    Parallel.Invoke(() => { CheckEmailSender(); });
+                }
+                else if (selectedObject is Outlook.TaskItem) { }
+                else if (selectedObject is Outlook.ContactItem) { }
+                else if (selectedObject is Outlook.AppointmentItem) { }
+                if (selectedObject is object) Marshal.ReleaseComObject(selectedObject);
+            }
+            else
+            {
                 //Clear all the buttons.
                 Globals.Ribbons.RibExplorer.buttonContact.Visible = false;
                 Globals.Ribbons.RibExplorer.buttonAddContactPersonal.Visible = false;
                 Globals.Ribbons.RibExplorer.buttonAddContactOther.Visible = false;
                 Globals.Ribbons.RibExplorer.buttonAddContactJunk.Visible = false;
                 Globals.Ribbons.RibExplorer.buttonAttention.Visible = false;
+            }
+        }
 
-                //check the first object selected.
-                Object selectedObject = Globals.ThisAddIn.Application.ActiveExplorer().Selection[1];
+        private void CheckEmailSender()
+        {
+            Outlook.Selection selection = Globals.ThisAddIn.Application.ActiveExplorer().Selection;
+            Outlook.MailItem email = selection[1] as Outlook.MailItem;
 
-                //If it's a mail object then manage based on the contacts details.
-                if (selectedObject is Outlook.MailItem email)
+            if (email is object)
+            {
+                
+                if(email.EntryID != lastEntryID)
                 {
+                    lastEntryID = email.EntryID;
+
+                    //Clear all the buttons.
+                    Globals.Ribbons.RibExplorer.buttonContact.Visible = false;
+                    Globals.Ribbons.RibExplorer.buttonAddContactPersonal.Visible = false;
+                    Globals.Ribbons.RibExplorer.buttonAddContactOther.Visible = false;
+                    Globals.Ribbons.RibExplorer.buttonAddContactJunk.Visible = false;
+                    Globals.Ribbons.RibExplorer.buttonAttention.Visible = false;
+
                     if (email.Sender is object)
                     {
                         //Try to find contact from email adddress.
@@ -55,7 +88,7 @@ namespace InTouch_AutoFile
                         try
                         {
                             Outlook.ContactItem contact = InTouch.Contacts.FindContactFromEmailAddress(email.Sender.Address);
-                            if(contact is object)
+                            if (contact is object)
                             {
                                 emailContact = new InTouchContact(contact);
                             }
@@ -70,8 +103,8 @@ namespace InTouch_AutoFile
                         {
                             //Make the Contact Button visable and add the image and name to the button.
                             Globals.Ribbons.RibExplorer.buttonContact.Visible = true;
-                            
-                            if(emailContact.FullName is object)
+
+                            if (emailContact.FullName is object)
                             {
                                 Globals.Ribbons.RibExplorer.buttonContact.Label = emailContact.FullName;
                             }
@@ -112,52 +145,6 @@ namespace InTouch_AutoFile
                     }
                     if (email is object) { Marshal.ReleaseComObject(email); }
                 }
-                else if (selectedObject is Outlook.TaskItem) { }
-                else if (selectedObject is Outlook.ContactItem) { }
-                else if (selectedObject is Outlook.AppointmentItem) { }
-                if (selectedObject is object) Marshal.ReleaseComObject(selectedObject);
-            }
-            else
-            {
-                //No object is selected so remove all buttons.
-                Globals.Ribbons.RibExplorer.buttonContact.Visible = false;
-                Globals.Ribbons.RibExplorer.buttonAddContactPersonal.Visible = false;
-                Globals.Ribbons.RibExplorer.buttonAddContactOther.Visible = false;
-                Globals.Ribbons.RibExplorer.buttonAddContactJunk.Visible = false;
-                Globals.Ribbons.RibExplorer.buttonAttention.Visible = false;
-            }
-        }
-
-        private void ButtonAddContact_Click(object sender, RibbonControlEventArgs e)
-        {
-            if(Globals.ThisAddIn.Application.ActiveExplorer().Selection.Count > 0)
-            {
-                Object selectedObject = Globals.ThisAddIn.Application.ActiveExplorer().Selection[1];
-                if (selectedObject is Outlook.MailItem email)
-                {
-                    if (email is object)
-                    {
-                        using (FormInTouchNewContact newContactForm = new FormInTouchNewContact())
-                        {
-                            newContactForm.Email = email;
-                            newContactForm.ShowDialog();
-
-                            Application.DoEvents();
-                            Thread.Sleep(1000);
-
-                            //if (Op.EmailForCreatedContact is object) 
-                            //{
-                            //    Outlook.ContactItem contact = InTouch.Contacts.FindContactFromEmailAddress(Op.EmailForCreatedContact);
-                            //    if(contact is object)
-                            //    {
-                            //        contact.Display();
-                            //    }      
-                            //}
-                        }
-                    }
-                    if (email is object) { Marshal.ReleaseComObject(email); }
-                }
-                if (selectedObject is object) { Marshal.ReleaseComObject(selectedObject); }
             }
         }
 
