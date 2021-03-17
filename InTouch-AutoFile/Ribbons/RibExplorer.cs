@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 
 namespace InTouch_AutoFile
 {
+
+    //TODO Redo the task to include cancelation so they don't run into each other.
     /// <summary>
     /// A Ribbon extention for the Outlook Explorer Menu to provide buttons for InTouch.
     /// </summary>
@@ -28,6 +30,10 @@ namespace InTouch_AutoFile
         {
             explorer = Globals.ThisAddIn.Application.ActiveExplorer();
             explorer.SelectionChange += Explorer_SelectionChange;
+
+            //Fire for first event that is missed during startup.
+            Task.Factory.StartNew(() => { CheckEmailSender(); });
+            //Parallel.Invoke(() => { CheckEmailSender(); });
         }
 
         /// <summary>
@@ -39,27 +45,42 @@ namespace InTouch_AutoFile
             if (Globals.ThisAddIn.Application.ActiveExplorer().Selection.Count > 0)
             {
                 //check the first object selected.
-                Object selectedObject = Globals.ThisAddIn.Application.ActiveExplorer().Selection[1];
+                dynamic selectedObject = Globals.ThisAddIn.Application.ActiveExplorer().Selection[1];
 
-                //If it's a mail object then manage based on the contacts details.
-                if (selectedObject is Outlook.MailItem)
+                if (selectedObject.EntryID != lastEntryID)
                 {
-                    Parallel.Invoke(() => { CheckEmailSender(); });
+                    lastEntryID = selectedObject.EntryID;
+                    ClearButtons();
+
+                    //If it's a mail object then manage based on the contacts details.
+                    if (selectedObject is Outlook.MailItem)
+                    {
+                        Task.Factory.StartNew(() => { CheckEmailSender(); });
+                        //Parallel.Invoke(() => { CheckEmailSender(); });
+                    }
+                    else if (selectedObject is Outlook.TaskItem) { lastEntryID = ""; }
+                    else if (selectedObject is Outlook.ContactItem) { lastEntryID = ""; }
+                    else if (selectedObject is Outlook.AppointmentItem) { lastEntryID = ""; }
                 }
-                else if (selectedObject is Outlook.TaskItem) { }
-                else if (selectedObject is Outlook.ContactItem) { }
-                else if (selectedObject is Outlook.AppointmentItem) { }
+
                 if (selectedObject is object) Marshal.ReleaseComObject(selectedObject);
             }
             else
             {
-                //Clear all the buttons.
-                Globals.Ribbons.RibExplorer.buttonContact.Visible = false;
-                Globals.Ribbons.RibExplorer.buttonAddContactPersonal.Visible = false;
-                Globals.Ribbons.RibExplorer.buttonAddContactOther.Visible = false;
-                Globals.Ribbons.RibExplorer.buttonAddContactJunk.Visible = false;
-                Globals.Ribbons.RibExplorer.buttonAttention.Visible = false;
+                ClearButtons();
             }
+        }
+
+        private static void ClearButtons()
+        {
+            //Clear all the buttons.
+            Globals.Ribbons.RibExplorer.buttonContact.Visible = false;
+            Globals.Ribbons.RibExplorer.buttonAddContactPersonal.Visible = false;
+            Globals.Ribbons.RibExplorer.buttonAddContactOther.Visible = false;
+            Globals.Ribbons.RibExplorer.buttonAddContactJunk.Visible = false;
+            Globals.Ribbons.RibExplorer.buttonAttention.Visible = false;
+
+            Application.DoEvents();
         }
 
         private void CheckEmailSender()
@@ -69,83 +90,84 @@ namespace InTouch_AutoFile
 
             if (email is object)
             {
-                
-                if(email.EntryID != lastEntryID)
+                if (email.Sender is object)
                 {
-                    lastEntryID = email.EntryID;
-
-                    //Clear all the buttons.
-                    Globals.Ribbons.RibExplorer.buttonContact.Visible = false;
-                    Globals.Ribbons.RibExplorer.buttonAddContactPersonal.Visible = false;
-                    Globals.Ribbons.RibExplorer.buttonAddContactOther.Visible = false;
-                    Globals.Ribbons.RibExplorer.buttonAddContactJunk.Visible = false;
-                    Globals.Ribbons.RibExplorer.buttonAttention.Visible = false;
-
-                    if (email.Sender is object)
+                    //Try to find contact from email adddress.
+                    InTouchContact emailContact = null;
+                    try
                     {
-                        //Try to find contact from email adddress.
-                        InTouchContact emailContact = null;
-                        try
+                        Outlook.ContactItem contact = InTouch.Contacts.FindContactFromEmailAddress(email.Sender.Address);
+                        if (contact is object)
                         {
-                            Outlook.ContactItem contact = InTouch.Contacts.FindContactFromEmailAddress(email.Sender.Address);
-                            if (contact is object)
-                            {
-                                emailContact = new InTouchContact(contact);
-                            }
+                            emailContact = new InTouchContact(contact);
                         }
-                        catch (Exception ex)
+                    }
+                    catch (Exception ex)
+                    {
+                        Op.LogError(ex);
+                        throw;
+                    }
+
+                    if (emailContact is object)
+                    {
+                        //Make the Contact Button visable and add the image and name to the button.
+                        Globals.Ribbons.RibExplorer.buttonContact.Visible = true;
+
+                        if (emailContact.FullName is object)
                         {
-                            Op.LogError(ex);
-                            throw;
-                        }
-
-                        if (emailContact is object)
-                        {
-                            //Make the Contact Button visable and add the image and name to the button.
-                            Globals.Ribbons.RibExplorer.buttonContact.Visible = true;
-
-                            if (emailContact.FullName is object)
-                            {
-                                Globals.Ribbons.RibExplorer.buttonContact.Label = emailContact.FullName;
-                            }
-                            else
-                            {
-                                Globals.Ribbons.RibExplorer.buttonContact.Label = "";
-                            }
-
-                            if (emailContact.HasPicture)
-                            {
-                                Globals.Ribbons.RibExplorer.buttonContact.Image = Image.FromFile(emailContact.GetContactPicturePath());
-                            }
-                            else
-                            {
-                                Globals.Ribbons.RibExplorer.buttonContact.Image = Properties.Resources.contact;
-                            }
-
-                            //Check if the contact details are valid.
-                            if (!emailContact.CheckDetails())
-                            {
-                                Globals.Ribbons.RibExplorer.buttonAttention.Visible = true;
-                            }
-                            emailContact.SaveAndDispose();
+                            Globals.Ribbons.RibExplorer.buttonContact.Label = emailContact.FullName;
                         }
                         else
                         {
-                            //As the contact was not found, make the add contact button visible.
-                            Globals.Ribbons.RibExplorer.buttonAddContactPersonal.Visible = true;
-                            Globals.Ribbons.RibExplorer.buttonAddContactOther.Visible = true;
-                            Globals.Ribbons.RibExplorer.buttonAddContactJunk.Visible = true;
+                            Globals.Ribbons.RibExplorer.buttonContact.Label = "";
                         }
+
+                        if (emailContact.HasPicture)
+                        {
+                            Globals.Ribbons.RibExplorer.buttonContact.Image = Image.FromFile(emailContact.GetContactPicturePath());
+                        }
+                        else
+                        {
+                            Globals.Ribbons.RibExplorer.buttonContact.Image = Properties.Resources.contact;
+                        }
+
+                        //Check if the contact details are valid.
+                        if (!emailContact.CheckDetails())
+                        {
+                            Globals.Ribbons.RibExplorer.buttonAttention.Visible = true;
+                        }
+                        emailContact.SaveAndDispose();
                     }
                     else
                     {
+                        //As the contact was not found, make the add contact button visible.
                         Globals.Ribbons.RibExplorer.buttonAddContactPersonal.Visible = true;
                         Globals.Ribbons.RibExplorer.buttonAddContactOther.Visible = true;
                         Globals.Ribbons.RibExplorer.buttonAddContactJunk.Visible = true;
                     }
-                    if (email is object) { Marshal.ReleaseComObject(email); }
                 }
+                else
+                {
+                    Globals.Ribbons.RibExplorer.buttonAddContactPersonal.Visible = true;
+                    Globals.Ribbons.RibExplorer.buttonAddContactOther.Visible = true;
+                    Globals.Ribbons.RibExplorer.buttonAddContactJunk.Visible = true;
+                }
+
+
+
+                //if (email.EntryID != lastEntryID)
+                //{
+                //    //Track last EntryID as Explorer_SelectionChange event fires twice for each selection change.
+                //    lastEntryID = email.EntryID;
+
+                //    ClearButtons();
+
+                    
+                //}              
             }
+
+            if (email is object) { Marshal.ReleaseComObject(email); }
+            if (selection is object) { Marshal.ReleaseComObject(selection); }
         }
 
         private void ButtonContact_Click(object sender, RibbonControlEventArgs e)
@@ -241,13 +263,12 @@ namespace InTouch_AutoFile
                             data += "True|";
 
                             contact.UserProperties["InTouchContact"].Value = data;
-                            contact.Save();
-
-
-
 
                             contact.Save();
                             contact.Display(true);
+
+                            lastEntryID = "";
+                            Parallel.Invoke(() => { CheckEmailSender(); });
                         }
                         catch (Exception ex)
                         {
@@ -300,8 +321,13 @@ namespace InTouch_AutoFile
                             data += "2|";
                             data += "True|";
 
+                            contact.UserProperties["InTouchContact"].Value = data;
+
                             contact.Save();
                             contact.Display(true);
+
+                            lastEntryID = "";
+                            Parallel.Invoke(() => { CheckEmailSender(); });
                         }
                         catch (Exception ex)
                         {
@@ -353,9 +379,13 @@ namespace InTouch_AutoFile
                             data += "3|";
                             data += "0|";
                             data += "True|";
-
+                            contact.UserProperties["InTouchContact"].Value = data;
+                            
                             contact.Save();
                             contact.Display(true);
+
+                            lastEntryID = "";
+                            Parallel.Invoke(() => { CheckEmailSender(); });
                         }
                         catch (Exception ex)
                         {
