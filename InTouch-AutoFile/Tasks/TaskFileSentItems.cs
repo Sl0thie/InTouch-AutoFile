@@ -161,19 +161,46 @@ namespace InTouch_AutoFile
         /// <param name="email">The mailitem to move.</param>
         private static void MoveEmailToFolder(string folderPath, Outlook.MailItem email)
         {
-            //Outlook.MAPIFolder folder = Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderSentMail) as Outlook.Folder;
-            //string[] folders = folderPath.Split('\\');
-            //Outlook.Folders subFolders;
+            string[] folders = folderPath.Split('\\');
+            Outlook.MAPIFolder folder;
+            Outlook.Folders subFolders;
 
-            //for (int i = 0; i <= folders.GetUpperBound(0); i++)
-            //{
-            //    subFolders = folder.Folders;
-            //    folder = subFolders[folders[i]] as Outlook.Folder;
-            //}
+            try
+            {
+                folder = InTouch.Stores.StoresLookup[folders[0]].RootFolder;
+            }
+            catch (System.Collections.Generic.KeyNotFoundException)
+            {
+                Op.LogMessage("Exception managed > Store not found. (" + folders[0] + ")");
+                return;
+            }
 
-            //email.Move(folder);
+            try
+            {
+                for (int i = 1; i <= folders.GetUpperBound(0); i++)
+                {
+                    subFolders = folder.Folders;
+                    folder = subFolders[folders[i]] as Outlook.Folder;
+                }
+            }
+            catch (COMException ex)
+            {
+                if (ex.HResult == -2147221233)
+                {
+                    Op.LogMessage("Exception Managed > Folder not found. (" + folderPath + ")");
+                    return;
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
-            //if (folder is object) { Marshal.ReleaseComObject(folder); }
+            if (folder is object)
+            {
+                email.Move(folder);
+                Marshal.ReleaseComObject(folder);
+            }
         }
     }
 }

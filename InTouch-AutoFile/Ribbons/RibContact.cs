@@ -14,15 +14,10 @@ namespace InTouch_AutoFile
         private void RibContact_Load(object sender, RibbonUIEventArgs e)
         {
             inspector = Context as Outlook.Inspector;
-            switch (Op.NextFormRegion)
+            if (InTouch.ShowInTouchSettings)
             {
-                case ContactFormRegion.None:
-                    break;
-
-                case ContactFormRegion.InTouchSettings:
-                    inspector.SetCurrentFormPage("InTouch-AutoFile.ContactInTouchSettings");
-                    Op.NextFormRegion = ContactFormRegion.None;
-                    break;
+                inspector.SetCurrentFormPage("InTouch-AutoFile.ContactInTouchSettings");
+                InTouch.ShowInTouchSettings = false;
             }
         }
 

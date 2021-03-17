@@ -38,7 +38,9 @@ namespace InTouch_AutoFile
             this.tab1 = this.Factory.CreateRibbonTab();
             this.group1 = this.Factory.CreateRibbonGroup();
             this.buttonContact = this.Factory.CreateRibbonButton();
-            this.buttonAddContact = this.Factory.CreateRibbonButton();
+            this.buttonAddContactPersonal = this.Factory.CreateRibbonButton();
+            this.buttonAddContactOther = this.Factory.CreateRibbonButton();
+            this.buttonAddContactJunk = this.Factory.CreateRibbonButton();
             this.buttonAttention = this.Factory.CreateRibbonButton();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
@@ -55,7 +57,9 @@ namespace InTouch_AutoFile
             // group1
             // 
             this.group1.Items.Add(this.buttonContact);
-            this.group1.Items.Add(this.buttonAddContact);
+            this.group1.Items.Add(this.buttonAddContactPersonal);
+            this.group1.Items.Add(this.buttonAddContactOther);
+            this.group1.Items.Add(this.buttonAddContactJunk);
             this.group1.Items.Add(this.buttonAttention);
             this.group1.Label = "InTouch";
             this.group1.Name = "group1";
@@ -70,15 +74,35 @@ namespace InTouch_AutoFile
             this.buttonContact.Visible = false;
             this.buttonContact.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.ButtonContact_Click);
             // 
-            // buttonAddContact
+            // buttonAddContactPersonal
             // 
-            this.buttonAddContact.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.buttonAddContact.Image = global::InTouch_AutoFile.Properties.Resources.addcontact;
-            this.buttonAddContact.Label = "Add Contact";
-            this.buttonAddContact.Name = "buttonAddContact";
-            this.buttonAddContact.ShowImage = true;
-            this.buttonAddContact.Visible = false;
-            this.buttonAddContact.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.ButtonAddContact_Click);
+            this.buttonAddContactPersonal.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.buttonAddContactPersonal.Image = global::InTouch_AutoFile.Properties.Resources.addcontact;
+            this.buttonAddContactPersonal.Label = "Add to Personal Contacts";
+            this.buttonAddContactPersonal.Name = "buttonAddContactPersonal";
+            this.buttonAddContactPersonal.ShowImage = true;
+            this.buttonAddContactPersonal.Visible = false;
+            this.buttonAddContactPersonal.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.ButtonAddContactPersonal_Click);
+            // 
+            // buttonAddContactOther
+            // 
+            this.buttonAddContactOther.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.buttonAddContactOther.Image = global::InTouch_AutoFile.Properties.Resources.addcontact;
+            this.buttonAddContactOther.Label = "Add to Other Contacts";
+            this.buttonAddContactOther.Name = "buttonAddContactOther";
+            this.buttonAddContactOther.ShowImage = true;
+            this.buttonAddContactOther.Visible = false;
+            this.buttonAddContactOther.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.ButtonAddContactOther_Click);
+            // 
+            // buttonAddContactJunk
+            // 
+            this.buttonAddContactJunk.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.buttonAddContactJunk.Image = global::InTouch_AutoFile.Properties.Resources.addcontact;
+            this.buttonAddContactJunk.Label = "Add to Junk Contacts";
+            this.buttonAddContactJunk.Name = "buttonAddContactJunk";
+            this.buttonAddContactJunk.ShowImage = true;
+            this.buttonAddContactJunk.Visible = false;
+            this.buttonAddContactJunk.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.ButtonAddContactJunk_Click);
             // 
             // buttonAttention
             // 
@@ -108,9 +132,11 @@ namespace InTouch_AutoFile
 
         internal Microsoft.Office.Tools.Ribbon.RibbonTab tab1;
         internal Microsoft.Office.Tools.Ribbon.RibbonGroup group1;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton buttonAddContact;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton buttonAddContactPersonal;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton buttonAttention;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton buttonContact;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton buttonAddContactOther;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton buttonAddContactJunk;
     }
 
     partial class ThisRibbonCollection

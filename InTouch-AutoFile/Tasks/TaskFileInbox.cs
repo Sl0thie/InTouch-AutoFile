@@ -269,7 +269,7 @@ namespace InTouch_AutoFile
         private static void MoveEmailToFolder(string folderPath, Outlook.MailItem email)
         {
             string[] folders = folderPath.Split('\\');
-            Outlook.MAPIFolder folder = null;
+            Outlook.MAPIFolder folder;
             Outlook.Folders subFolders;
 
             try
@@ -308,38 +308,6 @@ namespace InTouch_AutoFile
                 email.Move(folder);
                 Marshal.ReleaseComObject(folder);
             }
-
-
-            //Outlook.MAPIFolder folder = Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderInbox) as Outlook.Folder;
-            //Outlook.Folders subFolders;
-            //string[] folders = folderPath.Split('\\');
-            //for (int i = 0; i <= folders.GetUpperBound(0); i++)
-            //{
-            //    subFolders = folder.Folders;
-            //    try
-            //    {
-            //        folder = subFolders[folders[i]] as Outlook.Folder;
-            //    }
-            //    catch (COMException ex)
-            //    {
-            //        if(ex.HResult == -2147221233)
-            //        {
-            //            Op.LogMessage("Exception Managed: MoveEmailToFolder path not found.");
-            //            folder = null;
-            //        }
-            //        else
-            //        {
-            //            Op.LogError(ex);
-            //            throw;
-            //        }
-            //    }
-            //}
-
-            //if(folder is object) 
-            //{
-            //    email.Move(folder);
-            //    Marshal.ReleaseComObject(folder); 
-            //}
         }
     }
 }

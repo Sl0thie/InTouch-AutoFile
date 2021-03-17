@@ -6,11 +6,19 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 [assembly: NeutralResourcesLanguage("en-US")]
 namespace InTouch_AutoFile
 {
+    #region Enumerations
+
+    public enum EmailAction
+    {
+        None, Delete, Move, Junk
+    }
+
+    #endregion
+
     public partial class ThisAddIn
     {
 
         //TODO Make ribbon icon change color to suit theme.
-
 
         private void ThisAddIn_Startup(object sender, EventArgs e)
         {
@@ -24,9 +32,38 @@ namespace InTouch_AutoFile
             //Queue up tasks to start up after launch.
             InTouch.TaskManager.EnqueueInboxTask();
             InTouch.TaskManager.EnqueueSentItemsTask();
+
+            GetRegistrySettings();           
         }
 
-        void Application_OptionsPagesAdd(Outlook.PropertyPages pages)
+        private void GetRegistrySettings()
+        {
+            object uIThemeObj = Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\Office\16.0\Common","UI Theme",null);
+            UInt32 uITheme = System.Convert.ToUInt32(uIThemeObj);
+            //Op.LogMessage("UI Theme : " + uITheme.ToString());
+            switch (uITheme)
+            {
+                case 0://Colorful
+                case 3://Darkgrey
+                    InTouch.DarkTheme = false;
+                    break;
+                case 4://Black
+                    InTouch.DarkTheme = true;
+                    break;
+                case 5://White
+                    InTouch.DarkTheme = false;
+                    break;
+                case 6://System Settings
+                    //TODO Check the system setting for the color. (High Contrast)
+                    InTouch.DarkTheme = false;
+                    break;
+                default:
+                    InTouch.DarkTheme = false;
+                    break;
+            }
+        }
+
+        private void Application_OptionsPagesAdd(Outlook.PropertyPages pages)
         {
             pages.Add(new UCPropertPage(), "");
         }

@@ -52,7 +52,7 @@ namespace InTouch_AutoFile
         public Stores()
         {
             Outlook.Stores stores = null;
-            Outlook.Store store = null;
+            Outlook.Store store;
             string storeList = string.Empty;
 
             try
@@ -63,16 +63,18 @@ namespace InTouch_AutoFile
                 {
                     store = stores[i];
 
-                    Op.LogMessage("Store : " + store.DisplayName);
-                    Op.LogMessage("ExchangeStoreType : " + store.ExchangeStoreType.ToString());
-                    Op.LogMessage("FilePath : " + store.FilePath);
-                    Op.LogMessage("StoreID : " + store.StoreID);
-                    Op.LogMessage("IsDataFileStore : " + store.IsDataFileStore.ToString());
+                    //Op.LogMessage("Store : " + store.DisplayName);
+                    //Op.LogMessage("ExchangeStoreType : " + store.ExchangeStoreType.ToString());
+                    //Op.LogMessage("FilePath : " + store.FilePath);
+                    //Op.LogMessage("StoreID : " + store.StoreID);
+                    //Op.LogMessage("IsDataFileStore : " + store.IsDataFileStore.ToString());
 
-                    ITStore nextStore = new ITStore();
-                    nextStore.DisplayName = store.DisplayName;
-                    nextStore.RootFolder = store.GetRootFolder();
-                    nextStore.StoreID = store.StoreID;
+                    ITStore nextStore = new ITStore
+                    {
+                        DisplayName = store.DisplayName,
+                        RootFolder = store.GetRootFolder(),
+                        StoreID = store.StoreID
+                    };
                     storesLookup.Add(store.DisplayName, nextStore) ;
 
                     if (store is object)

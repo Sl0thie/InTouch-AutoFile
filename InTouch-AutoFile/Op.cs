@@ -8,85 +8,23 @@ using System.Collections;
 
 namespace InTouch_AutoFile
 {
-    #region Enumerations
-
-    public enum ContactFormRegion
-    {
-        None, InTouchSettings
-    }
-    public enum EmailAction
-    {
-        None, Delete, Move
-    }
-
-    #endregion
+    
 
     public static class Op
     {
-        private static ContactFormRegion nextFormRegion = ContactFormRegion.None;
-        public static ContactFormRegion NextFormRegion
-        {
-            get { return nextFormRegion; }
-            set { nextFormRegion = value; }
-        }
+        //private static ContactFormRegion nextFormRegion = ContactFormRegion.None;
+        //public static ContactFormRegion NextFormRegion
+        //{
+        //    get { return nextFormRegion; }
+        //    set { nextFormRegion = value; }
+        //}
 
-        private static string emailForCreatedContact;
-        public static string EmailForCreatedContact
-        {
-            get { return emailForCreatedContact; }
-            set { emailForCreatedContact = value; }
-        }
-
-        /// <summary>
-        /// Checks if the supplied path is a valid path within the inbox branch.
-        /// </summary>
-        /// <param name="folderPath">The path to test.</param>
-        /// <returns>True if the path is valid/False if it is not.</returns>
-        public static bool CheckFolderPath(string folderPath)
-        {
-            bool returnValue = true;
-            string[] folders = folderPath.Split('\\');
-            Outlook.MAPIFolder folder = null;
-            Outlook.Folders subFolders;
-
-            try
-            {
-                folder = InTouch.Stores.StoresLookup[folders[0]].RootFolder;
-            }
-            catch(System.Collections.Generic.KeyNotFoundException)
-            {
-                Op.LogMessage("Exception managed > Store not found. (" + folders[0] + ")");
-                returnValue = false;
-            }
-
-            if (returnValue)
-            {
-                try
-                {
-                    for (int i = 1; i <= folders.GetUpperBound(0); i++)
-                    {
-                        subFolders = folder.Folders;
-                        folder = subFolders[folders[i]] as Outlook.Folder;
-                    }
-                }
-                catch (COMException ex)
-                {
-                    if (ex.HResult == -2147221233)
-                    {
-                        returnValue = false;
-                        Op.LogMessage("Exception Managed > Folder not found. (" + folderPath + ")");
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-            }
-
-            if (folder is object) { Marshal.ReleaseComObject(folder); }
-
-            return returnValue;
-        }
+        //private static string emailForCreatedContact;
+        //public static string EmailForCreatedContact
+        //{
+        //    get { return emailForCreatedContact; }
+        //    set { emailForCreatedContact = value; }
+        //}
 
         #region Logging Methods
         /// <summary>

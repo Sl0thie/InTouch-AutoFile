@@ -37,7 +37,9 @@ namespace InTouch_AutoFile
             {
                 //Clear all the buttons.
                 Globals.Ribbons.RibExplorer.buttonContact.Visible = false;
-                Globals.Ribbons.RibExplorer.buttonAddContact.Visible = false;
+                Globals.Ribbons.RibExplorer.buttonAddContactPersonal.Visible = false;
+                Globals.Ribbons.RibExplorer.buttonAddContactOther.Visible = false;
+                Globals.Ribbons.RibExplorer.buttonAddContactJunk.Visible = false;
                 Globals.Ribbons.RibExplorer.buttonAttention.Visible = false;
 
                 //check the first object selected.
@@ -97,12 +99,16 @@ namespace InTouch_AutoFile
                         else
                         {
                             //As the contact was not found, make the add contact button visible.
-                            Globals.Ribbons.RibExplorer.buttonAddContact.Visible = true;
+                            Globals.Ribbons.RibExplorer.buttonAddContactPersonal.Visible = true;
+                            Globals.Ribbons.RibExplorer.buttonAddContactOther.Visible = true;
+                            Globals.Ribbons.RibExplorer.buttonAddContactJunk.Visible = true;
                         }
                     }
                     else
                     {
-                        Globals.Ribbons.RibExplorer.buttonAddContact.Visible = true;
+                        Globals.Ribbons.RibExplorer.buttonAddContactPersonal.Visible = true;
+                        Globals.Ribbons.RibExplorer.buttonAddContactOther.Visible = true;
+                        Globals.Ribbons.RibExplorer.buttonAddContactJunk.Visible = true;
                     }
                     if (email is object) { Marshal.ReleaseComObject(email); }
                 }
@@ -114,8 +120,10 @@ namespace InTouch_AutoFile
             else
             {
                 //No object is selected so remove all buttons.
-                Globals.Ribbons.RibExplorer.buttonAddContact.Visible = false;
-                Globals.Ribbons.RibExplorer.buttonAddContact.Visible = false;
+                Globals.Ribbons.RibExplorer.buttonContact.Visible = false;
+                Globals.Ribbons.RibExplorer.buttonAddContactPersonal.Visible = false;
+                Globals.Ribbons.RibExplorer.buttonAddContactOther.Visible = false;
+                Globals.Ribbons.RibExplorer.buttonAddContactJunk.Visible = false;
                 Globals.Ribbons.RibExplorer.buttonAttention.Visible = false;
             }
         }
@@ -137,14 +145,14 @@ namespace InTouch_AutoFile
                             Application.DoEvents();
                             Thread.Sleep(1000);
 
-                            if (Op.EmailForCreatedContact is object) 
-                            {
-                                Outlook.ContactItem contact = InTouch.Contacts.FindContactFromEmailAddress(Op.EmailForCreatedContact);
-                                if(contact is object)
-                                {
-                                    contact.Display();
-                                }      
-                            }
+                            //if (Op.EmailForCreatedContact is object) 
+                            //{
+                            //    Outlook.ContactItem contact = InTouch.Contacts.FindContactFromEmailAddress(Op.EmailForCreatedContact);
+                            //    if(contact is object)
+                            //    {
+                            //        contact.Display();
+                            //    }      
+                            //}
                         }
                     }
                     if (email is object) { Marshal.ReleaseComObject(email); }
@@ -202,11 +210,179 @@ namespace InTouch_AutoFile
 
                     if (emailContact is object)
                     {
-                        Op.NextFormRegion = ContactFormRegion.InTouchSettings;
+                        InTouch.ShowInTouchSettings = true;
                         emailContact.Display(false);
                     }
                     if (email is object) { Marshal.ReleaseComObject(email); }
                     if (emailContact is object) { Marshal.ReleaseComObject(emailContact); }
+                }
+                if (selectedObject is object) { Marshal.ReleaseComObject(selectedObject); }
+            }
+        }
+
+        private void ButtonAddContactPersonal_Click(object sender, RibbonControlEventArgs e)
+        {
+            if (Globals.ThisAddIn.Application.ActiveExplorer().Selection.Count > 0)
+            {
+                Object selectedObject = Globals.ThisAddIn.Application.ActiveExplorer().Selection[1];
+                if (selectedObject is Outlook.MailItem email)
+                {
+                    if (email is object)
+                    {
+                        Outlook.MAPIFolder contactsFolder = null;
+                        Outlook.Items items = null;
+                        Outlook.ContactItem contact = null;
+                        try
+                        {
+                            InTouch.ShowInTouchSettings = true;
+                            contactsFolder = Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderContacts);
+                            items = contactsFolder.Items;
+                            contact = items.Add(Outlook.OlItemType.olContactItem) as Outlook.ContactItem;
+
+                            Clipboard.SetDataObject(email.Sender.Name);
+
+                            contact.FullName = email.Sender.Name;
+                            contact.Email1Address = email.Sender.Address;
+
+                            string data;
+                            contact.UserProperties.Add("InTouchContact", Outlook.OlUserPropertyType.olText);
+                            data = "|";
+                            data += "|";
+                            data += "0|";
+                            data += "2|";
+                            data += "2|";
+                            data += "True|";
+
+                            contact.UserProperties["InTouchContact"].Value = data;
+                            contact.Save();
+
+
+
+
+                            contact.Save();
+                            contact.Display(true);
+                        }
+                        catch (Exception ex)
+                        {
+                            Op.LogError(ex);
+                            InTouch.ShowInTouchSettings = false;
+                        }
+                        finally
+                        {
+                            if (contact != null) Marshal.ReleaseComObject(contact);
+                            if (items != null) Marshal.ReleaseComObject(items);
+                            if (contactsFolder != null) Marshal.ReleaseComObject(contactsFolder);
+                        }
+                    }
+                    if (email is object) { Marshal.ReleaseComObject(email); }
+                }
+                if (selectedObject is object) { Marshal.ReleaseComObject(selectedObject); }
+            }
+        }
+
+        private void ButtonAddContactOther_Click(object sender, RibbonControlEventArgs e)
+        {
+            if (Globals.ThisAddIn.Application.ActiveExplorer().Selection.Count > 0)
+            {
+                Object selectedObject = Globals.ThisAddIn.Application.ActiveExplorer().Selection[1];
+                if (selectedObject is Outlook.MailItem email)
+                {
+                    if (email is object)
+                    {
+                        Outlook.MAPIFolder contactsFolder = null;
+                        Outlook.Items items = null;
+                        Outlook.ContactItem contact = null;
+                        try
+                        {
+                            InTouch.ShowInTouchSettings = true;
+                            contactsFolder = Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderContacts).Folders["Other Contacts"];
+                            items = contactsFolder.Items;
+                            contact = items.Add(Outlook.OlItemType.olContactItem) as Outlook.ContactItem;
+
+                            Clipboard.SetDataObject(email.Sender.Name);
+
+                            contact.FullName = email.Sender.Name;
+                            contact.Email1Address = email.Sender.Address;
+
+                            string data;
+                            contact.UserProperties.Add("InTouchContact", Outlook.OlUserPropertyType.olText);
+                            data = "|";
+                            data += "|";
+                            data += "0|";
+                            data += "2|";
+                            data += "2|";
+                            data += "True|";
+
+                            contact.Save();
+                            contact.Display(true);
+                        }
+                        catch (Exception ex)
+                        {
+                            Op.LogError(ex);
+                            InTouch.ShowInTouchSettings = false;
+                        }
+                        finally
+                        {
+                            if (contact != null) Marshal.ReleaseComObject(contact);
+                            if (items != null) Marshal.ReleaseComObject(items);
+                            if (contactsFolder != null) Marshal.ReleaseComObject(contactsFolder);
+                        }
+                    }
+                    if (email is object) { Marshal.ReleaseComObject(email); }
+                }
+                if (selectedObject is object) { Marshal.ReleaseComObject(selectedObject); }
+            }
+        }
+
+        private void ButtonAddContactJunk_Click(object sender, RibbonControlEventArgs e)
+        {
+            if (Globals.ThisAddIn.Application.ActiveExplorer().Selection.Count > 0)
+            {
+                Object selectedObject = Globals.ThisAddIn.Application.ActiveExplorer().Selection[1];
+                if (selectedObject is Outlook.MailItem email)
+                {
+                    if (email is object)
+                    {
+                        Outlook.MAPIFolder contactsFolder = null;
+                        Outlook.Items items = null;
+                        Outlook.ContactItem contact = null;
+                        try
+                        {
+                            InTouch.ShowInTouchSettings = true;
+                            contactsFolder = Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderContacts).Folders["Junk Contacts"];
+                            items = contactsFolder.Items;
+                            contact = items.Add(Outlook.OlItemType.olContactItem) as Outlook.ContactItem;
+
+                            Clipboard.SetDataObject(email.Sender.Name);
+
+                            contact.FullName = email.Sender.Name;
+                            contact.Email1Address = email.Sender.Address;
+
+                            string data;
+                            contact.UserProperties.Add("InTouchContact", Outlook.OlUserPropertyType.olText);
+                            data = "|";
+                            data += "|";
+                            data += "3|";
+                            data += "3|";
+                            data += "0|";
+                            data += "True|";
+
+                            contact.Save();
+                            contact.Display(true);
+                        }
+                        catch (Exception ex)
+                        {
+                            Op.LogError(ex);
+                            InTouch.ShowInTouchSettings = false;
+                        }
+                        finally
+                        {
+                            if (contact != null) Marshal.ReleaseComObject(contact);
+                            if (items != null) Marshal.ReleaseComObject(items);
+                            if (contactsFolder != null) Marshal.ReleaseComObject(contactsFolder);
+                        }
+                    }
+                    if (email is object) { Marshal.ReleaseComObject(email); }
                 }
                 if (selectedObject is object) { Marshal.ReleaseComObject(selectedObject); }
             }

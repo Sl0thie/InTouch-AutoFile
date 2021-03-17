@@ -1011,7 +1011,7 @@ namespace InTouch_AutoFile
             if (inboxPath is object)
             {
                 //TODO Replace Op with the Contact object.
-                if (!Op.CheckFolderPath(inboxPath))
+                if (!InTouch.CheckFolderPath(inboxPath))
                 {
                     returnValue = false;
                     Op.LogMessage(FullName + " Inbox Folder Path is Invalid : " + inboxPath);
@@ -1024,7 +1024,7 @@ namespace InTouch_AutoFile
 
             if(sentPath is object)
             {
-                if (!Op.CheckFolderPath(sentPath))
+                if (!InTouch.CheckFolderPath(sentPath))
                 {
                     returnValue = false;
                     Op.LogMessage(FullName + " Sent Folder Path is Invalid : " + sentPath);

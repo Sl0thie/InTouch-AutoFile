@@ -31,7 +31,7 @@ namespace InTouch_AutoFile
 
         private void FormInTouchNewContact_Load(object sender, EventArgs e)
         {
-            Op.EmailForCreatedContact = null;
+            //Op.EmailForCreatedContact = null;
             ComboBoxContactFolder.Items.Add("Contacts");
             foreach (Outlook.Folder nextContactFolder in InTouch.Contacts.Folders)
             {
@@ -296,12 +296,12 @@ namespace InTouch_AutoFile
                 newContact.Save();
                 Application.DoEvents();
                 Thread.Sleep(100);
-                Op.EmailForCreatedContact = newContact.Email1Address;
+                //Op.EmailForCreatedContact = newContact.Email1Address;
                 if (ComboBoxContactFolder.Text != "Contacts")
                 {
                     newContact.Move(InTouch.Contacts.Folders[ComboBoxContactFolder.Text]); ;
                 }
-                Op.NextFormRegion = ContactFormRegion.InTouchSettings;
+                //Op.NextFormRegion = ContactFormRegion.InTouchSettings;
                 if (newContact is object) { Marshal.ReleaseComObject(newContact); }
             }
 
