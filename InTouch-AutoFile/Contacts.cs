@@ -56,101 +56,103 @@ namespace InTouch_AutoFile
                     }
                     catch(Exception ex)
                     {
-                        Op.LogError(ex);
+                        Log.Error(ex);
                         throw;
                     }
                 }
             }
 
-            //Next search the contact folder directly.
-            foreach (var nextItem in folder.Items)
-            {
-                if (nextItem is Outlook.ContactItem contact)
-                {
-                    if(contact.Email1Address is object)
-                    {
-                        if (contact.Email1Address.ToLower() == emailAddress)
-                        {
-                            AddContactToEmailLookup(contact, folder);
-                            return contact;
-                        }
-                    }
-                    if (contact.Email2Address is object)
-                    {
-                        if (contact.Email2Address.ToLower() == emailAddress)
-                        {
-                            AddContactToEmailLookup(contact, folder);
-                            return contact;
-                        }
-                    }
-                    if (contact.Email3Address is object)
-                    {
-                        if (contact.Email3Address.ToLower() == emailAddress)
-                        {
-                            AddContactToEmailLookup(contact, folder);
-                            return contact;
-                        }
-                    }                  
-                }
-            }
+            ////Next search the contact folder directly.
+            //foreach (var nextItem in folder.Items)
+            //{
+            //    if (nextItem is Outlook.ContactItem contact)
+            //    {
+            //        if(contact.Email1Address is object)
+            //        {
+            //            if (contact.Email1Address.ToLower() == emailAddress)
+            //            {
+            //                AddContactToEmailLookup(contact, folder);
+            //                return contact;
+            //            }
+            //        }
+            //        if (contact.Email2Address is object)
+            //        {
+            //            if (contact.Email2Address.ToLower() == emailAddress)
+            //            {
+            //                AddContactToEmailLookup(contact, folder);
+            //                return contact;
+            //            }
+            //        }
+            //        if (contact.Email3Address is object)
+            //        {
+            //            if (contact.Email3Address.ToLower() == emailAddress)
+            //            {
+            //                AddContactToEmailLookup(contact, folder);
+            //                return contact;
+            //            }
+            //        }                  
+            //    }
+            //}
 
-            //Search remaining contacts folders. 
-            foreach (Outlook.Folder nextContactFolder in folders)
-            {
-                switch (nextContactFolder.Name)
-                {
-                    case "Recipient Cache":                       
-                        break;
-                    case "Organizational Contacts":
-                        break;
-                    case "PeopleCentricConversation Buddies":
-                        break;
-                    case "GAL Contacts":
-                        break;
-                    case "{A9E2BC46-B3A0-4243-B315-60D991004455}":
-                        break;
-                    case "{06967759-274D-40B2-A3EB-D7F9E73727D7}":
-                        break;
-                    case "Companies":
-                        break;
-                    default:
-                        foreach (var nextItem in nextContactFolder.Items)
-                        {
-                            if (nextItem is Outlook.ContactItem contact)
-                            {
-                                if (contact.Email1Address is object)
-                                {
-                                    if (contact.Email1Address.ToLower() == emailAddress)
-                                    {
-                                        AddContactToEmailLookup(contact, nextContactFolder);
-                                        return contact;
-                                    }
-                                }
-                                if (contact.Email2Address is object)
-                                {
-                                    if (contact.Email2Address.ToLower() == emailAddress)
-                                    {
-                                        AddContactToEmailLookup(contact, nextContactFolder);
-                                        return contact;
-                                    }
-                                }
-                                if (contact.Email3Address is object)
-                                {
-                                    if (contact.Email3Address.ToLower() == emailAddress)
-                                    {
-                                        AddContactToEmailLookup(contact, nextContactFolder);
-                                        return contact;
-                                    }
-                                }
-                            }
-                        }
-                        break;
-                }
-            }
+            ////Search remaining contacts folders. 
+            //foreach (Outlook.Folder nextContactFolder in folders)
+            //{
+            //    switch (nextContactFolder.Name)
+            //    {
+            //        case "Recipient Cache":                       
+            //            break;
+            //        case "Organizational Contacts":
+            //            break;
+            //        case "PeopleCentricConversation Buddies":
+            //            break;
+            //        case "GAL Contacts":
+            //            break;
+            //        case "{A9E2BC46-B3A0-4243-B315-60D991004455}":
+            //            break;
+            //        case "{06967759-274D-40B2-A3EB-D7F9E73727D7}":
+            //            break;
+            //        case "Companies":
+            //            break;
+            //        default:
+            //            foreach (var nextItem in nextContactFolder.Items)
+            //            {
+            //                if (nextItem is Outlook.ContactItem contact)
+            //                {
+            //                    if (contact.Email1Address is object)
+            //                    {
+            //                        if (contact.Email1Address.ToLower() == emailAddress)
+            //                        {
+            //                            AddContactToEmailLookup(contact, nextContactFolder);
+            //                            return contact;
+            //                        }
+            //                    }
+            //                    if (contact.Email2Address is object)
+            //                    {
+            //                        if (contact.Email2Address.ToLower() == emailAddress)
+            //                        {
+            //                            AddContactToEmailLookup(contact, nextContactFolder);
+            //                            return contact;
+            //                        }
+            //                    }
+            //                    if (contact.Email3Address is object)
+            //                    {
+            //                        if (contact.Email3Address.ToLower() == emailAddress)
+            //                        {
+            //                            AddContactToEmailLookup(contact, nextContactFolder);
+            //                            return contact;
+            //                        }
+            //                    }
+            //                }
+            //            }
+            //            break;
+            //    }
+            //}
 
             //Lookup has failed to find the email address.
             return null;
         }
+
+
 
         public static bool DoesLookupContain(string emailAddress)
         {

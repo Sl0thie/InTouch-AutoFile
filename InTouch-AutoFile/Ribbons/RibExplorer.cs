@@ -86,7 +86,11 @@ namespace InTouch_AutoFile
         private void CheckEmailSender()
         {
             Outlook.Selection selection = Globals.ThisAddIn.Application.ActiveExplorer().Selection;
-            Outlook.MailItem email = selection[1] as Outlook.MailItem;
+            Outlook.MailItem email = null;
+            if (selection.Count > 0)
+            {
+                email = selection[1] as Outlook.MailItem;
+            }
 
             if (email is object)
             {
@@ -104,7 +108,7 @@ namespace InTouch_AutoFile
                     }
                     catch (Exception ex)
                     {
-                        Op.LogError(ex);
+                        Log.Error(ex);
                         throw;
                     }
 
@@ -184,7 +188,7 @@ namespace InTouch_AutoFile
                     }
                     catch (Exception ex) 
                     { 
-                        Op.LogError(ex); 
+                        Log.Error(ex); 
                         throw; 
                     }
 
@@ -213,7 +217,7 @@ namespace InTouch_AutoFile
                     }
                     catch (Exception ex) 
                     { 
-                        Op.LogError(ex);
+                        Log.Error(ex);
                         throw; 
                     }
 
@@ -272,7 +276,7 @@ namespace InTouch_AutoFile
                         }
                         catch (Exception ex)
                         {
-                            Op.LogError(ex);
+                            Log.Error(ex);
                             InTouch.ShowInTouchSettings = false;
                         }
                         finally
@@ -331,7 +335,7 @@ namespace InTouch_AutoFile
                         }
                         catch (Exception ex)
                         {
-                            Op.LogError(ex);
+                            Log.Error(ex);
                             InTouch.ShowInTouchSettings = false;
                         }
                         finally
@@ -389,7 +393,7 @@ namespace InTouch_AutoFile
                         }
                         catch (Exception ex)
                         {
-                            Op.LogError(ex);
+                            Log.Error(ex);
                             InTouch.ShowInTouchSettings = false;
                         }
                         finally

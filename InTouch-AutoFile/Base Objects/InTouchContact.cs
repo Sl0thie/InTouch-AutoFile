@@ -932,11 +932,11 @@ namespace InTouch_AutoFile
             catch(FormatException)
             {
                 //Contact data is from an older format. It will be saved in the newer format when the contact is saved.
-                Op.LogMessage("Exception Managed.");
+                Log.Message("Exception Managed.");
             }
             catch(IndexOutOfRangeException)
             {
-                Op.LogMessage("Exception Managed.");
+                Log.Message("Exception Managed.");
 
                 inboxPath = "";
                 sentPath = "";
@@ -947,7 +947,7 @@ namespace InTouch_AutoFile
             }
             catch(System.Exception ex)
             {
-                Op.LogError(ex);
+                Log.Error(ex);
                 throw;
             }
         }
@@ -962,18 +962,29 @@ namespace InTouch_AutoFile
             data += (int)sentAction + "|";
             data += samePath.ToString() + "|";
 
-            UserProperty customProperty = contact.UserProperties.Find("InTouchContact");
-            if (customProperty is object)
+            try
             {
-                customProperty.Value = data;
+                UserProperty customProperty = contact.UserProperties.Find("InTouchContact");
+                if (customProperty is object)
+                {
+                    customProperty.Value = data;
+                }
+                else
+                {
+                    contact.UserProperties.Add("InTouchContact", OlUserPropertyType.olText);
+                    contact.UserProperties["InTouchContact"].Value = data;
+                }
+                contact.Save();
+                if (customProperty is object) Marshal.ReleaseComObject(customProperty);
             }
-            else
+            catch (COMException ex)
             {
-                contact.UserProperties.Add("InTouchContact", OlUserPropertyType.olText);
-                contact.UserProperties["InTouchContact"].Value = data;
-            }
-            contact.Save();
-            if (customProperty is object) Marshal.ReleaseComObject(customProperty);
+                if(ex.HResult == -1906048758)
+                {
+                    Log.Message("Exception Handled. > The item (contact) has been moved or deleted.");
+                }
+                Log.Error(ex);
+            }         
         }
 
         #endregion
@@ -1001,7 +1012,7 @@ namespace InTouch_AutoFile
                         }
                         catch (System.Exception ex)
                         {
-                            Op.LogError(ex);
+                            Log.Error(ex);
                             picturePath = "";
                             throw;
                         }
@@ -1025,7 +1036,7 @@ namespace InTouch_AutoFile
                 if (!InTouch.CheckFolderPath(inboxPath))
                 {
                     returnValue = false;
-                    Op.LogMessage(FullName + " Inbox Folder Path is Invalid : " + inboxPath);
+                    Log.Message(FullName + " Inbox Folder Path is Invalid : " + inboxPath);
                 }
             }
             else
@@ -1038,7 +1049,7 @@ namespace InTouch_AutoFile
                 if (!InTouch.CheckFolderPath(sentPath))
                 {
                     returnValue = false;
-                    Op.LogMessage(FullName + " Sent Folder Path is Invalid : " + sentPath);
+                    Log.Message(FullName + " Sent Folder Path is Invalid : " + sentPath);
                 }
             }
             else

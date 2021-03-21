@@ -21,7 +21,7 @@ namespace InTouch_AutoFile
             //If task is enabled in the settings then start task.
             if (Properties.Settings.Default.TaskInbox)
             {
-                Op.LogMessage("Starting FileSent Task.");
+                Log.Message("Starting FileSent Task.");
                 Thread backgroundThread = new Thread(new ThreadStart(BackgroundProcess))
                 {
                     Name = "AF.FileSent",
@@ -57,13 +57,13 @@ namespace InTouch_AutoFile
                             break;
                         case "Follow up":
                             //Don't process follow up. This leave them in the inbox for manual processing.
-                            Op.LogMessage("Move Email : Email has a flag set.");
+                            Log.Message("Move Email : Email has a flag set.");
                             break;
                         case null:
                             mailToProcess.Add(email);
                             break;
                         default:
-                            Op.LogMessage("Move Email : Unknown Flag Request Type.");
+                            Log.Message("Move Email : Unknown Flag Request Type.");
                             break;
                     }
                 }
@@ -106,16 +106,16 @@ namespace InTouch_AutoFile
                             switch (mailContact.SentAction)
                             {
                                 case EmailAction.None: //Don't do anything to the email.
-                                    Op.LogMessage("Sent Email : Delivery Action set to None. " + recipient.Address);
+                                    Log.Message("Sent Email : Delivery Action set to None. " + recipient.Address);
                                     break;
 
                                 case EmailAction.Delete: //Delete the email if it is passed its action date.
-                                    Op.LogMessage("Sent Email : Deleting email from " + recipient.Address);
+                                    Log.Message("Sent Email : Deleting email from " + recipient.Address);
                                     email.Delete();
                                     break;
 
                                 case EmailAction.Move: //Move the email if its passed its action date.
-                                    Op.LogMessage("Sent Email : Moving email from " + recipient.Address);
+                                    Log.Message("Sent Email : Moving email from " + recipient.Address);
                                     MoveEmailToFolder(mailContact.SentPath, email);
                                     break;
                             }
@@ -137,16 +137,16 @@ namespace InTouch_AutoFile
                             }
 
                             //Log the details.                           
-                            Op.LogMessage("Sent Email : No Contact for " + email.SenderEmailAddress);
-                            Op.LogMessage("SenderName         : " + email.SenderName);
-                            Op.LogMessage("SentOnBehalfOfName : " + email.SentOnBehalfOfName);
-                            Op.LogMessage("ReplyRecipientNames: " + email.ReplyRecipientNames);
-                            Op.LogMessage("On Behalf: " + onBehalfEmailAddress);
-                            Op.LogMessage("");
+                            Log.Message("Sent Email : No Contact for " + email.SenderEmailAddress);
+                            Log.Message("SenderName         : " + email.SenderName);
+                            Log.Message("SentOnBehalfOfName : " + email.SentOnBehalfOfName);
+                            Log.Message("ReplyRecipientNames: " + email.ReplyRecipientNames);
+                            Log.Message("On Behalf: " + onBehalfEmailAddress);
+                            Log.Message("");
                         }
                         catch (Exception ex)
                         {
-                            Op.LogError(ex);
+                            Log.Error(ex);
                             throw;
                         }
                     }
@@ -171,7 +171,7 @@ namespace InTouch_AutoFile
             }
             catch (System.Collections.Generic.KeyNotFoundException)
             {
-                Op.LogMessage("Exception managed > Store not found. (" + folders[0] + ")");
+                Log.Message("Exception managed > Store not found. (" + folders[0] + ")");
                 return;
             }
 
@@ -187,7 +187,7 @@ namespace InTouch_AutoFile
             {
                 if (ex.HResult == -2147221233)
                 {
-                    Op.LogMessage("Exception Managed > Folder not found. (" + folderPath + ")");
+                    Log.Message("Exception Managed > Folder not found. (" + folderPath + ")");
                     return;
                 }
                 else

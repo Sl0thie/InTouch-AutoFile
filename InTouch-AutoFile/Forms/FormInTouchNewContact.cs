@@ -110,11 +110,11 @@ namespace InTouch_AutoFile
             }
             catch (Exception ex)
             {
-                Op.LogError(ex);
+                Log.Error(ex);
                 throw;
             }
 
-            Op.LogMessage("Website : " + website);
+            Log.Message("Website : " + website);
             return website;
         }
 
@@ -146,25 +146,25 @@ namespace InTouch_AutoFile
                             htmlString = htmlString.Substring(htmlString.IndexOf("<link rel=\"apple - touch - icon\"") + 32);
                             htmlString = htmlString.Substring(htmlString.IndexOf("href=\"") + 6);
                             htmlString = htmlString.Substring(0, htmlString.IndexOf("\""));
-                            Op.LogMessage("HTML String : " + htmlString);
+                            Log.Message("HTML String : " + htmlString);
                         }
                         else if (htmlString.IndexOf("<link rel=\"shortcut icon\"") >= 0)
                         {
                             htmlString = htmlString.Substring(htmlString.IndexOf("<link rel=\"shortcut icon\"") + 25);
                             htmlString = htmlString.Substring(htmlString.IndexOf("href=\"") + 6);
                             htmlString = htmlString.Substring(0, htmlString.IndexOf("\""));
-                            Op.LogMessage("HTML String : " + htmlString);
+                            Log.Message("HTML String : " + htmlString);
                         }
                         else if (htmlString.IndexOf("<link rel=\"icon\"") >= 0)
                         {
                             htmlString = htmlString.Substring(htmlString.IndexOf("<link rel=\"icon\"") + 16);
                             htmlString = htmlString.Substring(htmlString.IndexOf("href=\"") + 6);
                             htmlString = htmlString.Substring(0, htmlString.IndexOf("\""));
-                            Op.LogMessage("HTML String : " + htmlString);
+                            Log.Message("HTML String : " + htmlString);
                         }
                         else
                         {
-                            Op.LogMessage("HTML String : " + htmlString);
+                            Log.Message("HTML String : " + htmlString);
                         }
 
                         if (htmlString.Substring(0, 1) == "/")
@@ -177,17 +177,17 @@ namespace InTouch_AutoFile
                         switch (ex.HResult)
                         {
                             case -2146233079:
-                                Op.LogMessage("Exception Managed > The remote name could not be resolved.");
+                                Log.Message("Exception Managed > The remote name could not be resolved.");
                                 break;
 
                             default:
-                                Op.LogError(ex);
+                                Log.Error(ex);
                                 throw;
                         }
                     }
                     catch (Exception ex)
                     {
-                        Op.LogError(ex);
+                        Log.Error(ex);
                         throw;
                     }
 
@@ -199,7 +199,7 @@ namespace InTouch_AutoFile
                         }
                         catch (Exception ex)
                         {
-                            Op.LogError(ex);
+                            Log.Error(ex);
                             throw;
                         }
 

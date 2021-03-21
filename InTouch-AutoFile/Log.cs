@@ -10,28 +10,13 @@ namespace InTouch_AutoFile
 {
     
 
-    public static class Op
+    public static class Log
     {
-        //private static ContactFormRegion nextFormRegion = ContactFormRegion.None;
-        //public static ContactFormRegion NextFormRegion
-        //{
-        //    get { return nextFormRegion; }
-        //    set { nextFormRegion = value; }
-        //}
-
-        //private static string emailForCreatedContact;
-        //public static string EmailForCreatedContact
-        //{
-        //    get { return emailForCreatedContact; }
-        //    set { emailForCreatedContact = value; }
-        //}
-
-        #region Logging Methods
         /// <summary>
         /// Method to centralise message logging. This is to provide a standard message format.
         /// </summary>
         /// <param name="message">The Message to be logged.</param>
-        public static void LogMessage(string message)
+        public static void Message(string message)
         {
             if (message is object)
             {
@@ -57,7 +42,7 @@ namespace InTouch_AutoFile
         /// Method to centralise error logging.
         /// </summary>
         /// <param name="ex">The Exception to be logged.</param>
-        public static void LogError(Exception ex)
+        public static void Error(Exception ex)
         {
             if(ex is object)
             {
@@ -167,6 +152,5 @@ namespace InTouch_AutoFile
             }
         }
 
-        #endregion
     }
 }

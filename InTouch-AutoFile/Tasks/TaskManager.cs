@@ -54,21 +54,21 @@ namespace InTouch_AutoFile
             bool DoLoop = true; //Keeps the main loop running.
             while (DoLoop)
             {
-                Thread.Sleep(5000);
-                //Thread.Sleep(60000);
+                //Thread.Sleep(5000);
+                Thread.Sleep(60000);
                 try
                 {
                     if ((!taskRunning) && (!BackgroundTasks.IsEmpty))
                     {
                         taskRunning = true;
                         BackgroundTasks.TryDequeue(out currentAction);
-                        Op.LogMessage("TaskManager Starting " + currentAction.Target + "." + currentAction.Method.Name.ToString());
+                        Log.Message("TaskManager Starting " + currentAction.Target + "." + currentAction.Method.Name.ToString());
                         currentAction.Invoke();
                     }            
                 }
                 catch (Exception ex) 
                 { 
-                    Op.LogError(ex);
+                    Log.Error(ex);
                     throw; 
                 }
             }

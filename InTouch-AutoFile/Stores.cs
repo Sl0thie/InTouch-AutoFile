@@ -80,7 +80,7 @@ namespace InTouch_AutoFile
                     if (store is object)
                         Marshal.ReleaseComObject(store);
                 }
-                Op.LogMessage(storeList);
+                Log.Message(storeList);
             }
             finally
             {

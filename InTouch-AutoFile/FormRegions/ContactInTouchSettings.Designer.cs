@@ -59,11 +59,12 @@ namespace InTouch_AutoFile
             this.RadioButtonSendFile = new System.Windows.Forms.RadioButton();
             this.RadioButtonSendNoAction = new System.Windows.Forms.RadioButton();
             this.PanelRead = new System.Windows.Forms.Panel();
+            this.RadioButtonReadJunk = new System.Windows.Forms.RadioButton();
             this.RadioButtonReadDelete = new System.Windows.Forms.RadioButton();
             this.RadioButtonReadFile = new System.Windows.Forms.RadioButton();
             this.RadioButtonReadNoAction = new System.Windows.Forms.RadioButton();
             this.PanelDelivery = new System.Windows.Forms.Panel();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
+            this.RadioButtonDeliveryJunk = new System.Windows.Forms.RadioButton();
             this.RadioButtonDeliveryDelete = new System.Windows.Forms.RadioButton();
             this.RadioButtonDeliveryFile = new System.Windows.Forms.RadioButton();
             this.RadioButtonDeliveryNoAction = new System.Windows.Forms.RadioButton();
@@ -93,7 +94,7 @@ namespace InTouch_AutoFile
             this.PanelSend.Controls.Add(this.RadioButtonSendDelete);
             this.PanelSend.Controls.Add(this.RadioButtonSendFile);
             this.PanelSend.Controls.Add(this.RadioButtonSendNoAction);
-            this.PanelSend.Location = new System.Drawing.Point(50, 360);
+            this.PanelSend.Location = new System.Drawing.Point(50, 393);
             this.PanelSend.Name = "PanelSend";
             this.PanelSend.Size = new System.Drawing.Size(189, 107);
             this.PanelSend.TabIndex = 157;
@@ -135,13 +136,25 @@ namespace InTouch_AutoFile
             // 
             // PanelRead
             // 
+            this.PanelRead.Controls.Add(this.RadioButtonReadJunk);
             this.PanelRead.Controls.Add(this.RadioButtonReadDelete);
             this.PanelRead.Controls.Add(this.RadioButtonReadFile);
             this.PanelRead.Controls.Add(this.RadioButtonReadNoAction);
             this.PanelRead.Location = new System.Drawing.Point(52, 219);
             this.PanelRead.Name = "PanelRead";
-            this.PanelRead.Size = new System.Drawing.Size(189, 100);
+            this.PanelRead.Size = new System.Drawing.Size(189, 138);
             this.PanelRead.TabIndex = 156;
+            // 
+            // RadioButtonReadJunk
+            // 
+            this.RadioButtonReadJunk.AutoSize = true;
+            this.RadioButtonReadJunk.Location = new System.Drawing.Point(9, 104);
+            this.RadioButtonReadJunk.Name = "RadioButtonReadJunk";
+            this.RadioButtonReadJunk.Size = new System.Drawing.Size(155, 24);
+            this.RadioButtonReadJunk.TabIndex = 44;
+            this.RadioButtonReadJunk.Text = "Move email to Junk";
+            this.RadioButtonReadJunk.UseVisualStyleBackColor = true;
+            this.RadioButtonReadJunk.CheckedChanged += new System.EventHandler(this.RadioButtonReadJunk_CheckedChanged);
             // 
             // RadioButtonReadDelete
             // 
@@ -180,7 +193,7 @@ namespace InTouch_AutoFile
             // 
             // PanelDelivery
             // 
-            this.PanelDelivery.Controls.Add(this.radioButton1);
+            this.PanelDelivery.Controls.Add(this.RadioButtonDeliveryJunk);
             this.PanelDelivery.Controls.Add(this.RadioButtonDeliveryDelete);
             this.PanelDelivery.Controls.Add(this.RadioButtonDeliveryFile);
             this.PanelDelivery.Controls.Add(this.RadioButtonDeliveryNoAction);
@@ -189,15 +202,16 @@ namespace InTouch_AutoFile
             this.PanelDelivery.Size = new System.Drawing.Size(189, 137);
             this.PanelDelivery.TabIndex = 155;
             // 
-            // radioButton1
+            // RadioButtonDeliveryJunk
             // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Location = new System.Drawing.Point(9, 100);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(155, 24);
-            this.radioButton1.TabIndex = 35;
-            this.radioButton1.Text = "Move email to Junk";
-            this.radioButton1.UseVisualStyleBackColor = true;
+            this.RadioButtonDeliveryJunk.AutoSize = true;
+            this.RadioButtonDeliveryJunk.Location = new System.Drawing.Point(9, 100);
+            this.RadioButtonDeliveryJunk.Name = "RadioButtonDeliveryJunk";
+            this.RadioButtonDeliveryJunk.Size = new System.Drawing.Size(155, 24);
+            this.RadioButtonDeliveryJunk.TabIndex = 35;
+            this.RadioButtonDeliveryJunk.Text = "Move email to Junk";
+            this.RadioButtonDeliveryJunk.UseVisualStyleBackColor = true;
+            this.RadioButtonDeliveryJunk.CheckedChanged += new System.EventHandler(this.RadioButtonDeliveryJunk_CheckedChanged);
             // 
             // RadioButtonDeliveryDelete
             // 
@@ -286,7 +300,7 @@ namespace InTouch_AutoFile
             // 
             this.label15.AutoSize = true;
             this.label15.Font = new System.Drawing.Font("Verdana", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label15.Location = new System.Drawing.Point(20, 339);
+            this.label15.Location = new System.Drawing.Point(20, 372);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(151, 18);
             this.label15.TabIndex = 143;
@@ -325,7 +339,7 @@ namespace InTouch_AutoFile
             // 
             // ButtonSendPath
             // 
-            this.ButtonSendPath.Location = new System.Drawing.Point(245, 433);
+            this.ButtonSendPath.Location = new System.Drawing.Point(245, 466);
             this.ButtonSendPath.Name = "ButtonSendPath";
             this.ButtonSendPath.Size = new System.Drawing.Size(28, 27);
             this.ButtonSendPath.TabIndex = 158;
@@ -336,7 +350,7 @@ namespace InTouch_AutoFile
             // LabelSendPathTitle
             // 
             this.LabelSendPathTitle.AutoSize = true;
-            this.LabelSendPathTitle.Location = new System.Drawing.Point(279, 436);
+            this.LabelSendPathTitle.Location = new System.Drawing.Point(279, 469);
             this.LabelSendPathTitle.Name = "LabelSendPathTitle";
             this.LabelSendPathTitle.Size = new System.Drawing.Size(40, 20);
             this.LabelSendPathTitle.TabIndex = 159;
@@ -345,7 +359,7 @@ namespace InTouch_AutoFile
             // LabelSendPathValue
             // 
             this.LabelSendPathValue.AutoSize = true;
-            this.LabelSendPathValue.Location = new System.Drawing.Point(325, 436);
+            this.LabelSendPathValue.Location = new System.Drawing.Point(325, 469);
             this.LabelSendPathValue.Name = "LabelSendPathValue";
             this.LabelSendPathValue.Size = new System.Drawing.Size(15, 20);
             this.LabelSendPathValue.TabIndex = 160;
@@ -374,7 +388,7 @@ namespace InTouch_AutoFile
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(217, 338);
+            this.label3.Location = new System.Drawing.Point(217, 371);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(284, 20);
             this.label3.TabIndex = 164;
@@ -386,7 +400,7 @@ namespace InTouch_AutoFile
             this.CheckBoxUseSamePathDelivery.AutoSize = true;
             this.CheckBoxUseSamePathDelivery.Checked = true;
             this.CheckBoxUseSamePathDelivery.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.CheckBoxUseSamePathDelivery.Location = new System.Drawing.Point(59, 490);
+            this.CheckBoxUseSamePathDelivery.Location = new System.Drawing.Point(61, 506);
             this.CheckBoxUseSamePathDelivery.Name = "CheckBoxUseSamePathDelivery";
             this.CheckBoxUseSamePathDelivery.Size = new System.Drawing.Size(368, 24);
             this.CheckBoxUseSamePathDelivery.TabIndex = 165;
@@ -421,7 +435,7 @@ namespace InTouch_AutoFile
             this.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "ContactInTouchSettings";
-            this.Size = new System.Drawing.Size(600, 544);
+            this.Size = new System.Drawing.Size(600, 653);
             this.FormRegionShowing += new System.EventHandler(this.ContactInTouchSettings_FormRegionShowing);
             this.FormRegionClosed += new System.EventHandler(this.ContactInTouchSettings_FormRegionClosed);
             this.PanelSend.ResumeLayout(false);
@@ -465,7 +479,8 @@ namespace InTouch_AutoFile
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckBox CheckBoxUseSamePathDelivery;
-        private System.Windows.Forms.RadioButton radioButton1;
+        private System.Windows.Forms.RadioButton RadioButtonDeliveryJunk;
+        private System.Windows.Forms.RadioButton RadioButtonReadJunk;
 
         public partial class ContactInTouchSettingsFactory : Microsoft.Office.Tools.Outlook.IFormRegionFactory
         {

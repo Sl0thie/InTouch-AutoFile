@@ -60,6 +60,10 @@ namespace InTouch_AutoFile
                 case EmailAction.Move: 
                     RadioButtonDeliveryFile.Checked = true;
                     break;
+
+                case EmailAction.Junk:
+                    RadioButtonDeliveryJunk.Checked = true;
+                    break;
             }
 
             switch (contact.ReadAction)
@@ -74,6 +78,10 @@ namespace InTouch_AutoFile
 
                 case EmailAction.Move:
                     RadioButtonReadFile.Checked = true;
+                    break;
+
+                case EmailAction.Junk:
+                    RadioButtonReadJunk.Checked = true;
                     break;
             }
 
@@ -142,7 +150,7 @@ namespace InTouch_AutoFile
                 LabelReadPath.Visible = false;
 
             }
-            else 
+            else if (RadioButtonDeliveryFile.Checked)
             {
                 //Force the read action to be the same.
                 RadioButtonReadFile.Checked = true;
@@ -161,6 +169,25 @@ namespace InTouch_AutoFile
                 LabelReadPath.Visible = false;
 
             }
+            else
+            {
+                //Force the read action to be the same.
+                RadioButtonReadJunk.Checked = true;
+
+                RadioButtonReadNoAction.Enabled = false;
+                RadioButtonReadDelete.Enabled = false;
+                RadioButtonReadFile.Enabled = false;
+
+                ButtonDeliveryPath.Visible = true;
+                LabelDeliveryPathTitle.Visible = true;
+                LabelDeliveryPath.Visible = true;
+                CheckBoxUseSamePathDelivery.Visible = true;
+
+                ButtonReadPath.Visible = false;
+                LabelPath.Visible = false;
+                LabelReadPath.Visible = false;
+            }
+
 
             if (readAction)
             {
@@ -310,6 +337,15 @@ namespace InTouch_AutoFile
             }
         }
 
+        private void RadioButtonDeliveryJunk_CheckedChanged(object sender, EventArgs e)
+        {
+            if (RadioButtonDeliveryJunk.Checked)
+            {
+                contact.DeliveryAction = EmailAction.Junk;
+                AdjustForm();
+            }
+        }
+
         private void CheckBoxUseSamePathDelivery_CheckedChanged(object sender, EventArgs e)
         {
             contact.SamePath = CheckBoxUseSamePathDelivery.Checked;
@@ -379,6 +415,15 @@ namespace InTouch_AutoFile
             }
         }
 
+        private void RadioButtonReadJunk_CheckedChanged(object sender, EventArgs e)
+        {
+            if (RadioButtonReadJunk.Checked)
+            {
+                contact.ReadAction = EmailAction.Junk;
+                AdjustForm();
+            }
+        }
+
         #endregion
 
         #region Send Action
@@ -395,7 +440,7 @@ namespace InTouch_AutoFile
                 {
                     folderPath = folderPath.Remove(0, 2);
                 }
-                Op.LogMessage("FolderPath : " + folderPath);
+                Log.Message("FolderPath : " + folderPath);
             }
             else
             {
@@ -435,6 +480,8 @@ namespace InTouch_AutoFile
                 AdjustForm();
             }
         }
+
+
 
 
         #endregion

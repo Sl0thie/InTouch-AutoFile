@@ -196,12 +196,6 @@
     <Compile Include="FormRegions\ContactInTouchSettings.Designer.cs">
       <DependentUpon>ContactInTouchSettings.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormRegions\MailItemHeaderDetails.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="FormRegions\MailItemHeaderDetails.Designer.cs">
-      <DependentUpon>MailItemHeaderDetails.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\FormInTouchNewContact.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -209,7 +203,19 @@
       <DependentUpon>FormInTouchNewContact.cs</DependentUpon>
     </Compile>
     <Compile Include="InTouch.cs" />
-    <Compile Include="Op.cs" />
+    <Compile Include="MailItemHeader.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MailItemHeader.Designer.cs">
+      <DependentUpon>MailItemHeader.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MailItemSource.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MailItemSource.Designer.cs">
+      <DependentUpon>MailItemSource.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -224,11 +230,14 @@
       <DependentUpon>ContactInTouchSettings.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormRegions\MailItemHeaderDetails.resx">
-      <DependentUpon>MailItemHeaderDetails.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormInTouchNewContact.resx">
       <DependentUpon>FormInTouchNewContact.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MailItemHeader.resx">
+      <DependentUpon>MailItemHeader.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MailItemSource.resx">
+      <DependentUpon>MailItemSource.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

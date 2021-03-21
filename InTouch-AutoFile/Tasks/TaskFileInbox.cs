@@ -21,7 +21,7 @@ namespace InTouch_AutoFile
             //If task is enabled in the settings then start task.
             if (Properties.Settings.Default.TaskInbox)
             {
-                Op.LogMessage("Starting FileInbox Task.");
+                Log.Message("Starting FileInbox Task.");
                 Thread backgroundThread = new Thread(new ThreadStart(BackgroundProcess))
                 {
                     Name = "AF.FileInbox",
@@ -57,13 +57,13 @@ namespace InTouch_AutoFile
                             break;
                         case "Follow up":
                             //Don't process follow up. This leave them in the inbox for manual processing.
-                            Op.LogMessage("Move Email : Email has a flag set.");
+                            Log.Message("Move Email : Email has a flag set.");
                             break;
                         case null:
                             mailToProcess.Add(email);
                             break;
                         default:
-                            Op.LogMessage("Move Email : Unknown Flag Request Type.");
+                            Log.Message("Move Email : Unknown Flag Request Type.");
                             break;
                     }
                 }
@@ -91,12 +91,22 @@ namespace InTouch_AutoFile
             }
             catch(Exception ex)
             {
-                Op.LogError(ex);
+                Log.Error(ex);
                 ok = false;
             }
 
             InTouchContact mailContact = null;
-            Outlook.ContactItem contact = InTouch.Contacts.FindContactFromEmailAddress(email.Sender.Address);
+            Outlook.ContactItem contact = null ;
+
+            try
+            {
+                contact = InTouch.Contacts.FindContactFromEmailAddress(email.Sender.Address);
+            }
+            catch (InvalidComObjectException ex)
+            {
+                Log.Error(ex);
+            }
+
             if (contact is object)
             {
                 mailContact = new InTouchContact(contact);
@@ -115,17 +125,22 @@ namespace InTouch_AutoFile
                     switch (mailContact.DeliveryAction)
                     {
                         case EmailAction.None: //Don't do anything to the email.
-                            Op.LogMessage("Move Email : Delivery Action set to None. " + email.Sender.Address);
+                            Log.Message("Move Email : Delivery Action set to None. " + email.Sender.Address);
                             break;
 
                         case EmailAction.Delete: //Delete the email if it is passed its action date.
-                            Op.LogMessage("Move Email : Deleting email from " + email.Sender.Address);
+                            Log.Message("Move Email : Deleting email from " + email.Sender.Address);
                             email.Delete();
                             break;
 
                         case EmailAction.Move: //Move the email if its passed its action date.
-                            Op.LogMessage("Move Email : Moving email from " + email.Sender.Address);
+                            Log.Message("Move Email : Moving email from " + email.Sender.Address);
                             MoveEmailToFolder(mailContact.InboxPath, email);
+                            break;
+
+                        case EmailAction.Junk:
+                            Log.Message("Move Email to Junk: Moving email from " + email.Sender.Address);
+                            email.Move(Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderJunk));
                             break;
                     }
                 }
@@ -134,17 +149,22 @@ namespace InTouch_AutoFile
                     switch (mailContact.ReadAction)
                     {
                         case EmailAction.None: //Don't do anything to the email.
-                            Op.LogMessage("Move Email : Read Action set to None. " + email.Sender.Address);
+                            Log.Message("Move Email : Read Action set to None. " + email.Sender.Address);
                             break;
 
                         case EmailAction.Delete: //Delete the email.
-                            Op.LogMessage("Move Email : Deleting email from " + email.Sender.Address);
+                            Log.Message("Move Email : Deleting email from " + email.Sender.Address);
                             email.Delete();
                             break;
 
                         case EmailAction.Move: //Move the email.
-                            Op.LogMessage("Move Email : Moving email from " + email.Sender.Address);
+                            Log.Message("Move Email : Moving email from " + email.Sender.Address);
                             MoveEmailToFolder(mailContact.InboxPath, email);
+                            break;
+
+                        case EmailAction.Junk:
+                            Log.Message("Move Email to Junk: Moving email from " + email.Sender.Address);
+                            email.Move(Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderJunk));
                             break;
                     }
                 }
@@ -154,111 +174,36 @@ namespace InTouch_AutoFile
             else
             {
                 //Get the 'On Behalf' property from the email.
-                Outlook.PropertyAccessor mapiPropertyAccessor;
-                string propertyName = "http://schemas.microsoft.com/mapi/proptag/0x0065001F";
-                mapiPropertyAccessor = email.PropertyAccessor;
-                string onBehalfEmailAddress = mapiPropertyAccessor.GetProperty(propertyName).ToString();
-                if (mapiPropertyAccessor is object)
+                string onBehalfEmailAddress;
+
+                try
                 {
-                    Marshal.ReleaseComObject(mapiPropertyAccessor);
+                    Outlook.PropertyAccessor mapiPropertyAccessor;
+                    string propertyName = "http://schemas.microsoft.com/mapi/proptag/0x0065001F";
+                    mapiPropertyAccessor = email.PropertyAccessor;
+                    onBehalfEmailAddress = mapiPropertyAccessor.GetProperty(propertyName).ToString();
+                    if (mapiPropertyAccessor is object)
+                    {
+                        Marshal.ReleaseComObject(mapiPropertyAccessor);
+                    }
+                }
+                catch(Exception ex)
+                {
+                    Log.Error(ex);
                 }
 
                 //Log the details.                           
-                Op.LogMessage("Move Email : No Contact for " + email.SenderEmailAddress);
-                Op.LogMessage("SenderName         : " + email.SenderName);
-                Op.LogMessage("SentOnBehalfOfName : " + email.SentOnBehalfOfName);
-                Op.LogMessage("ReplyRecipientNames: " + email.ReplyRecipientNames);
-                Op.LogMessage("On Behalf: " + onBehalfEmailAddress);
-                Op.LogMessage("");
+                Log.Message("Move Email : No Contact for " + email.SenderEmailAddress);
+                //Op.LogMessage("SenderName         : " + email.SenderName);
+                //Op.LogMessage("SentOnBehalfOfName : " + email.SentOnBehalfOfName);
+                //Op.LogMessage("ReplyRecipientNames: " + email.ReplyRecipientNames);
+                //Op.LogMessage("On Behalf: " + onBehalfEmailAddress);
+                //Op.LogMessage("");
             }
 
             if (email is object) { Marshal.ReleaseComObject(email); }
             if (contact is object) { Marshal.ReleaseComObject(contact); }
 
-
-
-            ////Email may have been deleted or moved so check if it exists first.
-            //if (email is object)
-            //{
-            //    //Check if the email has a Sender.
-            //    if (email.Sender is object)
-            //    {
-            //        //Find the Contact accociated with the Sender.
-            //        InTouchContact mailContact = null;
-            //        Outlook.ContactItem contact = InTouch.Contacts.FindContactFromEmailAddress(email.Sender.Address);
-            //        if (contact is object)
-            //        {
-            //            mailContact = new InTouchContact(contact);
-            //        }
-            //        //If found then try to process the email.
-            //        if (mailContact is object)
-            //        {
-            //            //If unread the process delivery option else process read option.
-            //            if (email.UnRead)
-            //            {
-            //                switch (mailContact.DeliveryAction)
-            //                {
-            //                    case EmailAction.None: //Don't do anything to the email.
-            //                        Op.LogMessage("Move Email : Delivery Action set to None. " + email.Sender.Address);
-            //                        break;
-            //                    case EmailAction.Delete: //Delete the email if it is passed its action date.
-            //                        Op.LogMessage("Move Email : Deleting email from " + email.Sender.Address);
-            //                        email.Delete();
-            //                        break;
-            //                    case EmailAction.Move: //Move the email if its passed its action date.
-            //                        Op.LogMessage("Move Email : Moving email from " + email.Sender.Address);
-            //                        MoveEmailToFolder(mailContact.InboxPath, email);
-            //                        break;
-            //                }
-            //            }
-            //            else
-            //            {
-            //                switch (mailContact.ReadAction)
-            //                {
-            //                    case EmailAction.None: //Don't do anything to the email.
-            //                        Op.LogMessage("Move Email : Read Action set to None. " + email.Sender.Address);
-            //                        break;
-            //                    case EmailAction.Delete: //Delete the email.
-            //                        Op.LogMessage("Move Email : Deleting email from " + email.Sender.Address);
-            //                        email.Delete();
-            //                        break;
-            //                    case EmailAction.Move: //Move the email.
-            //                        Op.LogMessage("Move Email : Moving email from " + email.Sender.Address);
-            //                        MoveEmailToFolder(mailContact.InboxPath, email);
-            //                        break;
-            //                }
-            //            }
-            //            mailContact.SaveAndDispose();
-            //        }
-            //        else //If not found then just log it for the moment.
-            //        {
-            //            try
-            //            {
-            //                //Get the 'On Behalf' property from the email.
-            //                Outlook.PropertyAccessor mapiPropertyAccessor;
-            //                string propertyName = "http://schemas.microsoft.com/mapi/proptag/0x0065001F";
-            //                mapiPropertyAccessor = email.PropertyAccessor;
-            //                string onBehalfEmailAddress = mapiPropertyAccessor.GetProperty(propertyName).ToString();
-            //                if (mapiPropertyAccessor is object)
-            //                {
-            //                    Marshal.ReleaseComObject(mapiPropertyAccessor);
-            //                }
-            //                //Log the details.                           
-            //                Op.LogMessage("Move Email : No Contact for " + email.SenderEmailAddress);
-            //                Op.LogMessage("SenderName         : " + email.SenderName);
-            //                Op.LogMessage("SentOnBehalfOfName : " + email.SentOnBehalfOfName);
-            //                Op.LogMessage("ReplyRecipientNames: " + email.ReplyRecipientNames);
-            //                Op.LogMessage("On Behalf: " + onBehalfEmailAddress);
-            //                Op.LogMessage("");
-            //            }
-            //            catch (Exception ex)
-            //            {
-            //                Op.LogError(ex);
-            //                throw;
-            //            }
-            //        }
-            //    }
-            //}
         }
 
         /// <summary>
@@ -278,7 +223,7 @@ namespace InTouch_AutoFile
             }
             catch (System.Collections.Generic.KeyNotFoundException)
             {
-                Op.LogMessage("Exception managed > Store not found. (" + folders[0] + ")");
+                Log.Message("Exception managed > Store not found. (" + folders[0] + ")");
                 return;
             }
 
@@ -294,7 +239,7 @@ namespace InTouch_AutoFile
             {
                 if (ex.HResult == -2147221233)
                 {
-                    Op.LogMessage("Exception Managed > Folder not found. (" + folderPath + ")");
+                    Log.Message("Exception Managed > Folder not found. (" + folderPath + ")");
                     return;
                 }
                 else

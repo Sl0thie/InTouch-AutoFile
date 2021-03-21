@@ -62,7 +62,7 @@ namespace InTouch_AutoFile
             }
             catch (System.Collections.Generic.KeyNotFoundException)
             {
-                Op.LogMessage("Exception managed > Store not found. (" + folders[0] + ")");
+                Log.Message("Exception managed > Store not found. (" + folders[0] + ")");
                 returnValue = false;
             }
 
@@ -81,7 +81,7 @@ namespace InTouch_AutoFile
                     if (ex.HResult == -2147221233)
                     {
                         returnValue = false;
-                        Op.LogMessage("Exception Managed > Folder not found. (" + folderPath + ")");
+                        Log.Message("Exception Managed > Folder not found. (" + folderPath + ")");
                     }
                     else
                     {
@@ -108,7 +108,7 @@ namespace InTouch_AutoFile
             }
             catch (System.Collections.Generic.KeyNotFoundException ex)
             {
-                Op.LogError(ex);
+                Log.Error(ex);
                 throw;
                 //Op.LogMessage("Exception managed > Store not found. (" + folders[0] + ")");
                 //return;
@@ -126,7 +126,7 @@ namespace InTouch_AutoFile
                 {
                     if (ex.HResult == -2147221233)
                     {
-                        Op.LogMessage("Exception Managed > Creating Folder.");
+                        Log.Message("Exception Managed > Creating Folder.");
                         folder.Folders.Add(folders[i]);
                         folder = subFolders[folders[i]] as Outlook.Folder;
                     }
