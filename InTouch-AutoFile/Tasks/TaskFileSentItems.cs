@@ -80,6 +80,9 @@ namespace InTouch_AutoFile
 
         private static void ProcessEmail(Outlook.MailItem email)
         {
+
+
+
             //Email may have been deleted or moved so check if it exists first.
             if (email is object)
             {
