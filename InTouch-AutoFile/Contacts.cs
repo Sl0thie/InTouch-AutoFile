@@ -152,8 +152,6 @@ namespace InTouch_AutoFile
             return null;
         }
 
-
-
         public static bool DoesLookupContain(string emailAddress)
         {
             if (emailAddress is object)

@@ -54,8 +54,8 @@ namespace InTouch_AutoFile
             bool DoLoop = true; //Keeps the main loop running.
             while (DoLoop)
             {
-                //Thread.Sleep(5000);
-                Thread.Sleep(60000);
+                Thread.Sleep(5000);
+                //Thread.Sleep(60000);
                 try
                 {
                     if ((!taskRunning) && (!BackgroundTasks.IsEmpty))

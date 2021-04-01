@@ -272,6 +272,7 @@ namespace InTouch_AutoFile
                             contact.Display(true);
 
                             lastEntryID = "";
+                            //TODO Remove these.
                             Parallel.Invoke(() => { CheckEmailSender(); });
                         }
                         catch (Exception ex)

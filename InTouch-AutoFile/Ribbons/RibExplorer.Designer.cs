@@ -98,7 +98,7 @@ namespace InTouch_AutoFile
             // 
             this.buttonAddContactJunk.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
             this.buttonAddContactJunk.Image = global::InTouch_AutoFile.Properties.Resources.addcontact;
-            this.buttonAddContactJunk.Label = "Add to Junk Contacts";
+            this.buttonAddContactJunk.Label = "Junk Mail";
             this.buttonAddContactJunk.Name = "buttonAddContactJunk";
             this.buttonAddContactJunk.ShowImage = true;
             this.buttonAddContactJunk.Visible = false;
