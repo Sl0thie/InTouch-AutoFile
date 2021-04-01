@@ -203,16 +203,16 @@
       <DependentUpon>FormInTouchNewContact.cs</DependentUpon>
     </Compile>
     <Compile Include="InTouch.cs" />
-    <Compile Include="MailItemHeader.cs">
+    <Compile Include="FormRegions\MailItemHeader.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="MailItemHeader.Designer.cs">
+    <Compile Include="FormRegions\MailItemHeader.Designer.cs">
       <DependentUpon>MailItemHeader.cs</DependentUpon>
     </Compile>
-    <Compile Include="MailItemSource.cs">
+    <Compile Include="FormRegions\MailItemSource.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="MailItemSource.Designer.cs">
+    <Compile Include="FormRegions\MailItemSource.Designer.cs">
       <DependentUpon>MailItemSource.cs</DependentUpon>
     </Compile>
     <Compile Include="Log.cs" />
@@ -233,10 +233,10 @@
     <EmbeddedResource Include="Forms\FormInTouchNewContact.resx">
       <DependentUpon>FormInTouchNewContact.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MailItemHeader.resx">
+    <EmbeddedResource Include="FormRegions\MailItemHeader.resx">
       <DependentUpon>MailItemHeader.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MailItemSource.resx">
+    <EmbeddedResource Include="FormRegions\MailItemSource.resx">
       <DependentUpon>MailItemSource.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">

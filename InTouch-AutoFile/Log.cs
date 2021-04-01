@@ -8,8 +8,6 @@ using System.Collections;
 
 namespace InTouch_AutoFile
 {
-    
-
     public static class Log
     {
         /// <summary>
@@ -151,6 +149,5 @@ namespace InTouch_AutoFile
                 Debug.WriteLine("");
             }
         }
-
     }
 }
