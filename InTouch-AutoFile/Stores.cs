@@ -6,39 +6,31 @@ using System.Text;
 using System.Threading.Tasks;
 using Outlook = Microsoft.Office.Interop.Outlook;
 
-
-
 namespace InTouch_AutoFile
 {
-
-
     public class ITStore
     {
-        private string displayName;
-
         public string DisplayName
         {
             get { return displayName; }
             set { displayName = value; }
         }
-
-        private string storeID;
+        private string displayName;
 
         public string StoreID
         {
             get { return storeID; }
             set { storeID = value; }
         }
-
-        private Outlook.MAPIFolder rootFolder;
+        private string storeID;
+        
         public Outlook.MAPIFolder RootFolder
         {
             get { return rootFolder; }
             set { rootFolder = value; }
         }
-
+        private Outlook.MAPIFolder rootFolder;
     }
-
 
     public class Stores
     {

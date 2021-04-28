@@ -308,7 +308,7 @@ namespace InTouch_AutoFile
                         try
                         {
                             InTouch.ShowInTouchSettings = true;
-                            contactsFolder = Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderContacts).Folders["Other Contacts"];
+                            contactsFolder = Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderContacts).Folders["Others"];
                             items = contactsFolder.Items;
                             contact = items.Add(Outlook.OlItemType.olContactItem) as Outlook.ContactItem;
 
