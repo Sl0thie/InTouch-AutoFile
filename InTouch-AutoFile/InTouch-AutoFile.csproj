@@ -260,7 +260,7 @@
     </EmbeddedResource>
     <None Include="app.config" />
     <None Include="InTouch-AutoFile.ruleset" />
-    <None Include="InTouch-AutoFile_TemporaryKey.pfx" />
+    <None Include="InTouch-AutoFile.snk" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -324,16 +324,16 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>InTouch-AutoFile_1_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>InTouch-AutoFile_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>1BE7F3D139285990EF46F2A5949C1515FB149037</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>24DD404164342E3C1960337D9E0D744457B44DE9</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>InTouch-AutoFile_TemporaryKey.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>InTouch-AutoFile.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <!-- Include the build rules for a C# project. -->
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

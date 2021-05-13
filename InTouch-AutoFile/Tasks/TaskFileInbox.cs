@@ -192,13 +192,36 @@ namespace InTouch_AutoFile
                     Log.Error(ex);
                 }
 
-                //Log the details.                           
-                Log.Message("Move Email : No Contact for " + email.SenderEmailAddress);
-                //Op.LogMessage("SenderName         : " + email.SenderName);
-                //Op.LogMessage("SentOnBehalfOfName : " + email.SentOnBehalfOfName);
-                //Op.LogMessage("ReplyRecipientNames: " + email.ReplyRecipientNames);
-                //Op.LogMessage("On Behalf: " + onBehalfEmailAddress);
-                //Op.LogMessage("");
+                try
+                {
+                    if (email is object)
+                    {
+                        if (email.SenderEmailAddress is object)
+                        {
+                            Log.Message("Move Email : No Contact for " + email.SenderEmailAddress);
+                        }
+                        else
+                        {
+                            Log.Message("Move Email : No Contact (detatched object?)");
+                        }
+                    }
+                    else
+                    {
+                        Log.Message("Move Email : No email object");
+                    }
+                    //Op.LogMessage("SenderName         : " + email.SenderName);
+                    //Op.LogMessage("SentOnBehalfOfName : " + email.SentOnBehalfOfName);
+                    //Op.LogMessage("ReplyRecipientNames: " + email.ReplyRecipientNames);
+                    //Op.LogMessage("On Behalf: " + onBehalfEmailAddress);
+                    //Op.LogMessage("");
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex);
+                }
+
+                //Log the details.
+                
             }
 
             if (email is object) { Marshal.ReleaseComObject(email); }
