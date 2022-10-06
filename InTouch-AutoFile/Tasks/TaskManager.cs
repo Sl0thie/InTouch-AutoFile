@@ -36,14 +36,16 @@
             }
         }
 
+        private readonly TaskAddinSetup taskAddinSetup; // A task to manage add-in setup.
         private readonly TaskFileInbox taskFileIndox; // A task to manage sorting the Inbox folder.
         private readonly TaskFileSentItems taskFileSentItems; // A task to manage sorting the Sent Items folder.
 
         public TaskManager()
         {
             // Create task objects.
+            taskAddinSetup = new TaskAddinSetup(TaskFinished);
             taskFileIndox = new TaskFileInbox(TaskFinished);
-            taskFileSentItems = new TaskFileSentItems(TaskFinished);
+            taskFileSentItems = new TaskFileSentItems(TaskFinished);        
 
             // Configure and start a background thread.
             Thread backgroundThread = new Thread(new ThreadStart(BackgroundProcess))
@@ -89,6 +91,11 @@
                     throw; 
                 }
             }
+        }
+
+        public void EnqueueAddinSetupTask()
+        {
+            backgroundTasks.Enqueue(taskAddinSetup.RunTask);
         }
 
         public void EnqueueSentItemsTask()

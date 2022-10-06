@@ -80,18 +80,26 @@
             }
         }
 
+        /// <summary>
+        /// ClearButtons method makes all the ribbon buttons invisible.
+        /// </summary>
         private static void ClearButtons()
         {
-            // Clear all the buttons.
             Globals.Ribbons.RibExplorer.buttonContact.Visible = false;
             Globals.Ribbons.RibExplorer.buttonAddContactPersonal.Visible = false;
             Globals.Ribbons.RibExplorer.buttonAddContactOther.Visible = false;
             Globals.Ribbons.RibExplorer.buttonAddContactJunk.Visible = false;
             Globals.Ribbons.RibExplorer.buttonAttention.Visible = false;
 
+            //TODO re-check if this is still required.
             Application.DoEvents();
         }
 
+        /// <summary>
+        /// CheckEmailSender method is called when the selected email changes. 
+        /// It first finds the contact that sent the email.
+        /// It then sets the ribbon to suit that contact.
+        /// </summary>
         private static void CheckEmailSender()
         {
             Outlook.Selection selection = Globals.ThisAddIn.Application.ActiveExplorer().Selection;
@@ -168,6 +176,7 @@
                 }          
             }
 
+            // Release Outlook objects.
             if (email is object)
             {
                 Marshal.ReleaseComObject(email);
@@ -179,6 +188,12 @@
             }
         }
 
+        /// <summary>
+        /// ButtonContact_Click method handles the Contact button's click event.
+        /// It finds the contact from the email and then displays the contact.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ButtonContact_Click(object sender, RibbonControlEventArgs e)
         {
             if (Globals.ThisAddIn.Application.ActiveExplorer().Selection.Count > 0)
@@ -186,6 +201,7 @@
                 object selectedObject = Globals.ThisAddIn.Application.ActiveExplorer().Selection[1];
                 if (selectedObject is Outlook.MailItem email)
                 {
+                    // Find contact from sender email address.
                     Outlook.ContactItem emailContact;
                     try
                     {
@@ -193,15 +209,17 @@
                     }
                     catch (Exception ex) 
                     { 
-                        Log.Error(ex.Message,ex); 
-                        throw; 
+                        Log.Error(ex.Message,ex);
+                        throw;
                     }
 
+                    // Display contact.
                     if (emailContact is object)
                     {
                         emailContact.Display(false);
                     }
 
+                    // Release Outlook objects.
                     if (email is object)
                     {
                         Marshal.ReleaseComObject(email);
@@ -213,6 +231,7 @@
                     }
                 }
 
+                // Release Outlook objects.
                 if (selectedObject is object)
                 {
                     Marshal.ReleaseComObject(selectedObject);
@@ -220,6 +239,12 @@
             }
         }
 
+        /// <summary>
+        /// ButtonAttention_Click method handles the Attention button's click event.
+        /// It finds the contact from the email and then displays the contact's InTouch form region.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ButtonAttention_Click(object sender, RibbonControlEventArgs e)
         {
             if (Globals.ThisAddIn.Application.ActiveExplorer().Selection.Count > 0)
@@ -227,6 +252,7 @@
                 object selectedObject = Globals.ThisAddIn.Application.ActiveExplorer().Selection[1];
                 if (selectedObject is Outlook.MailItem email)
                 {
+                    // Find contact from sender email address.
                     Outlook.ContactItem emailContact;
                     try
                     {
@@ -238,12 +264,14 @@
                         throw; 
                     }
 
+                    // Display contact, showing the InTouch form region.
                     if (emailContact is object)
                     {
                         InTouch.ShowInTouchSettings = true;
                         emailContact.Display(false);
                     }
 
+                    // Release Outlook objects.
                     if (email is object)
                     {
                         Marshal.ReleaseComObject(email);
@@ -255,6 +283,7 @@
                     }
                 }
 
+                // Release Outlook objects.
                 if (selectedObject is object)
                 {
                     Marshal.ReleaseComObject(selectedObject);
@@ -262,6 +291,13 @@
             }
         }
 
+        /// <summary>
+        /// ButtonAddContactPersonal_Click method handles the Add Contact button's click event.
+        /// It creates a contact from the emails sender and adds it to the personal contact store.
+        /// It then displays the contact's InTouch form region.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ButtonAddContactPersonal_Click(object sender, RibbonControlEventArgs e)
         {
             if (Globals.ThisAddIn.Application.ActiveExplorer().Selection.Count > 0)
@@ -276,6 +312,7 @@
                         Outlook.ContactItem contact = null;
                         try
                         {
+                            // Create new contact from the email's sender.
                             InTouch.ShowInTouchSettings = true;
                             contactsFolder = Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderContacts);
                             items = contactsFolder.Items;
@@ -311,6 +348,7 @@
                         }
                         finally
                         {
+                            // Release Outlook objects.
                             if (contact != null)
                             {
                                 Marshal.ReleaseComObject(contact);
@@ -328,12 +366,14 @@
                         }
                     }
 
+                    // Release Outlook objects.
                     if (email is object)
                     {
                         Marshal.ReleaseComObject(email);
                     }
                 }
 
+                // Release Outlook objects.
                 if (selectedObject is object)
                 {
                     Marshal.ReleaseComObject(selectedObject);
@@ -341,6 +381,13 @@
             }
         }
 
+        /// <summary>
+        /// ButtonAddContactOther_Click method handles the Add Contact Other button's click event.
+        /// It creates a contact from the emails sender and adds it to the other contacts store.
+        /// It then displays the contact's InTouch form region.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ButtonAddContactOther_Click(object sender, RibbonControlEventArgs e)
         {
             if (Globals.ThisAddIn.Application.ActiveExplorer().Selection.Count > 0)
@@ -355,8 +402,9 @@
                         Outlook.ContactItem contact = null;
                         try
                         {
+                            // Create new contact from the email's sender.
                             InTouch.ShowInTouchSettings = true;
-                            contactsFolder = Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderContacts).Folders["Others"];
+                            contactsFolder = Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderContacts).Folders[InTouch.OtherFolderName];
                             items = contactsFolder.Items;
                             contact = items.Add(Outlook.OlItemType.olContactItem) as Outlook.ContactItem;
 
@@ -389,6 +437,7 @@
                         }
                         finally
                         {
+                            // Release Outlook objects.
                             if (contact != null)
                             {
                                 Marshal.ReleaseComObject(contact);
@@ -406,12 +455,14 @@
                         }
                     }
 
+                    // Release Outlook objects.
                     if (email is object)
                     {
                         Marshal.ReleaseComObject(email);
                     }
                 }
 
+                // Release Outlook objects.
                 if (selectedObject is object)
                 {
                     Marshal.ReleaseComObject(selectedObject);
@@ -419,6 +470,13 @@
             }
         }
 
+        /// <summary>
+        /// ButtonAddContactJunk_Click method handles the Add Contact Junk button's click event.
+        /// It creates a contact from the emails sender and adds it to the junk contacts store.
+        /// It then displays the contact's InTouch form region.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ButtonAddContactJunk_Click(object sender, RibbonControlEventArgs e)
         {
             if (Globals.ThisAddIn.Application.ActiveExplorer().Selection.Count > 0)
@@ -433,8 +491,9 @@
                         Outlook.ContactItem contact = null;
                         try
                         {
+                            // Create new contact from the email's sender.
                             InTouch.ShowInTouchSettings = true;
-                            contactsFolder = Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderContacts).Folders["Junk Contacts"];
+                            contactsFolder = Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderContacts).Folders[InTouch.JunkFolderName];
                             items = contactsFolder.Items;
                             contact = items.Add(Outlook.OlItemType.olContactItem) as Outlook.ContactItem;
 
@@ -466,6 +525,7 @@
                         }
                         finally
                         {
+                            // Release Outlook objects.
                             if (contact != null)
                             {
                                 Marshal.ReleaseComObject(contact);
@@ -483,12 +543,14 @@
                         }
                     }
 
+                    // Release Outlook objects.
                     if (email is object)
                     {
                         Marshal.ReleaseComObject(email);
                     }
                 }
 
+                // Release Outlook objects.
                 if (selectedObject is object)
                 {
                     Marshal.ReleaseComObject(selectedObject);

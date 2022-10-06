@@ -18,7 +18,8 @@ namespace InTouch_AutoFile
 
     public partial class ThisAddIn
     {
-
+        //TODO fix fav icon lookup.
+        //TODO Make junk button fully automatic.
         //TODO Make ribbon icon change color to suit theme.
         private void ThisAddIn_Startup(object sender, EventArgs e)
         {
@@ -39,13 +40,17 @@ namespace InTouch_AutoFile
             Application.OptionsPagesAdd += new Outlook.ApplicationEvents_11_OptionsPagesAddEventHandler(Application_OptionsPagesAdd);
 
             // Queue up tasks to start up after launch.
+            InTouch.TaskManager.EnqueueAddinSetupTask();
             InTouch.TaskManager.EnqueueInboxTask();
             InTouch.TaskManager.EnqueueSentItemsTask();
 
-            GetRegistrySettings();
+            ManageOutlookTheme();
         }
 
-        private static void GetRegistrySettings()
+        /// <summary>
+        /// ManageOutlookTheme method gets the theme type from the registry and adjusts the display details to suit.
+        /// </summary>
+        private static void ManageOutlookTheme()
         {
             object uIThemeObj = Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\Office\16.0\Common","UI Theme",null);
             uint uITheme = Convert.ToUInt32(uIThemeObj);

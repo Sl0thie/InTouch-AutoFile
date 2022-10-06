@@ -236,7 +236,7 @@
         /// Method to move the email from the Inbox to the specified folder.
         /// </summary>
         /// <param name="folderPath">The path to the folder to move the email.</param>
-        /// <param name="email">The mailitem to move.</param>
+        /// <param name="email">The mail item to move.</param>
         private static void MoveEmailToFolder(string folderPath, Outlook.MailItem email)
         {
             string[] folders = folderPath.Split('\\');

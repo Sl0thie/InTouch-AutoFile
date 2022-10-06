@@ -45,6 +45,20 @@
         }
         private static bool darkTheme;
 
+        public static string JunkFolderName
+        {
+            get { return junkFolderName; }
+            set { junkFolderName = value; }
+        }
+        private static string junkFolderName = "Junk Contacts";
+
+        public static string OtherFolderName
+        {
+            get { return otherFolderName; }
+            set { otherFolderName = value; }
+        }
+        private static string otherFolderName = "Other Contacts";
+
         /// <summary>
         /// Checks if the supplied path is a valid path within the inbox branch.
         /// </summary>

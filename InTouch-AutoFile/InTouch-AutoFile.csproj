@@ -262,6 +262,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Stores.cs" />
+    <Compile Include="Tasks\TaskAddinSetup.cs" />
     <Compile Include="UCPropertPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
