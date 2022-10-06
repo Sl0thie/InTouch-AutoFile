@@ -1,11 +1,12 @@
-﻿using System;
-using System.Drawing;
-using System.Runtime.InteropServices;
-using Outlook = Microsoft.Office.Interop.Outlook;
-
-namespace InTouch_AutoFile
+﻿namespace InTouch_AutoFile
 {
-    partial class ContactInTouchSettings
+    using System;
+    using System.Drawing;
+    using System.Runtime.InteropServices;
+    using Outlook = Microsoft.Office.Interop.Outlook;
+    using Serilog;
+
+    internal partial class ContactInTouchSettings
     {
         #region Form Region Factory 
 
@@ -24,7 +25,7 @@ namespace InTouch_AutoFile
 
         #endregion
 
-        InTouchContact contact;
+        private InTouchContact contact;
 
         // Occurs before the form region is displayed.
         // Use this.OutlookItem to get a reference to the current Outlook item.
@@ -188,7 +189,6 @@ namespace InTouch_AutoFile
                 LabelReadPath.Visible = false;
             }
 
-
             if (readAction)
             {
                 if (RadioButtonReadNoAction.Checked)
@@ -299,7 +299,6 @@ namespace InTouch_AutoFile
             LabelDeliveryPath.Text = folderPath;
             LabelReadPath.Text = folderPath;
             contact.InboxPath = folderPath;
-
 
             if (contact.SamePath)
             {
@@ -440,7 +439,7 @@ namespace InTouch_AutoFile
                 {
                     folderPath = folderPath.Remove(0, 2);
                 }
-                Log.Message("FolderPath : " + folderPath);
+                Log.Information("FolderPath : " + folderPath);
             }
             else
             {
@@ -480,9 +479,6 @@ namespace InTouch_AutoFile
                 AdjustForm();
             }
         }
-
-
-
 
         #endregion
 

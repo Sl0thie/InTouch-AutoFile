@@ -224,7 +224,6 @@
     <Compile Include="FormRegions\MailItemSource.Designer.cs">
       <DependentUpon>MailItemSource.cs</DependentUpon>
     </Compile>
-    <Compile Include="Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -333,10 +332,11 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>InTouch-AutoFile_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>
+    </ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>24DD404164342E3C1960337D9E0D744457B44DE9</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>DDFBF7CA10410D284DACF4B17DB77FA9B2B970FD</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>

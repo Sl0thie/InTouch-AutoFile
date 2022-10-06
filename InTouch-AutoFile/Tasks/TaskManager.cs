@@ -1,9 +1,10 @@
-﻿using System;
-using System.Threading;
-using System.Collections.Concurrent;
-
-namespace InTouch_AutoFile
+﻿namespace InTouch_AutoFile
 {
+    using System;
+    using System.Threading;
+    using System.Collections.Concurrent;
+    using Serilog;
+
     /// <summary>
     /// TaskManager manages the background tasks.
     /// </summary>
@@ -14,9 +15,26 @@ namespace InTouch_AutoFile
     {
         private bool taskRunning = false; //Is a task currently running.
         private readonly ConcurrentQueue<Action> backgroundTasks = new ConcurrentQueue<Action>(); //Queue for the tasks.
-        public ConcurrentQueue<Action> BackgroundTasks { get => backgroundTasks; }
+        public ConcurrentQueue<Action> BackgroundTasks
+        {
+            get
+            {
+                return backgroundTasks;
+            }
+        }
         private Action currentAction;
-        public Action CurrentAction { get => currentAction; set => currentAction = value; }
+        public Action CurrentAction
+        {
+            get
+            {
+                return currentAction;
+            }
+
+            set
+            {
+                currentAction = value;
+            }
+        }
 
         private readonly TaskFileInbox taskFileIndox; //A task to manage sorting the Inbox folder.
         private readonly TaskFileSentItems taskFileSentItems; //A task to manage sorting the Sent Items folder.
@@ -62,13 +80,13 @@ namespace InTouch_AutoFile
                     {
                         taskRunning = true;
                         BackgroundTasks.TryDequeue(out currentAction);
-                        Log.Message("TaskManager Starting " + currentAction.Target + "." + currentAction.Method.Name.ToString());
+                        Log.Information("TaskManager Starting " + currentAction.Target + "." + currentAction.Method.Name.ToString());
                         currentAction.Invoke();
                     }            
                 }
                 catch (Exception ex) 
                 { 
-                    Log.Error(ex);
+                    Log.Error(ex.Message, ex);
                     throw; 
                 }
             }

@@ -1,18 +1,18 @@
-﻿using Microsoft.Office.Tools.Ribbon;
-using System;
-using System.Runtime.InteropServices;
-using Outlook = Microsoft.Office.Interop.Outlook;
-using System.Drawing;
-using System.Windows.Forms;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace InTouch_AutoFile
+﻿namespace InTouch_AutoFile
 {
+    using Microsoft.Office.Tools.Ribbon;
+    using System;
+    using System.Runtime.InteropServices;
+    using Outlook = Microsoft.Office.Interop.Outlook;
+    using System.Drawing;
+    using System.Windows.Forms;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Serilog;
 
-    //TODO Redo the task to include cancelation so they don't run into each other.
+    //TODO Redo the task to include cancellation so they don't run into each other.
     /// <summary>
-    /// A Ribbon extention for the Outlook Explorer Menu to provide buttons for InTouch.
+    /// A Ribbon extension for the Outlook Explorer Menu to provide buttons for InTouch.
     /// </summary>
     public partial class RibExplorer
     {
@@ -96,7 +96,7 @@ namespace InTouch_AutoFile
             {
                 if (email.Sender is object)
                 {
-                    //Try to find contact from email adddress.
+                    //Try to find contact from email address.
                     InTouchContact emailContact = null;
                     try
                     {
@@ -108,13 +108,13 @@ namespace InTouch_AutoFile
                     }
                     catch (Exception ex)
                     {
-                        Log.Error(ex);
+                        Log.Error(ex.Message, ex);
                         throw;
                     }
 
                     if (emailContact is object)
                     {
-                        //Make the Contact Button visable and add the image and name to the button.
+                        //Make the Contact Button visible and add the image and name to the button.
                         Globals.Ribbons.RibExplorer.buttonContact.Visible = true;
 
                         if (emailContact.FullName is object)
@@ -157,8 +157,6 @@ namespace InTouch_AutoFile
                     Globals.Ribbons.RibExplorer.buttonAddContactJunk.Visible = true;
                 }
 
-
-
                 //if (email.EntryID != lastEntryID)
                 //{
                 //    //Track last EntryID as Explorer_SelectionChange event fires twice for each selection change.
@@ -188,7 +186,7 @@ namespace InTouch_AutoFile
                     }
                     catch (Exception ex) 
                     { 
-                        Log.Error(ex); 
+                        Log.Error(ex.Message,ex); 
                         throw; 
                     }
 
@@ -217,7 +215,7 @@ namespace InTouch_AutoFile
                     }
                     catch (Exception ex) 
                     { 
-                        Log.Error(ex);
+                        Log.Error(ex.Message, ex);
                         throw; 
                     }
 
@@ -277,7 +275,7 @@ namespace InTouch_AutoFile
                         }
                         catch (Exception ex)
                         {
-                            Log.Error(ex);
+                            Log.Error(ex.Message, ex);
                             InTouch.ShowInTouchSettings = false;
                         }
                         finally
@@ -336,7 +334,7 @@ namespace InTouch_AutoFile
                         }
                         catch (Exception ex)
                         {
-                            Log.Error(ex);
+                            Log.Error(ex.Message, ex);
                             InTouch.ShowInTouchSettings = false;
                         }
                         finally
@@ -394,7 +392,7 @@ namespace InTouch_AutoFile
                         }
                         catch (Exception ex)
                         {
-                            Log.Error(ex);
+                            Log.Error(ex.Message, ex);
                             InTouch.ShowInTouchSettings = false;
                         }
                         finally

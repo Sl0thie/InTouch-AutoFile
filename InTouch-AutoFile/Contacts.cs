@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using Outlook = Microsoft.Office.Interop.Outlook;
-
-namespace InTouch_AutoFile
+﻿namespace InTouch_AutoFile
 {
+    using System;
+    using System.Collections.Generic;
+    using Outlook = Microsoft.Office.Interop.Outlook;
+    using Serilog;
+
     /// <summary>
     /// Provide methods related to Outlook Contacts.
     /// </summary>
@@ -28,7 +29,7 @@ namespace InTouch_AutoFile
         {
             folder = Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderContacts) as Outlook.Folder;
             folders = folder.Folders;
-            CreateEmailLookup();
+            CreateEmailLookup();          
         }
 
         public Outlook.ContactItem FindContactFromEmailAddress(string emailAddress)
@@ -56,7 +57,7 @@ namespace InTouch_AutoFile
                     }
                     catch(Exception ex)
                     {
-                        Log.Error(ex);
+                        Log.Error(ex.Message,ex);
                         throw;
                     }
                 }
@@ -214,39 +215,54 @@ namespace InTouch_AutoFile
 
         private static void AddContactsFolderToEmailLookup(Outlook.Folder contactsFolder)
         {
-            foreach (var nextObject in contactsFolder.Items)
+            
+            try
             {
-                if (nextObject is Outlook.ContactItem contact)
+                foreach (object nextObject in contactsFolder.Items)
                 {
-                    AddContactToEmailLookup(contact, contactsFolder);
+                    if (nextObject is Outlook.ContactItem contact)
+                    {
+                        AddContactToEmailLookup(contact, contactsFolder);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message, ex);
             }
         }
 
         private static void AddContactToEmailLookup(Outlook.ContactItem contact, Outlook.Folder contactsFolder)
         {
-            if (contact.Email1Address is object)
+            try
             {
-                if (!emailLookup.ContainsKey(contact.Email1Address))
+                if (contact.Email1Address is object)
                 {
-                    emailLookup.Add(contact.Email1Address.ToLower(), new Tuple<string, string>(contact.EntryID, contactsFolder.StoreID));
+                    if (!emailLookup.ContainsKey(contact.Email1Address))
+                    {
+                        emailLookup.Add(contact.Email1Address.ToLower(), new Tuple<string, string>(contact.EntryID, contactsFolder.StoreID));
+                    }
+                }
+
+                if (contact.Email2Address is object)
+                {
+                    if (!emailLookup.ContainsKey(contact.Email2Address))
+                    {
+                        emailLookup.Add(contact.Email2Address.ToLower(), new Tuple<string, string>(contact.EntryID, contactsFolder.StoreID));
+                    }
+                }
+
+                if (contact.Email3Address is object)
+                {
+                    if (!emailLookup.ContainsKey(contact.Email3Address))
+                    {
+                        emailLookup.Add(contact.Email3Address.ToLower(), new Tuple<string, string>(contact.EntryID, contactsFolder.StoreID));
+                    }
                 }
             }
-
-            if (contact.Email2Address is object)
+            catch (Exception ex)
             {
-                if (!emailLookup.ContainsKey(contact.Email2Address))
-                {
-                    emailLookup.Add(contact.Email2Address.ToLower(), new Tuple<string, string>(contact.EntryID, contactsFolder.StoreID));
-                }
-            }
-
-            if (contact.Email3Address is object)
-            {
-                if (!emailLookup.ContainsKey(contact.Email3Address))
-                {
-                    emailLookup.Add(contact.Email3Address.ToLower(), new Tuple<string, string>(contact.EntryID, contactsFolder.StoreID));
-                }
+                Log.Error(ex.Message, ex);
             }
         }
     }

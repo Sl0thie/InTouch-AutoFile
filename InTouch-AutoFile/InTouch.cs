@@ -1,8 +1,9 @@
-﻿using Outlook = Microsoft.Office.Interop.Outlook;
-using System.Runtime.InteropServices;
-
-namespace InTouch_AutoFile
+﻿namespace InTouch_AutoFile
 {
+    using Outlook = Microsoft.Office.Interop.Outlook;
+    using System.Runtime.InteropServices;
+    using Serilog;
+
     public static class InTouch
     {
         public static Contacts Contacts
@@ -62,7 +63,7 @@ namespace InTouch_AutoFile
             }
             catch (System.Collections.Generic.KeyNotFoundException)
             {
-                Log.Message("Exception managed > Store not found. (" + folders[0] + ")");
+                Log.Information("Exception managed > Store not found. (" + folders[0] + ")");
                 returnValue = false;
             }
 
@@ -80,11 +81,13 @@ namespace InTouch_AutoFile
                 {
                     if (ex.HResult == -2147221233)
                     {
+                        Log.Error(ex.Message, ex);
                         returnValue = false;
-                        Log.Message("Exception Managed > Folder not found. (" + folderPath + ")");
+                        Log.Information("Exception Managed > Folder not found. (" + folderPath + ")");
                     }
                     else
                     {
+                        Log.Error(ex.Message, ex);
                         throw;
                     }
                 }
@@ -108,7 +111,7 @@ namespace InTouch_AutoFile
             }
             catch (System.Collections.Generic.KeyNotFoundException ex)
             {
-                Log.Error(ex);
+                Log.Error(ex.Message, ex);
                 throw;
                 //Op.LogMessage("Exception managed > Store not found. (" + folders[0] + ")");
                 //return;
@@ -126,15 +129,12 @@ namespace InTouch_AutoFile
                 {
                     if (ex.HResult == -2147221233)
                     {
-                        Log.Message("Exception Managed > Creating Folder.");
+                        Log.Information("Exception Managed > Creating Folder.");
                         folder.Folders.Add(folders[i]);
                         folder = subFolders[folders[i]] as Outlook.Folder;
                     }
 
-
                 }
-
-
 
             }
             //}
@@ -151,7 +151,6 @@ namespace InTouch_AutoFile
 
             //        folder = subFolders[folders[i]] as Outlook.Folder;
 
-
             //    }
             //    else
             //    {
@@ -159,19 +158,7 @@ namespace InTouch_AutoFile
             //    }
             //}
 
-
-
             if (folder is object) { Marshal.ReleaseComObject(folder); }
-
-
-
-
-
-
-
-
-
-
 
             //Outlook.MAPIFolder folder = Globals.ThisAddIn.Application.Session.GetDefaultFolder(rootFolderType) as Outlook.Folder;
             //Outlook.Folders subFolders;

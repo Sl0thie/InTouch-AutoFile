@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Threading;
-using Outlook = Microsoft.Office.Interop.Outlook;
-
-namespace InTouch_AutoFile
+﻿namespace InTouch_AutoFile
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Runtime.InteropServices;
+    using System.Threading;
+    using Outlook = Microsoft.Office.Interop.Outlook;
+    using Serilog;
+
     internal class TaskFileInbox
     {
         private readonly Action callBack;
@@ -21,7 +22,7 @@ namespace InTouch_AutoFile
             //If task is enabled in the settings then start task.
             if (Properties.Settings.Default.TaskInbox)
             {
-                Log.Message("Starting FileInbox Task.");
+                Log.Information("Starting FileInbox Task.");
                 Thread backgroundThread = new Thread(new ThreadStart(BackgroundProcess))
                 {
                     Name = "AF.FileInbox",
@@ -57,13 +58,13 @@ namespace InTouch_AutoFile
                             break;
                         case "Follow up":
                             //Don't process follow up. This leave them in the inbox for manual processing.
-                            Log.Message("Move Email : Email has a flag set.");
+                            Log.Information("Move Email : Email has a flag set.");
                             break;
                         case null:
                             mailToProcess.Add(email);
                             break;
                         default:
-                            Log.Message("Move Email : Unknown Flag Request Type.");
+                            Log.Information("Move Email : Unknown Flag Request Type.");
                             break;
                     }
                 }
@@ -91,7 +92,7 @@ namespace InTouch_AutoFile
             }
             catch(Exception ex)
             {
-                Log.Error(ex);
+                Log.Error(ex.Message, ex);
                 ok = false;
             }
 
@@ -104,7 +105,7 @@ namespace InTouch_AutoFile
             }
             catch (InvalidComObjectException ex)
             {
-                Log.Error(ex);
+                Log.Error(ex.Message, ex);
             }
 
             if (contact is object)
@@ -125,21 +126,21 @@ namespace InTouch_AutoFile
                     switch (mailContact.DeliveryAction)
                     {
                         case EmailAction.None: //Don't do anything to the email.
-                            Log.Message("Move Email : Delivery Action set to None. " + email.Sender.Address);
+                            Log.Information("Move Email : Delivery Action set to None. " + email.Sender.Address);
                             break;
 
                         case EmailAction.Delete: //Delete the email if it is passed its action date.
-                            Log.Message("Move Email : Deleting email from " + email.Sender.Address);
+                            Log.Information("Move Email : Deleting email from " + email.Sender.Address);
                             email.Delete();
                             break;
 
                         case EmailAction.Move: //Move the email if its passed its action date.
-                            Log.Message("Move Email : Moving email from " + email.Sender.Address);
+                            Log.Information("Move Email : Moving email from " + email.Sender.Address);
                             MoveEmailToFolder(mailContact.InboxPath, email);
                             break;
 
                         case EmailAction.Junk:
-                            Log.Message("Move Email to Junk: Moving email from " + email.Sender.Address);
+                            Log.Information("Move Email to Junk: Moving email from " + email.Sender.Address);
                             email.Move(Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderJunk));
                             break;
                     }
@@ -149,21 +150,21 @@ namespace InTouch_AutoFile
                     switch (mailContact.ReadAction)
                     {
                         case EmailAction.None: //Don't do anything to the email.
-                            Log.Message("Move Email : Read Action set to None. " + email.Sender.Address);
+                            Log.Information("Move Email : Read Action set to None. " + email.Sender.Address);
                             break;
 
                         case EmailAction.Delete: //Delete the email.
-                            Log.Message("Move Email : Deleting email from " + email.Sender.Address);
+                            Log.Information("Move Email : Deleting email from " + email.Sender.Address);
                             email.Delete();
                             break;
 
                         case EmailAction.Move: //Move the email.
-                            Log.Message("Move Email : Moving email from " + email.Sender.Address);
+                            Log.Information("Move Email : Moving email from " + email.Sender.Address);
                             MoveEmailToFolder(mailContact.InboxPath, email);
                             break;
 
                         case EmailAction.Junk:
-                            Log.Message("Move Email to Junk: Moving email from " + email.Sender.Address);
+                            Log.Information("Move Email to Junk: Moving email from " + email.Sender.Address);
                             email.Move(Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderJunk));
                             break;
                     }
@@ -189,7 +190,7 @@ namespace InTouch_AutoFile
                 }
                 catch(Exception ex)
                 {
-                    Log.Error(ex);
+                    Log.Error(ex.Message, ex);
                 }
 
                 try
@@ -198,16 +199,16 @@ namespace InTouch_AutoFile
                     {
                         if (email.SenderEmailAddress is object)
                         {
-                            Log.Message("Move Email : No Contact for " + email.SenderEmailAddress);
+                            Log.Information("Move Email : No Contact for " + email.SenderEmailAddress);
                         }
                         else
                         {
-                            Log.Message("Move Email : No Contact (detatched object?)");
+                            Log.Information("Move Email : No Contact (detatched object?)");
                         }
                     }
                     else
                     {
-                        Log.Message("Move Email : No email object");
+                        Log.Information("Move Email : No email object");
                     }
                     //Op.LogMessage("SenderName         : " + email.SenderName);
                     //Op.LogMessage("SentOnBehalfOfName : " + email.SentOnBehalfOfName);
@@ -217,7 +218,7 @@ namespace InTouch_AutoFile
                 }
                 catch (Exception ex)
                 {
-                    Log.Error(ex);
+                    Log.Error(ex.Message, ex);
                 }
 
                 //Log the details.
@@ -246,7 +247,7 @@ namespace InTouch_AutoFile
             }
             catch (System.Collections.Generic.KeyNotFoundException)
             {
-                Log.Message("Exception managed > Store not found. (" + folders[0] + ")");
+                Log.Information("Exception managed > Store not found. (" + folders[0] + ")");
                 return;
             }
 
@@ -262,11 +263,12 @@ namespace InTouch_AutoFile
             {
                 if (ex.HResult == -2147221233)
                 {
-                    Log.Message("Exception Managed > Folder not found. (" + folderPath + ")");
+                    Log.Information("Exception Managed > Folder not found. (" + folderPath + ")");
                     return;
                 }
                 else
                 {
+                    Log.Error(ex.Message,ex);
                     throw;
                 }
             }

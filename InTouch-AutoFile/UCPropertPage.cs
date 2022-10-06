@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Runtime.InteropServices;
-using Outlook = Microsoft.Office.Interop.Outlook;
-
-namespace InTouch_AutoFile
+﻿namespace InTouch_AutoFile
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Data;
+    using System.Drawing;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Windows.Forms;
+    using System.Runtime.InteropServices;
+    using Outlook = Microsoft.Office.Interop.Outlook;
+
     [ComVisible(true)]
     public sealed partial class UCPropertPage : UserControl, Outlook.PropertyPage
     {

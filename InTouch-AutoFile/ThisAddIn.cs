@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Resources;
 using Outlook = Microsoft.Office.Interop.Outlook;
+using Serilog;
 
 [assembly: CLSCompliant(false)]
 [assembly: NeutralResourcesLanguage("en-US")]
@@ -19,9 +20,17 @@ namespace InTouch_AutoFile
     {
 
         //TODO Make ribbon icon change color to suit theme.
-
         private void ThisAddIn_Startup(object sender, EventArgs e)
         {
+            // Setup logging for the application.
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.Debug()
+                .WriteTo.File("InTouch-Autofile - .txt", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
+
+            Log.Information("Add-in Startup");
+
             //Add event handlers for when mail is incoming or outgoing.
             Application.NewMailEx += Application_NewMailEx;
             Application.ItemSend += Application_ItemSend;
@@ -33,7 +42,7 @@ namespace InTouch_AutoFile
             InTouch.TaskManager.EnqueueInboxTask();
             InTouch.TaskManager.EnqueueSentItemsTask();
 
-            GetRegistrySettings();           
+            GetRegistrySettings();
         }
 
         private void GetRegistrySettings()
@@ -89,7 +98,6 @@ namespace InTouch_AutoFile
             this.Startup += new System.EventHandler(ThisAddIn_Startup);
             this.Shutdown += new System.EventHandler(ThisAddIn_Shutdown);
         }
-
 
         private void ThisAddIn_Shutdown(object sender, EventArgs e)
         {

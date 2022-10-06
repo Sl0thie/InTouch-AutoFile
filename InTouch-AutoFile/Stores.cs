@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using Outlook = Microsoft.Office.Interop.Outlook;
-
-namespace InTouch_AutoFile
+﻿namespace InTouch_AutoFile
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Runtime.InteropServices;
+    using System.Text;
+    using System.Threading.Tasks;
+    using Outlook = Microsoft.Office.Interop.Outlook;
+    using Serilog;
+
     public class ITStore
     {
         public string DisplayName
@@ -72,7 +73,7 @@ namespace InTouch_AutoFile
                     if (store is object)
                         Marshal.ReleaseComObject(store);
                 }
-                Log.Message(storeList);
+                Log.Information(storeList);
             }
             finally
             {

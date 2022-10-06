@@ -1,14 +1,15 @@
-﻿using System;
-using System.Drawing;
-using System.IO;
-using System.Net;
-using System.Runtime.InteropServices;
-using System.Threading;
-using System.Windows.Forms;
-using Outlook = Microsoft.Office.Interop.Outlook;
-
-namespace InTouch_AutoFile
+﻿namespace InTouch_AutoFile
 {
+    using System;
+    using System.Drawing;
+    using System.IO;
+    using System.Net;
+    using System.Runtime.InteropServices;
+    using System.Threading;
+    using System.Windows.Forms;
+    using Outlook = Microsoft.Office.Interop.Outlook;
+    using Serilog;
+
     public partial class FormInTouchNewContact : Form
     {
         private Outlook.MailItem email;
@@ -110,11 +111,11 @@ namespace InTouch_AutoFile
             }
             catch (Exception ex)
             {
-                Log.Error(ex);
+                Log.Error(ex.Message, ex);
                 throw;
             }
 
-            Log.Message("Website : " + website);
+            Log.Information("Website : " + website);
             return website;
         }
 
@@ -128,7 +129,7 @@ namespace InTouch_AutoFile
 
             if (website.Length > 0)
             {
-                using (var client = new WebClient())
+                using (WebClient client = new WebClient())
                 {
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
                     ServicePointManager.Expect100Continue = true;
@@ -146,25 +147,25 @@ namespace InTouch_AutoFile
                             htmlString = htmlString.Substring(htmlString.IndexOf("<link rel=\"apple - touch - icon\"") + 32);
                             htmlString = htmlString.Substring(htmlString.IndexOf("href=\"") + 6);
                             htmlString = htmlString.Substring(0, htmlString.IndexOf("\""));
-                            Log.Message("HTML String : " + htmlString);
+                            Log.Information("HTML String : " + htmlString);
                         }
                         else if (htmlString.IndexOf("<link rel=\"shortcut icon\"") >= 0)
                         {
                             htmlString = htmlString.Substring(htmlString.IndexOf("<link rel=\"shortcut icon\"") + 25);
                             htmlString = htmlString.Substring(htmlString.IndexOf("href=\"") + 6);
                             htmlString = htmlString.Substring(0, htmlString.IndexOf("\""));
-                            Log.Message("HTML String : " + htmlString);
+                            Log.Information("HTML String : " + htmlString);
                         }
                         else if (htmlString.IndexOf("<link rel=\"icon\"") >= 0)
                         {
                             htmlString = htmlString.Substring(htmlString.IndexOf("<link rel=\"icon\"") + 16);
                             htmlString = htmlString.Substring(htmlString.IndexOf("href=\"") + 6);
                             htmlString = htmlString.Substring(0, htmlString.IndexOf("\""));
-                            Log.Message("HTML String : " + htmlString);
+                            Log.Information("HTML String : " + htmlString);
                         }
                         else
                         {
-                            Log.Message("HTML String : " + htmlString);
+                            Log.Information("HTML String : " + htmlString);
                         }
 
                         if (htmlString.Substring(0, 1) == "/")
@@ -177,17 +178,17 @@ namespace InTouch_AutoFile
                         switch (ex.HResult)
                         {
                             case -2146233079:
-                                Log.Message("Exception Managed > The remote name could not be resolved.");
+                                Log.Information("Exception Managed > The remote name could not be resolved.");
                                 break;
 
                             default:
-                                Log.Error(ex);
+                                Log.Error(ex.Message, ex);
                                 throw;
                         }
                     }
                     catch (Exception ex)
                     {
-                        Log.Error(ex);
+                        Log.Error(ex.Message, ex);
                         throw;
                     }
 
@@ -199,7 +200,7 @@ namespace InTouch_AutoFile
                         }
                         catch (Exception ex)
                         {
-                            Log.Error(ex);
+                            Log.Error(ex.Message, ex);
                             throw;
                         }
 
