@@ -101,7 +101,7 @@
 
             try
             {
-                contact = InTouch.Contacts.FindContactFromEmailAddress(email.Sender.Address);
+                contact = Contacts.FindContactFromEmailAddress(email.Sender.Address);
             }
             catch (InvalidComObjectException ex)
             {
@@ -116,7 +116,11 @@
             {
                 ok = false;
             }
-            if (mailContact is null) { ok = false; }
+
+            if (mailContact is null)
+            {
+                ok = false;
+            }
 
             if (ok)
             {
@@ -225,9 +229,15 @@
                 
             }
 
-            if (email is object) { Marshal.ReleaseComObject(email); }
-            if (contact is object) { Marshal.ReleaseComObject(contact); }
+            if (email is object)
+            {
+                Marshal.ReleaseComObject(email);
+            }
 
+            if (contact is object)
+            {
+                Marshal.ReleaseComObject(contact);
+            }
         }
 
         /// <summary>
@@ -245,7 +255,7 @@
             {
                 folder = InTouch.Stores.StoresLookup[folders[0]].RootFolder;
             }
-            catch (System.Collections.Generic.KeyNotFoundException)
+            catch (KeyNotFoundException)
             {
                 Log.Information("Exception managed > Store not found. (" + folders[0] + ")");
                 return;

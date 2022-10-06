@@ -59,7 +59,7 @@
 
             try
             {
-                folder = InTouch.Stores.StoresLookup[folders[0]].RootFolder;
+                folder = Stores.StoresLookup[folders[0]].RootFolder;
             }
             catch (System.Collections.Generic.KeyNotFoundException)
             {
@@ -93,7 +93,10 @@
                 }
             }
 
-            if (folder is object) { Marshal.ReleaseComObject(folder); }
+            if (folder is object)
+            {
+                Marshal.ReleaseComObject(folder);
+            }
 
             return returnValue;
         }
@@ -107,7 +110,7 @@
 
             try
             {
-                folder = InTouch.Stores.StoresLookup[folders[0]].RootFolder;
+                folder = Stores.StoresLookup[folders[0]].RootFolder;
             }
             catch (System.Collections.Generic.KeyNotFoundException ex)
             {
@@ -133,9 +136,7 @@
                         folder.Folders.Add(folders[i]);
                         folder = subFolders[folders[i]] as Outlook.Folder;
                     }
-
                 }
-
             }
             //}
             //catch (COMException ex)
@@ -158,7 +159,10 @@
             //    }
             //}
 
-            if (folder is object) { Marshal.ReleaseComObject(folder); }
+            if (folder is object)
+            {
+                Marshal.ReleaseComObject(folder);
+            }
 
             //Outlook.MAPIFolder folder = Globals.ThisAddIn.Application.Session.GetDefaultFolder(rootFolderType) as Outlook.Folder;
             //Outlook.Folders subFolders;
@@ -192,7 +196,6 @@
 
             //if (folder is object) { Marshal.ReleaseComObject(folder); }
         }
-
     }
 }
 

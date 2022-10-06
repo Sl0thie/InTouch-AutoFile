@@ -16,7 +16,7 @@
     /// </summary>
     public partial class RibExplorer
     {
-        private Outlook.Explorer explorer; //The current explorer object.
+        private Outlook.Explorer explorer; // The current explorer object.
 
         private string lastEntryID = "";
 
@@ -32,8 +32,7 @@
             explorer.SelectionChange += Explorer_SelectionChange;
 
             //Fire for first event that is missed during startup.
-            Task.Factory.StartNew(() => { CheckEmailSender(); });
-            //Parallel.Invoke(() => { CheckEmailSender(); });
+            Task.Factory.StartNew(() => CheckEmailSender());
         }
 
         /// <summary>
@@ -44,7 +43,7 @@
         {
             if (Globals.ThisAddIn.Application.ActiveExplorer().Selection.Count > 0)
             {
-                //check the first object selected.
+                // Check the first object selected.
                 dynamic selectedObject = Globals.ThisAddIn.Application.ActiveExplorer().Selection[1];
 
                 if (selectedObject.EntryID != lastEntryID)
@@ -52,18 +51,29 @@
                     lastEntryID = selectedObject.EntryID;
                     ClearButtons();
 
-                    //If it's a mail object then manage based on the contacts details.
+                    // If it's a mail object then manage based on the contacts details.
                     if (selectedObject is Outlook.MailItem)
                     {
-                        Task.Factory.StartNew(() => { CheckEmailSender(); });
-                        //Parallel.Invoke(() => { CheckEmailSender(); });
+                        Task.Factory.StartNew(() => CheckEmailSender());
                     }
-                    else if (selectedObject is Outlook.TaskItem) { lastEntryID = ""; }
-                    else if (selectedObject is Outlook.ContactItem) { lastEntryID = ""; }
-                    else if (selectedObject is Outlook.AppointmentItem) { lastEntryID = ""; }
+                    else if (selectedObject is Outlook.TaskItem)
+                    {
+                        lastEntryID = "";
+                    }
+                    else if (selectedObject is Outlook.ContactItem)
+                    {
+                        lastEntryID = "";
+                    }
+                    else if (selectedObject is Outlook.AppointmentItem)
+                    {
+                        lastEntryID = "";
+                    }
                 }
 
-                if (selectedObject is object) Marshal.ReleaseComObject(selectedObject);
+                if (selectedObject is object)
+                {
+                    Marshal.ReleaseComObject(selectedObject);
+                }
             }
             else
             {
@@ -73,7 +83,7 @@
 
         private static void ClearButtons()
         {
-            //Clear all the buttons.
+            // Clear all the buttons.
             Globals.Ribbons.RibExplorer.buttonContact.Visible = false;
             Globals.Ribbons.RibExplorer.buttonAddContactPersonal.Visible = false;
             Globals.Ribbons.RibExplorer.buttonAddContactOther.Visible = false;
@@ -83,7 +93,7 @@
             Application.DoEvents();
         }
 
-        private void CheckEmailSender()
+        private static void CheckEmailSender()
         {
             Outlook.Selection selection = Globals.ThisAddIn.Application.ActiveExplorer().Selection;
             Outlook.MailItem email = null;
@@ -96,11 +106,11 @@
             {
                 if (email.Sender is object)
                 {
-                    //Try to find contact from email address.
+                    // Try to find contact from email address.
                     InTouchContact emailContact = null;
                     try
                     {
-                        Outlook.ContactItem contact = InTouch.Contacts.FindContactFromEmailAddress(email.Sender.Address);
+                        Outlook.ContactItem contact = Contacts.FindContactFromEmailAddress(email.Sender.Address);
                         if (contact is object)
                         {
                             emailContact = new InTouchContact(contact);
@@ -114,7 +124,7 @@
 
                     if (emailContact is object)
                     {
-                        //Make the Contact Button visible and add the image and name to the button.
+                        // Make the Contact Button visible and add the image and name to the button.
                         Globals.Ribbons.RibExplorer.buttonContact.Visible = true;
 
                         if (emailContact.FullName is object)
@@ -135,16 +145,17 @@
                             Globals.Ribbons.RibExplorer.buttonContact.Image = Properties.Resources.contact;
                         }
 
-                        //Check if the contact details are valid.
+                        // Check if the contact details are valid.
                         if (!emailContact.CheckDetails())
                         {
                             Globals.Ribbons.RibExplorer.buttonAttention.Visible = true;
                         }
+
                         emailContact.SaveAndDispose();
                     }
                     else
                     {
-                        //As the contact was not found, make the add contact button visible.
+                        // As the contact was not found, make the add contact button visible.
                         Globals.Ribbons.RibExplorer.buttonAddContactPersonal.Visible = true;
                         Globals.Ribbons.RibExplorer.buttonAddContactOther.Visible = true;
                         Globals.Ribbons.RibExplorer.buttonAddContactJunk.Visible = true;
@@ -155,34 +166,31 @@
                     Globals.Ribbons.RibExplorer.buttonAddContactPersonal.Visible = true;
                     Globals.Ribbons.RibExplorer.buttonAddContactOther.Visible = true;
                     Globals.Ribbons.RibExplorer.buttonAddContactJunk.Visible = true;
-                }
-
-                //if (email.EntryID != lastEntryID)
-                //{
-                //    //Track last EntryID as Explorer_SelectionChange event fires twice for each selection change.
-                //    lastEntryID = email.EntryID;
-
-                //    ClearButtons();
-
-                    
-                //}              
+                }          
             }
 
-            if (email is object) { Marshal.ReleaseComObject(email); }
-            if (selection is object) { Marshal.ReleaseComObject(selection); }
+            if (email is object)
+            {
+                Marshal.ReleaseComObject(email);
+            }
+
+            if (selection is object)
+            {
+                Marshal.ReleaseComObject(selection);
+            }
         }
 
         private void ButtonContact_Click(object sender, RibbonControlEventArgs e)
         {
             if (Globals.ThisAddIn.Application.ActiveExplorer().Selection.Count > 0)
             {
-                Object selectedObject = Globals.ThisAddIn.Application.ActiveExplorer().Selection[1];
+                object selectedObject = Globals.ThisAddIn.Application.ActiveExplorer().Selection[1];
                 if (selectedObject is Outlook.MailItem email)
                 {
                     Outlook.ContactItem emailContact;
                     try
                     {
-                        emailContact = InTouch.Contacts.FindContactFromEmailAddress(email.Sender.Address);
+                        emailContact = Contacts.FindContactFromEmailAddress(email.Sender.Address);
                     }
                     catch (Exception ex) 
                     { 
@@ -194,10 +202,22 @@
                     {
                         emailContact.Display(false);
                     }
-                    if (email is object) { Marshal.ReleaseComObject(email); }
-                    if (emailContact is object) { Marshal.ReleaseComObject(emailContact); }
+
+                    if (email is object)
+                    {
+                        Marshal.ReleaseComObject(email);
+                    }
+
+                    if (emailContact is object)
+                    {
+                        Marshal.ReleaseComObject(emailContact);
+                    }
                 }
-                if (selectedObject is object) { Marshal.ReleaseComObject(selectedObject); }
+
+                if (selectedObject is object)
+                {
+                    Marshal.ReleaseComObject(selectedObject);
+                }
             }
         }
 
@@ -205,13 +225,13 @@
         {
             if (Globals.ThisAddIn.Application.ActiveExplorer().Selection.Count > 0)
             {
-                Object selectedObject = Globals.ThisAddIn.Application.ActiveExplorer().Selection[1];
+                object selectedObject = Globals.ThisAddIn.Application.ActiveExplorer().Selection[1];
                 if (selectedObject is Outlook.MailItem email)
                 {
                     Outlook.ContactItem emailContact;
                     try
                     {
-                        emailContact = InTouch.Contacts.FindContactFromEmailAddress(email.Sender.Address);
+                        emailContact = Contacts.FindContactFromEmailAddress(email.Sender.Address);
                     }
                     catch (Exception ex) 
                     { 
@@ -224,10 +244,22 @@
                         InTouch.ShowInTouchSettings = true;
                         emailContact.Display(false);
                     }
-                    if (email is object) { Marshal.ReleaseComObject(email); }
-                    if (emailContact is object) { Marshal.ReleaseComObject(emailContact); }
+
+                    if (email is object)
+                    {
+                        Marshal.ReleaseComObject(email);
+                    }
+
+                    if (emailContact is object)
+                    {
+                        Marshal.ReleaseComObject(emailContact);
+                    }
                 }
-                if (selectedObject is object) { Marshal.ReleaseComObject(selectedObject); }
+
+                if (selectedObject is object)
+                {
+                    Marshal.ReleaseComObject(selectedObject);
+                }
             }
         }
 
@@ -235,7 +267,7 @@
         {
             if (Globals.ThisAddIn.Application.ActiveExplorer().Selection.Count > 0)
             {
-                Object selectedObject = Globals.ThisAddIn.Application.ActiveExplorer().Selection[1];
+                object selectedObject = Globals.ThisAddIn.Application.ActiveExplorer().Selection[1];
                 if (selectedObject is Outlook.MailItem email)
                 {
                     if (email is object)
@@ -271,7 +303,7 @@
 
                             lastEntryID = "";
                             //TODO Remove these.
-                            Parallel.Invoke(() => { CheckEmailSender(); });
+                            Parallel.Invoke(() => CheckEmailSender());
                         }
                         catch (Exception ex)
                         {
@@ -280,14 +312,33 @@
                         }
                         finally
                         {
-                            if (contact != null) Marshal.ReleaseComObject(contact);
-                            if (items != null) Marshal.ReleaseComObject(items);
-                            if (contactsFolder != null) Marshal.ReleaseComObject(contactsFolder);
+                            if (contact != null)
+                            {
+                                Marshal.ReleaseComObject(contact);
+                            }
+
+                            if (items != null)
+                            {
+                                Marshal.ReleaseComObject(items);
+                            }
+
+                            if (contactsFolder != null)
+                            {
+                                Marshal.ReleaseComObject(contactsFolder);
+                            }
                         }
                     }
-                    if (email is object) { Marshal.ReleaseComObject(email); }
+
+                    if (email is object)
+                    {
+                        Marshal.ReleaseComObject(email);
+                    }
                 }
-                if (selectedObject is object) { Marshal.ReleaseComObject(selectedObject); }
+
+                if (selectedObject is object)
+                {
+                    Marshal.ReleaseComObject(selectedObject);
+                }
             }
         }
 
@@ -295,7 +346,7 @@
         {
             if (Globals.ThisAddIn.Application.ActiveExplorer().Selection.Count > 0)
             {
-                Object selectedObject = Globals.ThisAddIn.Application.ActiveExplorer().Selection[1];
+                object selectedObject = Globals.ThisAddIn.Application.ActiveExplorer().Selection[1];
                 if (selectedObject is Outlook.MailItem email)
                 {
                     if (email is object)
@@ -330,7 +381,7 @@
                             contact.Display(true);
 
                             lastEntryID = "";
-                            Parallel.Invoke(() => { CheckEmailSender(); });
+                            Parallel.Invoke(() => CheckEmailSender());
                         }
                         catch (Exception ex)
                         {
@@ -339,14 +390,33 @@
                         }
                         finally
                         {
-                            if (contact != null) Marshal.ReleaseComObject(contact);
-                            if (items != null) Marshal.ReleaseComObject(items);
-                            if (contactsFolder != null) Marshal.ReleaseComObject(contactsFolder);
+                            if (contact != null)
+                            {
+                                Marshal.ReleaseComObject(contact);
+                            }
+
+                            if (items != null)
+                            {
+                                Marshal.ReleaseComObject(items);
+                            }
+
+                            if (contactsFolder != null)
+                            {
+                                Marshal.ReleaseComObject(contactsFolder);
+                            }
                         }
                     }
-                    if (email is object) { Marshal.ReleaseComObject(email); }
+
+                    if (email is object)
+                    {
+                        Marshal.ReleaseComObject(email);
+                    }
                 }
-                if (selectedObject is object) { Marshal.ReleaseComObject(selectedObject); }
+
+                if (selectedObject is object)
+                {
+                    Marshal.ReleaseComObject(selectedObject);
+                }
             }
         }
 
@@ -354,7 +424,7 @@
         {
             if (Globals.ThisAddIn.Application.ActiveExplorer().Selection.Count > 0)
             {
-                Object selectedObject = Globals.ThisAddIn.Application.ActiveExplorer().Selection[1];
+                object selectedObject = Globals.ThisAddIn.Application.ActiveExplorer().Selection[1];
                 if (selectedObject is Outlook.MailItem email)
                 {
                     if (email is object)
@@ -388,7 +458,7 @@
                             contact.Display(true);
 
                             lastEntryID = "";
-                            Parallel.Invoke(() => { CheckEmailSender(); });
+                            Parallel.Invoke(() => CheckEmailSender());
                         }
                         catch (Exception ex)
                         {
@@ -397,14 +467,33 @@
                         }
                         finally
                         {
-                            if (contact != null) Marshal.ReleaseComObject(contact);
-                            if (items != null) Marshal.ReleaseComObject(items);
-                            if (contactsFolder != null) Marshal.ReleaseComObject(contactsFolder);
+                            if (contact != null)
+                            {
+                                Marshal.ReleaseComObject(contact);
+                            }
+
+                            if (items != null)
+                            {
+                                Marshal.ReleaseComObject(items);
+                            }
+
+                            if (contactsFolder != null)
+                            {
+                                Marshal.ReleaseComObject(contactsFolder);
+                            }
                         }
                     }
-                    if (email is object) { Marshal.ReleaseComObject(email); }
+
+                    if (email is object)
+                    {
+                        Marshal.ReleaseComObject(email);
+                    }
                 }
-                if (selectedObject is object) { Marshal.ReleaseComObject(selectedObject); }
+
+                if (selectedObject is object)
+                {
+                    Marshal.ReleaseComObject(selectedObject);
+                }
             }
         }
     }

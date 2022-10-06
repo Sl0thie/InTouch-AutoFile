@@ -11,8 +11,7 @@
 
     using Serilog;
 
-
-    partial class MailItemHeader
+    internal partial class MailItemHeader
     {
         #region Form Region Factory 
 
@@ -30,12 +29,12 @@
 
         #endregion
 
-        Outlook.MailItem email;
+        private Outlook.MailItem email;
 
         // Occurs before the form region is displayed.
         // Use this.OutlookItem to get a reference to the current Outlook item.
         // Use this.OutlookFormRegion to get a reference to the form region.
-        private void MailItemHeader_FormRegionShowing(object sender, System.EventArgs e)
+        private void MailItemHeader_FormRegionShowing(object sender, EventArgs e)
         {
             if (InTouch.DarkTheme)
             {
@@ -43,7 +42,7 @@
                 RichText.ForeColor = System.Drawing.Color.White;
             }
 
-            email = this.OutlookItem as Outlook.MailItem;
+            email = OutlookItem as Outlook.MailItem;
 
             Outlook.PropertyAccessor mapiPropertyAccessor;
             //string propertyName = "http://schemas.microsoft.com/mapi/proptag/0x0065001F";
@@ -61,15 +60,18 @@
         // Occurs when the form region is closed.
         // Use this.OutlookItem to get a reference to the current Outlook item.
         // Use this.OutlookFormRegion to get a reference to the form region.
-        private void MailItemHeader_FormRegionClosed(object sender, System.EventArgs e)
+        private void MailItemHeader_FormRegionClosed(object sender, EventArgs e)
         {
-            if (email is object) Marshal.ReleaseComObject(email);
+            if (email is object)
+            {
+                Marshal.ReleaseComObject(email);
+            }
         }
 
         private void MailItemHeader_Resize(object sender, EventArgs e)
         {
-            RichText.Width = this.Width;
-            RichText.Height = this.Height;           
+            RichText.Width = Width;
+            RichText.Height = Height;           
         }
     }
 }

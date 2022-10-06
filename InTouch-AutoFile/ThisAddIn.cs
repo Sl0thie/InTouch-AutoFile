@@ -45,10 +45,10 @@ namespace InTouch_AutoFile
             GetRegistrySettings();
         }
 
-        private void GetRegistrySettings()
+        private static void GetRegistrySettings()
         {
             object uIThemeObj = Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\Office\16.0\Common","UI Theme",null);
-            UInt32 uITheme = System.Convert.ToUInt32(uIThemeObj);
+            uint uITheme = Convert.ToUInt32(uIThemeObj);
             //Op.LogMessage("UI Theme : " + uITheme.ToString());
             switch (uITheme)
             {
@@ -95,8 +95,8 @@ namespace InTouch_AutoFile
         /// </summary>
         private void InternalStartup()
         {
-            this.Startup += new System.EventHandler(ThisAddIn_Startup);
-            this.Shutdown += new System.EventHandler(ThisAddIn_Shutdown);
+            Startup += new EventHandler(ThisAddIn_Startup);
+            Shutdown += new EventHandler(ThisAddIn_Shutdown);
         }
 
         private void ThisAddIn_Shutdown(object sender, EventArgs e)

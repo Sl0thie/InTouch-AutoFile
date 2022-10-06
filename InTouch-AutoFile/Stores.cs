@@ -71,14 +71,19 @@
                     storesLookup.Add(store.DisplayName, nextStore) ;
 
                     if (store is object)
+                    {
                         Marshal.ReleaseComObject(store);
+                    }
                 }
+
                 Log.Information(storeList);
             }
             finally
             {
                 if (stores is object)
+                {
                     Marshal.ReleaseComObject(stores);
+                }
             }
         }
     }

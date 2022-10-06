@@ -57,6 +57,7 @@
                         break;
                 }
             }
+
             ComboBoxContactFolder.Text = Properties.Settings.Default.LastContactFolder;
         }
 
@@ -72,7 +73,10 @@
             string propertyName = "http://schemas.microsoft.com/mapi/proptag/0x0065001F";
             mapiPropertyAccessor = Email.PropertyAccessor;
             string onBehalfEmailAddress = mapiPropertyAccessor.GetProperty(propertyName).ToString();
-            if (mapiPropertyAccessor is object) Marshal.ReleaseComObject(mapiPropertyAccessor);
+            if (mapiPropertyAccessor is object)
+            {
+                Marshal.ReleaseComObject(mapiPropertyAccessor);
+            }
 
             string website = GetWebSiteAddress(email.SenderEmailAddress);
             GetWebsitesFavicon(website);
@@ -142,6 +146,7 @@
                         {
                             TextBoxWebsite.Text = website;
                         }
+
                         if (htmlString.IndexOf("<link rel=\"apple - touch - icon\"") >= 0)
                         {
                             htmlString = htmlString.Substring(htmlString.IndexOf("<link rel=\"apple - touch - icon\"") + 32);
@@ -253,6 +258,7 @@
                     noProblems = false;
                 }
             }
+
             if (TextBoxEmail2.Text.Length > 0)
             {
                 if (Contacts.DoesLookupContain(TextBoxEmail2.Text))
@@ -261,6 +267,7 @@
                     noProblems = false;
                 }
             }
+
             if (TextBoxEmail3.Text.Length > 0)
             {
                 if (Contacts.DoesLookupContain(TextBoxEmail3.Text))
@@ -280,11 +287,13 @@
                     newContact.Email1Address = TextBoxEmail1.Text;
 
                 }
+
                 if (TextBoxEmail2.Text.Length > 0)
                 {
                     newContact.Email2Address = TextBoxEmail2.Text;
 
                 }
+
                 if (TextBoxEmail3.Text.Length > 0)
                 {
                     newContact.Email3Address = TextBoxEmail3.Text;
@@ -294,19 +303,27 @@
                 {
                     newContact.AddPicture("Icon.png");
                 }
+
                 newContact.Save();
                 Application.DoEvents();
                 Thread.Sleep(100);
                 //Op.EmailForCreatedContact = newContact.Email1Address;
                 if (ComboBoxContactFolder.Text != "Contacts")
                 {
-                    newContact.Move(InTouch.Contacts.Folders[ComboBoxContactFolder.Text]); ;
+                    newContact.Move(InTouch.Contacts.Folders[ComboBoxContactFolder.Text]);
+                    ;
                 }
                 //Op.NextFormRegion = ContactFormRegion.InTouchSettings;
-                if (newContact is object) { Marshal.ReleaseComObject(newContact); }
+                if (newContact is object)
+                {
+                    Marshal.ReleaseComObject(newContact);
+                }
             }
 
-            if (noProblems) { Close(); }
+            if (noProblems)
+            {
+                Close();
+            }
         }
 
         private void FormInTouchNewContact_FormClosing(object sender, FormClosingEventArgs e)
@@ -314,9 +331,10 @@
             Properties.Settings.Default.LastContactFolder = ComboBoxContactFolder.Text;
             Properties.Settings.Default.Save();
 
-            if (email is object) { Marshal.ReleaseComObject(email); }
+            if (email is object)
+            {
+                Marshal.ReleaseComObject(email);
+            }
         }
-
-        
     }
 }

@@ -18,9 +18,9 @@
 
         #region Required
 
-        const int captionDispID = -518;
-        bool isDirty = false;
-        Outlook.PropertyPageSite ppSite;
+        private const int captionDispID = -518;
+        private bool isDirty = false;
+        private Outlook.PropertyPageSite ppSite;
 
         public UCPropertPage()
         {
@@ -61,7 +61,7 @@
         private void UCPropertPage_Load(object sender, EventArgs e)
         {
             //Required to make 'Apply' button work.
-            Type myType = typeof(System.Object);
+            Type myType = typeof(object);
             string assembly = System.Text.RegularExpressions.Regex.Replace(myType.Assembly.CodeBase, "mscorlib.dll", "System.Windows.Forms.dll");
             assembly = System.Text.RegularExpressions.Regex.Replace(assembly, "file:///", "");
             assembly = System.Reflection.AssemblyName.GetAssemblyName(assembly).FullName;
@@ -81,27 +81,32 @@
 
         private void CheckBoxShowTasksButton_CheckedChanged(object sender, EventArgs e)
         {
-            isDirty = true; ppSite.OnStatusChange();
+            isDirty = true;
+            ppSite.OnStatusChange();
         }
 
         private void CheckBoxTaskInbox_CheckedChanged(object sender, EventArgs e)
         {
-            isDirty = true; ppSite.OnStatusChange();
+            isDirty = true;
+            ppSite.OnStatusChange();
         }
 
         private void CheckBoxTaskSent_CheckedChanged(object sender, EventArgs e)
         {
-            isDirty = true; ppSite.OnStatusChange();
+            isDirty = true;
+            ppSite.OnStatusChange();
         }
 
         private void CheckBoxTaskDuplicates_CheckedChanged(object sender, EventArgs e)
         {
-            isDirty = true; ppSite.OnStatusChange();
+            isDirty = true;
+            ppSite.OnStatusChange();
         }
 
         private void CheckBoxTaskRouting_CheckedChanged(object sender, EventArgs e)
         {
-            isDirty = true; ppSite.OnStatusChange();
+            isDirty = true;
+            ppSite.OnStatusChange();
         }
     }
 }

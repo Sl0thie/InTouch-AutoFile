@@ -30,7 +30,7 @@
         // Occurs before the form region is displayed.
         // Use this.OutlookItem to get a reference to the current Outlook item.
         // Use this.OutlookFormRegion to get a reference to the form region.
-        private void ContactInTouchSettings_FormRegionShowing(object sender, System.EventArgs e)
+        private void ContactInTouchSettings_FormRegionShowing(object sender, EventArgs e)
         {
             //change the colors on the FormRegion to suit the dark theme if needed.
             if ((BackColor.R == 38) && (BackColor.G == 38) && (BackColor.B == 38))
@@ -42,7 +42,7 @@
                 ButtonSendPath.ForeColor = Color.Black;
             }
 
-            contact = new InTouchContact(this.OutlookItem as Outlook.ContactItem);
+            contact = new InTouchContact(OutlookItem as Outlook.ContactItem);
 
             LabelDeliveryPath.Text = contact.InboxPath;
             LabelReadPath.Text = contact.InboxPath;
@@ -251,7 +251,7 @@
         // Occurs when the form region is closed.
         // Use this.OutlookItem to get a reference to the current Outlook item.
         // Use this.OutlookFormRegion to get a reference to the form region.
-        private void ContactInTouchSettings_FormRegionClosed(object sender, System.EventArgs e)
+        private void ContactInTouchSettings_FormRegionClosed(object sender, EventArgs e)
         {
             contact.SaveAndDispose();
         }
@@ -305,8 +305,15 @@
                 GetSamePath();
             }
 
-            if (pickedFolder is object) { Marshal.ReleaseComObject(pickedFolder); }
-            if (outlookNameSpace is object) { Marshal.ReleaseComObject(outlookNameSpace); }
+            if (pickedFolder is object)
+            {
+                Marshal.ReleaseComObject(pickedFolder);
+            }
+
+            if (outlookNameSpace is object)
+            {
+                Marshal.ReleaseComObject(outlookNameSpace);
+            }
         }
 
         private void RadioButtonDeliveryNoAction_CheckedChanged(object sender, EventArgs e)
@@ -383,8 +390,15 @@
                 GetSamePath();
             }
 
-            if (pickedFolder is object) { Marshal.ReleaseComObject(pickedFolder); }
-            if (outlookNameSpace is object) { Marshal.ReleaseComObject(outlookNameSpace); }
+            if (pickedFolder is object)
+            {
+                Marshal.ReleaseComObject(pickedFolder);
+            }
+
+            if (outlookNameSpace is object)
+            {
+                Marshal.ReleaseComObject(outlookNameSpace);
+            }
         }
 
         private void RadioButtonReadNoAction_CheckedChanged(object sender, EventArgs e)
@@ -439,6 +453,7 @@
                 {
                     folderPath = folderPath.Remove(0, 2);
                 }
+
                 Log.Information("FolderPath : " + folderPath);
             }
             else
@@ -449,8 +464,15 @@
             LabelSendPathValue.Text = folderPath;
             contact.SentPath = folderPath;
 
-            if (pickedFolder is object) { Marshal.ReleaseComObject(pickedFolder); }
-            if (outlookNameSpace is object) { Marshal.ReleaseComObject(outlookNameSpace); }
+            if (pickedFolder is object)
+            {
+                Marshal.ReleaseComObject(pickedFolder);
+            }
+
+            if (outlookNameSpace is object)
+            {
+                Marshal.ReleaseComObject(outlookNameSpace);
+            }
         }
 
         private void RadioButtonSendNoAction_CheckedChanged(object sender, EventArgs e)

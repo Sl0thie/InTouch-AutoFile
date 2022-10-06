@@ -11,7 +11,6 @@
 
     using Serilog;
 
-
     public partial class RibContact
     {
         private Outlook.Inspector inspector;

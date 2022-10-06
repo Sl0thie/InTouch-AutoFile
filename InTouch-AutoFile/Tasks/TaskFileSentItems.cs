@@ -12,12 +12,9 @@
     internal class TaskFileSentItems
     {
         private readonly System.Action callBack;
-        private readonly IList<Outlook.MailItem> mailToProcess = new List<Outlook.MailItem>();
-
-        private IList<string> EntryIds = new List<string>();
-
+        //private readonly IList<Outlook.MailItem> mailToProcess = new List<Outlook.MailItem>();
+        private readonly IList<string> EntryIds = new List<string>();
         private string folderId;
-
 
         public TaskFileSentItems(System.Action callBack)
         {
@@ -52,13 +49,13 @@
 
         private void GetIds()
         {
-            folderId = Globals.ThisAddIn.Application.GetNamespace("MAPI").GetDefaultFolder(Outlook.OlDefaultFolders.olFolderSentMail).StoreID;
+            folderId = Globals.ThisAddIn.Application.GetNamespace("MAPI").GetDefaultFolder(OlDefaultFolders.olFolderSentMail).StoreID;
 
             try
             {
-                foreach (object nextItem in Globals.ThisAddIn.Application.GetNamespace("MAPI").GetDefaultFolder(Outlook.OlDefaultFolders.olFolderSentMail).Items)
+                foreach (object nextItem in Globals.ThisAddIn.Application.GetNamespace("MAPI").GetDefaultFolder(OlDefaultFolders.olFolderSentMail).Items)
                 {
-                    if (nextItem is Outlook.MailItem email)
+                    if (nextItem is MailItem email)
                     {
                         //Only process emails that don't have a flag.
                         switch (email.FlagRequest)
@@ -84,7 +81,6 @@
             {
                 Log.Error(ex.Message, ex);
             }
-
         }
 
         private void ProcessEntryIds()
@@ -97,11 +93,11 @@
 
         private void ProcessEntry(string entryId)
         {
-            Outlook.MailItem email = null;
+            MailItem email = null;
 
             try
             {
-                email = (Outlook.MailItem)Globals.ThisAddIn.Application.GetNamespace("MAPI").GetItemFromID(entryId, folderId);
+                email = (MailItem)Globals.ThisAddIn.Application.GetNamespace("MAPI").GetItemFromID(entryId, folderId);
 
             }
             catch(System.Exception ex)
@@ -115,8 +111,8 @@
                 //Check if the email has a Sender.
                 if (email.Recipients is object)
                 {
-                    Outlook.Recipients recipients = email.Recipients;
-                    Outlook.Recipient recipient = recipients[1];
+                    Recipients recipients = email.Recipients;
+                    Recipient recipient = recipients[1];
 
                     if (recipient is object)
                     {
@@ -124,7 +120,7 @@
                         {
                             //Find the Contact associated with the Sender.
                             InTouchContact mailContact = null;
-                            Outlook.ContactItem contact = InTouch.Contacts.FindContactFromEmailAddress(recipient.Address);
+                            ContactItem contact = Contacts.FindContactFromEmailAddress(recipient.Address);
                             if (contact is object)
                             {
                                 mailContact = new InTouchContact(contact);
@@ -150,6 +146,7 @@
                                         MoveEmailToFolder(mailContact.SentPath, email);
                                         break;
                                 }
+
                                 mailContact.SaveAndDispose();
                             }
                         }
@@ -164,7 +161,7 @@
                         try
                         {
                             //Get the 'On Behalf' property from the email.
-                            Outlook.PropertyAccessor mapiPropertyAccessor;
+                            PropertyAccessor mapiPropertyAccessor;
                             string propertyName = "http://schemas.microsoft.com/mapi/proptag/0x0065001F";
                             mapiPropertyAccessor = email.PropertyAccessor;
                             string onBehalfEmailAddress = mapiPropertyAccessor.GetProperty(propertyName).ToString();
@@ -196,7 +193,7 @@
             }
         }
 
-        private static void ProcessEmail(Outlook.MailItem email)
+        private static void ProcessEmail(MailItem email)
         {
 
             //Email may have been deleted or moved so check if it exists first.
@@ -205,8 +202,8 @@
                 //Check if the email has a Sender.
                 if (email.Recipients is object)
                 {
-                    Outlook.Recipients recipients = email.Recipients;
-                    Outlook.Recipient recipient = recipients[1];
+                    Recipients recipients = email.Recipients;
+                    Recipient recipient = recipients[1];
 
                     if (recipient is object)
                     {
@@ -214,7 +211,7 @@
                         {
                             //Find the Contact associated with the Sender.
                             InTouchContact mailContact = null;
-                            Outlook.ContactItem contact = InTouch.Contacts.FindContactFromEmailAddress(recipient.Address);
+                            ContactItem contact = Contacts.FindContactFromEmailAddress(recipient.Address);
                             if (contact is object)
                             {
                                 mailContact = new InTouchContact(contact);
@@ -240,6 +237,7 @@
                                         MoveEmailToFolder(mailContact.SentPath, email);
                                         break;
                                 }
+
                                 mailContact.SaveAndDispose();
                             }
                         }
@@ -254,7 +252,7 @@
                         try
                         {
                             //Get the 'On Behalf' property from the email.
-                            Outlook.PropertyAccessor mapiPropertyAccessor;
+                            PropertyAccessor mapiPropertyAccessor;
                             string propertyName = "http://schemas.microsoft.com/mapi/proptag/0x0065001F";
                             mapiPropertyAccessor = email.PropertyAccessor;
                             string onBehalfEmailAddress = mapiPropertyAccessor.GetProperty(propertyName).ToString();
@@ -286,17 +284,17 @@
         /// </summary>
         /// <param name="folderPath">The path to the folder to move the email.</param>
         /// <param name="email">The mailitem to move.</param>
-        private static void MoveEmailToFolder(string folderPath, Outlook.MailItem email)
+        private static void MoveEmailToFolder(string folderPath, MailItem email)
         {
             string[] folders = folderPath.Split('\\');
-            Outlook.MAPIFolder folder;
-            Outlook.Folders subFolders;
+            MAPIFolder folder;
+            Folders subFolders;
 
             try
             {
                 folder = InTouch.Stores.StoresLookup[folders[0]].RootFolder;
             }
-            catch (System.Collections.Generic.KeyNotFoundException)
+            catch (KeyNotFoundException)
             {
                 Log.Information("Exception managed > Store not found. (" + folders[0] + ")");
                 return;
@@ -307,7 +305,7 @@
                 for (int i = 1; i <= folders.GetUpperBound(0); i++)
                 {
                     subFolders = folder.Folders;
-                    folder = subFolders[folders[i]] as Outlook.Folder;
+                    folder = subFolders[folders[i]] as Folder;
                 }
             }
             catch (COMException ex)

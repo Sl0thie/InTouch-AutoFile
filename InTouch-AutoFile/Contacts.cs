@@ -32,7 +32,7 @@
             CreateEmailLookup();          
         }
 
-        public Outlook.ContactItem FindContactFromEmailAddress(string emailAddress)
+        public static Outlook.ContactItem FindContactFromEmailAddress(string emailAddress)
         {
             //validate the emailAddress parameter.
             if(emailAddress is object)
