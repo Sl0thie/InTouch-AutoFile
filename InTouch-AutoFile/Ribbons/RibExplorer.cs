@@ -513,7 +513,7 @@
                             contact.UserProperties["InTouchContact"].Value = data;
                             
                             contact.Save();
-                            contact.Display(true);
+                            //contact.Display(true);
 
                             lastEntryID = "";
                             Parallel.Invoke(() => CheckEmailSender());
