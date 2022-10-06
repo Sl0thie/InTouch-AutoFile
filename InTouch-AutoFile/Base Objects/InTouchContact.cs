@@ -2602,7 +2602,7 @@
             }
             catch(FormatException)
             {
-                //Contact data is from an older format. It will be saved in the newer format when the contact is saved.
+                // Contact data is from an older format. It will be saved in the newer format when the contact is saved.
                 Log.Information("Exception Managed.");
             }
             catch(IndexOutOfRangeException)
@@ -2701,7 +2701,7 @@
         }
 
         /// <summary>
-        /// Check if the extention properties are valid for this contact.
+        /// Check if the extension properties are valid for this contact.
         /// </summary>
         /// <returns>Returns false is there are any problems with the properties.</returns>
         public bool CheckDetails()

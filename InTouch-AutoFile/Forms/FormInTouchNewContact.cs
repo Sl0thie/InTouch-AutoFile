@@ -32,7 +32,6 @@
 
         private void FormInTouchNewContact_Load(object sender, EventArgs e)
         {
-            //Op.EmailForCreatedContact = null;
             ComboBoxContactFolder.Items.Add("Contacts");
             foreach (Outlook.Folder nextContactFolder in InTouch.Contacts.Folders)
             {
@@ -68,7 +67,7 @@
 
         private void SetupForm()
         {
-            //Get the 'On Behalf' property from the email.
+            // Get the 'On Behalf' property from the email.
             Outlook.PropertyAccessor mapiPropertyAccessor;
             string propertyName = "http://schemas.microsoft.com/mapi/proptag/0x0065001F";
             mapiPropertyAccessor = Email.PropertyAccessor;
@@ -91,7 +90,7 @@
 
         private static string GetWebSiteAddress(string senderEmailAddress)
         {
-            //Get website address.
+            // Get website address.
             string website;
             try
             {
@@ -222,14 +221,14 @@
         {
             bool noProblems = true;
 
-            //Reset the colors of controls that change.
+            // Reset the colors of controls that change.
             TextBoxFullName.BackColor = colorBackground;
             ComboBoxContactFolder.BackColor = colorBackground;
             TextBoxEmail1.BackColor = colorBackground;
             TextBoxEmail2.BackColor = colorBackground;
             TextBoxEmail3.BackColor = colorBackground;
 
-            //Check for required fields.
+            // Check for required fields.
             if (TextBoxFullName.Text.Length == 0)
             {
                 TextBoxFullName.BackColor = colorBackgroundError;
@@ -242,14 +241,14 @@
                 noProblems = false;
             }
 
-            //Check if there is at least one email.
+            // Check if there is at least one email.
             if ((TextBoxEmail1.Text.Length == 0) && (TextBoxEmail1.Text.Length == 0) && (TextBoxEmail1.Text.Length == 0))
             {
                 TextBoxEmail1.BackColor = colorBackgroundError;
                 noProblems = false;
             }
 
-            //Check the email addresses are already in use.
+            // Check the email addresses are already in use.
             if (TextBoxEmail1.Text.Length > 0)
             {
                 if (Contacts.DoesLookupContain(TextBoxEmail1.Text))
@@ -277,7 +276,7 @@
                 }
             }
 
-            //If all requirement are met then create the contact and add the details.
+            // If all requirement are met then create the contact and add the details.
             if (noProblems)
             {
                 Outlook.ContactItem newContact = Globals.ThisAddIn.Application.CreateItem(Outlook.OlItemType.olContactItem) as Outlook.ContactItem;
@@ -307,13 +306,15 @@
                 newContact.Save();
                 Application.DoEvents();
                 Thread.Sleep(100);
-                //Op.EmailForCreatedContact = newContact.Email1Address;
+
+                // Op.EmailForCreatedContact = newContact.Email1Address;
                 if (ComboBoxContactFolder.Text != "Contacts")
                 {
                     newContact.Move(InTouch.Contacts.Folders[ComboBoxContactFolder.Text]);
                     ;
                 }
-                //Op.NextFormRegion = ContactFormRegion.InTouchSettings;
+
+                // Op.NextFormRegion = ContactFormRegion.InTouchSettings;
                 if (newContact is object)
                 {
                     Marshal.ReleaseComObject(newContact);

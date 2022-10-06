@@ -31,14 +31,14 @@ namespace InTouch_AutoFile
 
             Log.Information("Add-in Startup");
 
-            //Add event handlers for when mail is incoming or outgoing.
+            // Add event handlers for when mail is incoming or outgoing.
             Application.NewMailEx += Application_NewMailEx;
             Application.ItemSend += Application_ItemSend;
 
-            //Event handler for the Outlook Add-in's Options page.
+            // Event handler for the Outlook Add-in's Options page.
             Application.OptionsPagesAdd += new Outlook.ApplicationEvents_11_OptionsPagesAddEventHandler(Application_OptionsPagesAdd);
 
-            //Queue up tasks to start up after launch.
+            // Queue up tasks to start up after launch.
             InTouch.TaskManager.EnqueueInboxTask();
             InTouch.TaskManager.EnqueueSentItemsTask();
 
@@ -49,20 +49,20 @@ namespace InTouch_AutoFile
         {
             object uIThemeObj = Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\Office\16.0\Common","UI Theme",null);
             uint uITheme = Convert.ToUInt32(uIThemeObj);
-            //Op.LogMessage("UI Theme : " + uITheme.ToString());
+            
             switch (uITheme)
             {
-                case 0://Colorful
-                case 3://Darkgrey
+                case 0:// Colorful
+                case 3:// Dark gray
                     InTouch.DarkTheme = false;
                     break;
-                case 4://Black
+                case 4:// Black
                     InTouch.DarkTheme = true;
                     break;
-                case 5://White
+                case 5:// White
                     InTouch.DarkTheme = false;
                     break;
-                case 6://System Settings
+                case 6:// System Settings
                     //TODO Check the system setting for the color. (High Contrast)
                     InTouch.DarkTheme = false;
                     break;

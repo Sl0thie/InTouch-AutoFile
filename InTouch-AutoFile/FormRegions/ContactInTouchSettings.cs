@@ -32,7 +32,7 @@
         // Use this.OutlookFormRegion to get a reference to the form region.
         private void ContactInTouchSettings_FormRegionShowing(object sender, EventArgs e)
         {
-            //change the colors on the FormRegion to suit the dark theme if needed.
+            // Change the colors on the FormRegion to suit the dark theme if needed.
             if ((BackColor.R == 38) && (BackColor.G == 38) && (BackColor.B == 38))
             {
                 ForeColor = Color.White;
@@ -113,12 +113,12 @@
         /// This is currently going though trial and error to see what suits best.
         /// The issue of Inbox/SentItem/Junk folders has come up
         /// where you can't choose the junk folder as a place to file mail.
-        /// and the sent folder is usally the same as the Inbox folder.
+        /// and the sent folder is usually the same as the Inbox folder.
         /// </remarks>
         private void AdjustForm()
         {
             bool readAction = false;
-            //Read actions are dependant on delivery actions because they happen after.
+            // Read actions are dependent on delivery actions because they happen after.
             if (RadioButtonDeliveryNoAction.Checked)
             {
                 RadioButtonReadNoAction.Enabled = true;
@@ -134,7 +134,7 @@
             }
             else if (RadioButtonDeliveryDelete.Checked)
             {
-                //Force the read action to be the same.
+                // Force the read action to be the same.
                 RadioButtonReadDelete.Checked = true;
 
                 RadioButtonReadNoAction.Enabled = false;
@@ -153,7 +153,7 @@
             }
             else if (RadioButtonDeliveryFile.Checked)
             {
-                //Force the read action to be the same.
+                // Force the read action to be the same.
                 RadioButtonReadFile.Checked = true;
 
                 RadioButtonReadNoAction.Enabled = false;
@@ -172,7 +172,7 @@
             }
             else
             {
-                //Force the read action to be the same.
+                // Force the read action to be the same.
                 RadioButtonReadJunk.Checked = true;
 
                 RadioButtonReadNoAction.Enabled = false;
@@ -233,7 +233,7 @@
                 LabelSendPathTitle.Visible = true;
                 LabelSendPathValue.Visible = true;
 
-                if (CheckBoxUseSamePathDelivery.Checked) //Only check the first checkbox as they are tied together.
+                if (CheckBoxUseSamePathDelivery.Checked) // Only check the first checkbox as they are tied together.
                 {
                     ButtonSendPath.Visible = false;
                     LabelSendPathTitle.Visible = false;

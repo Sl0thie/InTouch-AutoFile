@@ -6,7 +6,6 @@
     using Outlook = Microsoft.Office.Interop.Outlook;
     using System.Drawing;
     using System.Windows.Forms;
-    using System.Threading;
     using System.Threading.Tasks;
     using Serilog;
 
@@ -31,7 +30,7 @@
             explorer = Globals.ThisAddIn.Application.ActiveExplorer();
             explorer.SelectionChange += Explorer_SelectionChange;
 
-            //Fire for first event that is missed during startup.
+            // Fire for first event that is missed during startup.
             Task.Factory.StartNew(() => CheckEmailSender());
         }
 

@@ -10,7 +10,7 @@
     /// </summary>
     public class Contacts
     {
-        //This dictionary is used to provide a fast lookup for all the outlook contacts over all the contact folders.
+        // This dictionary is used to provide a fast lookup for all the outlook contacts over all the contact folders.
         private static readonly Dictionary<string, Tuple<string,string>> emailLookup = new Dictionary<string, Tuple<string, string>>();
 
         private readonly Outlook.Folder folder;
@@ -34,7 +34,7 @@
 
         public static Outlook.ContactItem FindContactFromEmailAddress(string emailAddress)
         {
-            //validate the emailAddress parameter.
+            // Validate the emailAddress parameter.
             if(emailAddress is object)
             {
                 emailAddress = emailAddress.ToLower();
@@ -44,7 +44,7 @@
                 throw new Exception("A value for emailAddress must be provided.");
             }
 
-            //Search with the email lookup first.
+            // Search with the email lookup first.
             if (emailAddress is object)
             {
                 emailAddress = emailAddress.ToLower();
@@ -63,93 +63,7 @@
                 }
             }
 
-            ////Next search the contact folder directly.
-            //foreach (var nextItem in folder.Items)
-            //{
-            //    if (nextItem is Outlook.ContactItem contact)
-            //    {
-            //        if(contact.Email1Address is object)
-            //        {
-            //            if (contact.Email1Address.ToLower() == emailAddress)
-            //            {
-            //                AddContactToEmailLookup(contact, folder);
-            //                return contact;
-            //            }
-            //        }
-            //        if (contact.Email2Address is object)
-            //        {
-            //            if (contact.Email2Address.ToLower() == emailAddress)
-            //            {
-            //                AddContactToEmailLookup(contact, folder);
-            //                return contact;
-            //            }
-            //        }
-            //        if (contact.Email3Address is object)
-            //        {
-            //            if (contact.Email3Address.ToLower() == emailAddress)
-            //            {
-            //                AddContactToEmailLookup(contact, folder);
-            //                return contact;
-            //            }
-            //        }                  
-            //    }
-            //}
-
-            ////Search remaining contacts folders. 
-            //foreach (Outlook.Folder nextContactFolder in folders)
-            //{
-            //    switch (nextContactFolder.Name)
-            //    {
-            //        case "Recipient Cache":                       
-            //            break;
-            //        case "Organizational Contacts":
-            //            break;
-            //        case "PeopleCentricConversation Buddies":
-            //            break;
-            //        case "GAL Contacts":
-            //            break;
-            //        case "{A9E2BC46-B3A0-4243-B315-60D991004455}":
-            //            break;
-            //        case "{06967759-274D-40B2-A3EB-D7F9E73727D7}":
-            //            break;
-            //        case "Companies":
-            //            break;
-            //        default:
-            //            foreach (var nextItem in nextContactFolder.Items)
-            //            {
-            //                if (nextItem is Outlook.ContactItem contact)
-            //                {
-            //                    if (contact.Email1Address is object)
-            //                    {
-            //                        if (contact.Email1Address.ToLower() == emailAddress)
-            //                        {
-            //                            AddContactToEmailLookup(contact, nextContactFolder);
-            //                            return contact;
-            //                        }
-            //                    }
-            //                    if (contact.Email2Address is object)
-            //                    {
-            //                        if (contact.Email2Address.ToLower() == emailAddress)
-            //                        {
-            //                            AddContactToEmailLookup(contact, nextContactFolder);
-            //                            return contact;
-            //                        }
-            //                    }
-            //                    if (contact.Email3Address is object)
-            //                    {
-            //                        if (contact.Email3Address.ToLower() == emailAddress)
-            //                        {
-            //                            AddContactToEmailLookup(contact, nextContactFolder);
-            //                            return contact;
-            //                        }
-            //                    }
-            //                }
-            //            }
-            //            break;
-            //    }
-            //}
-
-            //Lookup has failed to find the email address.
+            // Lookup has failed to find the email address.
             return null;
         }
 
@@ -174,13 +88,13 @@
 
         private void CreateEmailLookup()
         {
-            //Clear the EmailLookup before starting.
+            // Clear the EmailLookup before starting.
             emailLookup.Clear();
 
-            //Add the default contacts folder to EmailLookup.
+            // Add the default contacts folder to EmailLookup.
             AddContactsFolderToEmailLookup(folder);
 
-            //Only add visible contact folders. Outlook has several non visible folders.
+            // Only add visible contact folders. Outlook has several non visible folders.
             foreach (Outlook.Folder nextFolder in folders)
             {
                 switch (nextFolder.Name)

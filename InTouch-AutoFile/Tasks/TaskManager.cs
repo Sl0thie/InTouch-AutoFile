@@ -13,8 +13,8 @@
     /// and executes them one at a time.</remarks>
     public class TaskManager
     {
-        private bool taskRunning = false; //Is a task currently running.
-        private readonly ConcurrentQueue<Action> backgroundTasks = new ConcurrentQueue<Action>(); //Queue for the tasks.
+        private bool taskRunning = false; // Is a task currently running.
+        private readonly ConcurrentQueue<Action> backgroundTasks = new ConcurrentQueue<Action>(); // Queue for the tasks.
         public ConcurrentQueue<Action> BackgroundTasks
         {
             get
@@ -36,16 +36,16 @@
             }
         }
 
-        private readonly TaskFileInbox taskFileIndox; //A task to manage sorting the Inbox folder.
-        private readonly TaskFileSentItems taskFileSentItems; //A task to manage sorting the Sent Items folder.
+        private readonly TaskFileInbox taskFileIndox; // A task to manage sorting the Inbox folder.
+        private readonly TaskFileSentItems taskFileSentItems; // A task to manage sorting the Sent Items folder.
 
         public TaskManager()
         {
-            //Create task objects.
+            // Create task objects.
             taskFileIndox = new TaskFileInbox(TaskFinished);
             taskFileSentItems = new TaskFileSentItems(TaskFinished);
 
-            //Configure and start a background thread.
+            // Configure and start a background thread.
             Thread backgroundThread = new Thread(new ThreadStart(BackgroundProcess))
             {
                 Name = "AF.TaskManager",
@@ -69,11 +69,10 @@
         /// </summary>
         private void BackgroundProcess()
         {
-            bool DoLoop = true; //Keeps the main loop running.
+            bool DoLoop = true; // Keeps the main loop running.
             while (DoLoop)
             {
                 Thread.Sleep(5000);
-                //Thread.Sleep(60000);
                 try
                 {
                     if ((!taskRunning) && (!BackgroundTasks.IsEmpty))

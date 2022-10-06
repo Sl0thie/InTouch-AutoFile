@@ -1,12 +1,8 @@
 ﻿namespace InTouch_AutoFile
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Runtime.InteropServices;
-    using System.Text;
 
-    using Office = Microsoft.Office.Core;
     using Outlook = Microsoft.Office.Interop.Outlook;
 
     using Serilog;

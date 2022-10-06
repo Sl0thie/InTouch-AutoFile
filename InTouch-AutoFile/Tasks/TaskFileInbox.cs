@@ -19,7 +19,7 @@
 
         public void RunTask()
         {
-            //If task is enabled in the settings then start task.
+            // If task is enabled in the settings then start task.
             if (Properties.Settings.Default.TaskInbox)
             {
                 Log.Information("Starting FileInbox Task.");
@@ -50,14 +50,14 @@
             {
                 if (nextItem is Outlook.MailItem email)
                 {
-                    //Only process emails that don't have a flag.
+                    // Only process emails that don't have a flag.
                     switch (email.FlagRequest)
                     {
                         case "":
                             mailToProcess.Add(email);
                             break;
                         case "Follow up":
-                            //Don't process follow up. This leave them in the inbox for manual processing.
+                            // Don't process follow up. This leave them in the inbox for manual processing.
                             Log.Information("Move Email : Email has a flag set.");
                             break;
                         case null:
@@ -124,21 +124,21 @@
 
             if (ok)
             {
-                //If unread the process delivery option else process read option.
+                // If unread the process delivery option else process read option.
                 if (email.UnRead)
                 {
                     switch (mailContact.DeliveryAction)
                     {
-                        case EmailAction.None: //Don't do anything to the email.
+                        case EmailAction.None: // Don't do anything to the email.
                             Log.Information("Move Email : Delivery Action set to None. " + email.Sender.Address);
                             break;
 
-                        case EmailAction.Delete: //Delete the email if it is passed its action date.
+                        case EmailAction.Delete: // Delete the email if it is passed its action date.
                             Log.Information("Move Email : Deleting email from " + email.Sender.Address);
                             email.Delete();
                             break;
 
-                        case EmailAction.Move: //Move the email if its passed its action date.
+                        case EmailAction.Move: // Move the email if its passed its action date.
                             Log.Information("Move Email : Moving email from " + email.Sender.Address);
                             MoveEmailToFolder(mailContact.InboxPath, email);
                             break;
@@ -153,16 +153,16 @@
                 {
                     switch (mailContact.ReadAction)
                     {
-                        case EmailAction.None: //Don't do anything to the email.
+                        case EmailAction.None: // Don't do anything to the email.
                             Log.Information("Move Email : Read Action set to None. " + email.Sender.Address);
                             break;
 
-                        case EmailAction.Delete: //Delete the email.
+                        case EmailAction.Delete: // Delete the email.
                             Log.Information("Move Email : Deleting email from " + email.Sender.Address);
                             email.Delete();
                             break;
 
-                        case EmailAction.Move: //Move the email.
+                        case EmailAction.Move: // Move the email.
                             Log.Information("Move Email : Moving email from " + email.Sender.Address);
                             MoveEmailToFolder(mailContact.InboxPath, email);
                             break;
@@ -178,7 +178,7 @@
             }
             else
             {
-                //Get the 'On Behalf' property from the email.
+                // Get the 'On Behalf' property from the email.
                 string onBehalfEmailAddress;
 
                 try
@@ -214,19 +214,11 @@
                     {
                         Log.Information("Move Email : No email object");
                     }
-                    //Op.LogMessage("SenderName         : " + email.SenderName);
-                    //Op.LogMessage("SentOnBehalfOfName : " + email.SentOnBehalfOfName);
-                    //Op.LogMessage("ReplyRecipientNames: " + email.ReplyRecipientNames);
-                    //Op.LogMessage("On Behalf: " + onBehalfEmailAddress);
-                    //Op.LogMessage("");
                 }
                 catch (Exception ex)
                 {
                     Log.Error(ex.Message, ex);
                 }
-
-                //Log the details.
-                
             }
 
             if (email is object)

@@ -12,7 +12,6 @@
     internal class TaskFileSentItems
     {
         private readonly System.Action callBack;
-        //private readonly IList<Outlook.MailItem> mailToProcess = new List<Outlook.MailItem>();
         private readonly IList<string> EntryIds = new List<string>();
         private string folderId;
 
@@ -23,7 +22,7 @@
 
         public void RunTask()
         {
-            //If task is enabled in the settings then start task.
+            // If task is enabled in the settings then start task.
             if (Properties.Settings.Default.TaskInbox)
             {
                 Log.Information("Starting FileSent Task.");
@@ -105,10 +104,10 @@
                 Log.Error(ex.Message, ex);
             }
 
-            //Email may have been deleted or moved so check if it exists first.
+            // Email may have been deleted or moved so check if it exists first.
             if (email is object)
             {
-                //Check if the email has a Sender.
+                // Check if the email has a Sender.
                 if (email.Recipients is object)
                 {
                     Recipients recipients = email.Recipients;
@@ -118,7 +117,7 @@
                     {
                         try
                         {
-                            //Find the Contact associated with the Sender.
+                            // Find the Contact associated with the Sender.
                             InTouchContact mailContact = null;
                             ContactItem contact = Contacts.FindContactFromEmailAddress(recipient.Address);
                             if (contact is object)
@@ -126,22 +125,22 @@
                                 mailContact = new InTouchContact(contact);
                             }
 
-                            //If found then try to process the email.
+                            // If found then try to process the email.
                             if (mailContact is object)
                             {
 
                                 switch (mailContact.SentAction)
                                 {
-                                    case EmailAction.None: //Don't do anything to the email.
+                                    case EmailAction.None: // Don't do anything to the email.
                                         Log.Information("Sent Email : Delivery Action set to None. " + recipient.Address);
                                         break;
 
-                                    case EmailAction.Delete: //Delete the email if it is passed its action date.
+                                    case EmailAction.Delete: // Delete the email if it is passed its action date.
                                         Log.Information("Sent Email : Deleting email from " + recipient.Address);
                                         email.Delete();
                                         break;
 
-                                    case EmailAction.Move: //Move the email if its passed its action date.
+                                    case EmailAction.Move: // Move the email if its passed its action date.
                                         Log.Information("Sent Email : Moving email from " + recipient.Address);
                                         MoveEmailToFolder(mailContact.SentPath, email);
                                         break;
@@ -153,14 +152,13 @@
                         catch (System.Exception ex)
                         {
                             Log.Error(ex.Message, ex);
-                            //throw;
                         }
                     }
-                    else //If not found then just log it for the moment.
+                    else // If not found then just log it for the moment.
                     {
                         try
                         {
-                            //Get the 'On Behalf' property from the email.
+                            // Get the 'On Behalf' property from the email.
                             PropertyAccessor mapiPropertyAccessor;
                             string propertyName = "http://schemas.microsoft.com/mapi/proptag/0x0065001F";
                             mapiPropertyAccessor = email.PropertyAccessor;
@@ -170,7 +168,7 @@
                                 Marshal.ReleaseComObject(mapiPropertyAccessor);
                             }
 
-                            //Log the details.                           
+                            // Log the details.                           
                             Log.Information("Sent Email : No Contact for " + email.SenderEmailAddress);
                             Log.Information("SenderName         : " + email.SenderName);
                             Log.Information("SentOnBehalfOfName : " + email.SentOnBehalfOfName);
@@ -181,7 +179,6 @@
                         catch (System.Exception ex)
                         {
                             Log.Error(ex.Message, ex);
-                            //throw;
                         }
                     }
                 }
@@ -196,10 +193,10 @@
         private static void ProcessEmail(MailItem email)
         {
 
-            //Email may have been deleted or moved so check if it exists first.
+            // Email may have been deleted or moved so check if it exists first.
             if (email is object)
             {
-                //Check if the email has a Sender.
+                // Check if the email has a Sender.
                 if (email.Recipients is object)
                 {
                     Recipients recipients = email.Recipients;
@@ -209,7 +206,7 @@
                     {
                         try
                         {
-                            //Find the Contact associated with the Sender.
+                            // Find the Contact associated with the Sender.
                             InTouchContact mailContact = null;
                             ContactItem contact = Contacts.FindContactFromEmailAddress(recipient.Address);
                             if (contact is object)
@@ -217,22 +214,22 @@
                                 mailContact = new InTouchContact(contact);
                             }
 
-                            //If found then try to process the email.
+                            // If found then try to process the email.
                             if (mailContact is object)
                             {
 
                                 switch (mailContact.SentAction)
                                 {
-                                    case EmailAction.None: //Don't do anything to the email.
+                                    case EmailAction.None: // Don't do anything to the email.
                                         Log.Information("Sent Email : Delivery Action set to None. " + recipient.Address);
                                         break;
 
-                                    case EmailAction.Delete: //Delete the email if it is passed its action date.
+                                    case EmailAction.Delete: // Delete the email if it is passed its action date.
                                         Log.Information("Sent Email : Deleting email from " + recipient.Address);
                                         email.Delete();
                                         break;
 
-                                    case EmailAction.Move: //Move the email if its passed its action date.
+                                    case EmailAction.Move: // Move the email if its passed its action date.
                                         Log.Information("Sent Email : Moving email from " + recipient.Address);
                                         MoveEmailToFolder(mailContact.SentPath, email);
                                         break;
@@ -244,14 +241,13 @@
                         catch(System.Exception ex)
                         {
                             Log.Error(ex.Message, ex);
-                            //throw;
                         }                   
                     }
-                    else //If not found then just log it for the moment.
+                    else // If not found then just log it for the moment.
                     {
                         try
                         {
-                            //Get the 'On Behalf' property from the email.
+                            // Get the 'On Behalf' property from the email.
                             PropertyAccessor mapiPropertyAccessor;
                             string propertyName = "http://schemas.microsoft.com/mapi/proptag/0x0065001F";
                             mapiPropertyAccessor = email.PropertyAccessor;
@@ -261,7 +257,7 @@
                                 Marshal.ReleaseComObject(mapiPropertyAccessor);
                             }
 
-                            //Log the details.                           
+                            // Log the details.                           
                             Log.Information("Sent Email : No Contact for " + email.SenderEmailAddress);
                             Log.Information("SenderName         : " + email.SenderName);
                             Log.Information("SentOnBehalfOfName : " + email.SentOnBehalfOfName);
@@ -272,7 +268,6 @@
                         catch (System.Exception ex)
                         {
                             Log.Error(ex.Message, ex);
-                            //throw;
                         }
                     }
                 }
@@ -283,7 +278,7 @@
         /// Method to move the email from the Inbox to the specified folder.
         /// </summary>
         /// <param name="folderPath">The path to the folder to move the email.</param>
-        /// <param name="email">The mailitem to move.</param>
+        /// <param name="email">The mail item to move.</param>
         private static void MoveEmailToFolder(string folderPath, MailItem email)
         {
             string[] folders = folderPath.Split('\\');

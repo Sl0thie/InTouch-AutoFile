@@ -1,14 +1,7 @@
 ﻿namespace InTouch_AutoFile
 {
     using Microsoft.Office.Tools.Ribbon;
-
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-
     using Outlook = Microsoft.Office.Interop.Outlook;
-
     using Serilog;
 
     public partial class RibContact

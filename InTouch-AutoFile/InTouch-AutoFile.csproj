@@ -97,7 +97,8 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
     <DefineConstants>$(DefineConstants);DEBUG;TRACE</DefineConstants>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>InTouch-AutoFile.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>
+    </CodeAnalysisRuleSet>
     <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <!--
@@ -123,7 +124,8 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
     <DefineConstants>$(DefineConstants);TRACE</DefineConstants>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>InTouch-AutoFile.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>
+    </CodeAnalysisRuleSet>
   </PropertyGroup>
   <!--
     This section specifies references for the project.
@@ -299,7 +301,6 @@
       <DependentUpon>UCPropertPage.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />
-    <None Include="InTouch-AutoFile.ruleset" />
     <None Include="InTouch-AutoFile.snk" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

@@ -1,15 +1,9 @@
 ﻿namespace InTouch_AutoFile
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Runtime.InteropServices;
-    using System.Text;
 
-    using Office = Microsoft.Office.Core;
     using Outlook = Microsoft.Office.Interop.Outlook;
-
-    using Serilog;
 
     internal partial class MailItemHeader
     {
@@ -45,7 +39,6 @@
             email = OutlookItem as Outlook.MailItem;
 
             Outlook.PropertyAccessor mapiPropertyAccessor;
-            //string propertyName = "http://schemas.microsoft.com/mapi/proptag/0x0065001F";
             string propertyName = "http://schemas.microsoft.com/mapi/proptag/0x007D001E";
             mapiPropertyAccessor = email.PropertyAccessor;
             string emailHeader = mapiPropertyAccessor.GetProperty(propertyName).ToString();

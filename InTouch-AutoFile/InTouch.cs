@@ -116,8 +116,6 @@
             {
                 Log.Error(ex.Message, ex);
                 throw;
-                //Op.LogMessage("Exception managed > Store not found. (" + folders[0] + ")");
-                //return;
             }
 
             for (int i = 1; i <= folders.GetUpperBound(0); i++)
@@ -138,63 +136,11 @@
                     }
                 }
             }
-            //}
-            //catch (COMException ex)
-            //{
-            //    if (ex.HResult == -2147221233)
-            //    {
-            //        //returnValue = false;
-            //        //Op.LogMessage("Exception Managed > Folder not found. (" + folderPath + ")");
-
-            //        Op.LogMessage("Exception Managed > Creating Folder.");
-
-            //        folder.Folders.Add(folders[i]);
-
-            //        folder = subFolders[folders[i]] as Outlook.Folder;
-
-            //    }
-            //    else
-            //    {
-            //        throw;
-            //    }
-            //}
 
             if (folder is object)
             {
                 Marshal.ReleaseComObject(folder);
             }
-
-            //Outlook.MAPIFolder folder = Globals.ThisAddIn.Application.Session.GetDefaultFolder(rootFolderType) as Outlook.Folder;
-            //Outlook.Folders subFolders;
-            //string[] folders = folderPath.Split('\\');
-
-            //for (int i = 0; i <= folders.GetUpperBound(0); i++)
-            //{
-            //    subFolders = folder.Folders;
-
-            //    try
-            //    {
-            //        folder = subFolders[folders[i]] as Outlook.Folder;
-            //    }
-            //    catch (COMException ex)
-            //    {
-            //        if (ex.HResult == -2147221233)
-            //        {
-            //            Op.LogMessage("Exception Managed > Creating Folder.");
-
-            //            folder.Folders.Add(folders[i]);
-
-            //            folder = subFolders[folders[i]] as Outlook.Folder;
-            //        }
-            //        else
-            //        {
-            //            throw;
-            //        }
-            //    }
-
-            //}
-
-            //if (folder is object) { Marshal.ReleaseComObject(folder); }
         }
     }
 }
