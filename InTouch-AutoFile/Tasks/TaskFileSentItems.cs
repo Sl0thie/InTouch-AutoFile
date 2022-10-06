@@ -6,13 +6,20 @@
     using System.Threading;
     using Outlook = Microsoft.Office.Interop.Outlook;
     using Serilog;
+    using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
+    using Microsoft.Office.Interop.Outlook;
 
     internal class TaskFileSentItems
     {
-        private readonly Action callBack;
+        private readonly System.Action callBack;
         private readonly IList<Outlook.MailItem> mailToProcess = new List<Outlook.MailItem>();
 
-        public TaskFileSentItems(Action callBack)
+        private IList<string> EntryIds = new List<string>();
+
+        private string folderId;
+
+
+        public TaskFileSentItems(System.Action callBack)
         {
             this.callBack = callBack;
         }
@@ -36,51 +43,71 @@
 
         private void BackgroundProcess()
         {
-            CreateListOfSentItems();
-            ProcessListOfSentItems();
+            Thread.Sleep(10000);
+
+            GetIds();
+            ProcessEntryIds();
             callBack?.Invoke();
         }
 
-        /// <summary>
-        /// Create a List of items within the Sent Folder. Exclude appointments as well as flagged emails.
-        /// </summary>
-        private void CreateListOfSentItems()
+        private void GetIds()
         {
-            foreach (object nextItem in Globals.ThisAddIn.Application.GetNamespace("MAPI").GetDefaultFolder(Outlook.OlDefaultFolders.olFolderSentMail).Items)
+            folderId = Globals.ThisAddIn.Application.GetNamespace("MAPI").GetDefaultFolder(Outlook.OlDefaultFolders.olFolderSentMail).StoreID;
+
+            try
             {
-                if (nextItem is Outlook.MailItem email)
+                foreach (object nextItem in Globals.ThisAddIn.Application.GetNamespace("MAPI").GetDefaultFolder(Outlook.OlDefaultFolders.olFolderSentMail).Items)
                 {
-                    //Only process emails that don't have a flag.
-                    switch (email.FlagRequest)
+                    if (nextItem is Outlook.MailItem email)
                     {
-                        case "":
-                            mailToProcess.Add(email);
-                            break;
-                        case "Follow up":
-                            //Don't process follow up. This leave them in the inbox for manual processing.
-                            Log.Information("Move Email : Email has a flag set.");
-                            break;
-                        case null:
-                            mailToProcess.Add(email);
-                            break;
-                        default:
-                            Log.Information("Move Email : Unknown Flag Request Type.");
-                            break;
+                        //Only process emails that don't have a flag.
+                        switch (email.FlagRequest)
+                        {
+                            case "":
+                                EntryIds.Add(email.EntryID);
+                                break;
+                            case "Follow up":
+                                //Don't process follow up. This leave them in the inbox for manual processing.
+                                Log.Information("Move Email : Email has a flag set.");
+                                break;
+                            case null:
+                                EntryIds.Add(email.EntryID);
+                                break;
+                            default:
+                                Log.Information("Move Email : Unknown Flag Request Type.");
+                                break;
+                        }
                     }
                 }
             }
+            catch (System.Exception ex)
+            {
+                Log.Error(ex.Message, ex);
+            }
+
         }
 
-        private void ProcessListOfSentItems()
+        private void ProcessEntryIds()
         {
-            foreach (Outlook.MailItem nextItem in mailToProcess)
+            foreach (string nextItem in EntryIds)
             {
-                ProcessEmail(nextItem);
+                ProcessEntry(nextItem);
             }
         }
 
-        private static void ProcessEmail(Outlook.MailItem email)
+        private void ProcessEntry(string entryId)
         {
+            Outlook.MailItem email = null;
+
+            try
+            {
+                email = (Outlook.MailItem)Globals.ThisAddIn.Application.GetNamespace("MAPI").GetItemFromID(entryId, folderId);
+
+            }
+            catch(System.Exception ex)
+            {
+                Log.Error(ex.Message, ex);
+            }
 
             //Email may have been deleted or moved so check if it exists first.
             if (email is object)
@@ -93,35 +120,43 @@
 
                     if (recipient is object)
                     {
-                        //Find the Contact accociated with the Sender.
-                        InTouchContact mailContact = null;
-                        Outlook.ContactItem contact = InTouch.Contacts.FindContactFromEmailAddress(recipient.Address);
-                        if (contact is object)
+                        try
                         {
-                            mailContact = new InTouchContact(contact);
-                        }
-
-                        //If found then try to process the email.
-                        if (mailContact is object)
-                        {
-
-                            switch (mailContact.SentAction)
+                            //Find the Contact associated with the Sender.
+                            InTouchContact mailContact = null;
+                            Outlook.ContactItem contact = InTouch.Contacts.FindContactFromEmailAddress(recipient.Address);
+                            if (contact is object)
                             {
-                                case EmailAction.None: //Don't do anything to the email.
-                                    Log.Information("Sent Email : Delivery Action set to None. " + recipient.Address);
-                                    break;
-
-                                case EmailAction.Delete: //Delete the email if it is passed its action date.
-                                    Log.Information("Sent Email : Deleting email from " + recipient.Address);
-                                    email.Delete();
-                                    break;
-
-                                case EmailAction.Move: //Move the email if its passed its action date.
-                                    Log.Information("Sent Email : Moving email from " + recipient.Address);
-                                    MoveEmailToFolder(mailContact.SentPath, email);
-                                    break;
+                                mailContact = new InTouchContact(contact);
                             }
-                            mailContact.SaveAndDispose();
+
+                            //If found then try to process the email.
+                            if (mailContact is object)
+                            {
+
+                                switch (mailContact.SentAction)
+                                {
+                                    case EmailAction.None: //Don't do anything to the email.
+                                        Log.Information("Sent Email : Delivery Action set to None. " + recipient.Address);
+                                        break;
+
+                                    case EmailAction.Delete: //Delete the email if it is passed its action date.
+                                        Log.Information("Sent Email : Deleting email from " + recipient.Address);
+                                        email.Delete();
+                                        break;
+
+                                    case EmailAction.Move: //Move the email if its passed its action date.
+                                        Log.Information("Sent Email : Moving email from " + recipient.Address);
+                                        MoveEmailToFolder(mailContact.SentPath, email);
+                                        break;
+                                }
+                                mailContact.SaveAndDispose();
+                            }
+                        }
+                        catch (System.Exception ex)
+                        {
+                            Log.Error(ex.Message, ex);
+                            //throw;
                         }
                     }
                     else //If not found then just log it for the moment.
@@ -146,10 +181,100 @@
                             Log.Information("On Behalf: " + onBehalfEmailAddress);
                             Log.Information("");
                         }
-                        catch (Exception ex)
+                        catch (System.Exception ex)
                         {
                             Log.Error(ex.Message, ex);
-                            throw;
+                            //throw;
+                        }
+                    }
+                }
+            }
+
+            if (email is object)
+            {
+                Marshal.ReleaseComObject(email);
+            }
+        }
+
+        private static void ProcessEmail(Outlook.MailItem email)
+        {
+
+            //Email may have been deleted or moved so check if it exists first.
+            if (email is object)
+            {
+                //Check if the email has a Sender.
+                if (email.Recipients is object)
+                {
+                    Outlook.Recipients recipients = email.Recipients;
+                    Outlook.Recipient recipient = recipients[1];
+
+                    if (recipient is object)
+                    {
+                        try
+                        {
+                            //Find the Contact associated with the Sender.
+                            InTouchContact mailContact = null;
+                            Outlook.ContactItem contact = InTouch.Contacts.FindContactFromEmailAddress(recipient.Address);
+                            if (contact is object)
+                            {
+                                mailContact = new InTouchContact(contact);
+                            }
+
+                            //If found then try to process the email.
+                            if (mailContact is object)
+                            {
+
+                                switch (mailContact.SentAction)
+                                {
+                                    case EmailAction.None: //Don't do anything to the email.
+                                        Log.Information("Sent Email : Delivery Action set to None. " + recipient.Address);
+                                        break;
+
+                                    case EmailAction.Delete: //Delete the email if it is passed its action date.
+                                        Log.Information("Sent Email : Deleting email from " + recipient.Address);
+                                        email.Delete();
+                                        break;
+
+                                    case EmailAction.Move: //Move the email if its passed its action date.
+                                        Log.Information("Sent Email : Moving email from " + recipient.Address);
+                                        MoveEmailToFolder(mailContact.SentPath, email);
+                                        break;
+                                }
+                                mailContact.SaveAndDispose();
+                            }
+                        }
+                        catch(System.Exception ex)
+                        {
+                            Log.Error(ex.Message, ex);
+                            //throw;
+                        }                   
+                    }
+                    else //If not found then just log it for the moment.
+                    {
+                        try
+                        {
+                            //Get the 'On Behalf' property from the email.
+                            Outlook.PropertyAccessor mapiPropertyAccessor;
+                            string propertyName = "http://schemas.microsoft.com/mapi/proptag/0x0065001F";
+                            mapiPropertyAccessor = email.PropertyAccessor;
+                            string onBehalfEmailAddress = mapiPropertyAccessor.GetProperty(propertyName).ToString();
+                            if (mapiPropertyAccessor is object)
+                            {
+                                Marshal.ReleaseComObject(mapiPropertyAccessor);
+                            }
+
+                            //Log the details.                           
+                            Log.Information("Sent Email : No Contact for " + email.SenderEmailAddress);
+                            Log.Information("SenderName         : " + email.SenderName);
+                            Log.Information("SentOnBehalfOfName : " + email.SentOnBehalfOfName);
+                            Log.Information("ReplyRecipientNames: " + email.ReplyRecipientNames);
+                            Log.Information("On Behalf: " + onBehalfEmailAddress);
+                            Log.Information("");
+                        }
+                        catch (System.Exception ex)
+                        {
+                            Log.Error(ex.Message, ex);
+                            //throw;
                         }
                     }
                 }
