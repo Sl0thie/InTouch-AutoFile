@@ -20,5 +20,11 @@
     <Setting Name="EmailRoutingAddresses" Type="System.String" Scope="User">
       <Value Profile="(Default)">dallasadams@hotmail.com; inta@bigpond.net.au; dallasadams@outlook.com; dallas.adams@outlook.com.au; dallasadams@intacomputers.com; know_one@outlook.com.au; slothie@outlook.com.au; dallas.a.adams@gmail.com;</Value>
     </Setting>
+    <Setting Name="LastAliasCheck" Type="System.DateTime" Scope="User">
+      <Value Profile="(Default)">2022-10-01</Value>
+    </Setting>
+    <Setting Name="CurrentAliasGUID" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

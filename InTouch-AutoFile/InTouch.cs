@@ -59,6 +59,13 @@
         }
         private static string otherFolderName = "Other Contacts";
 
+        public static string AliasFolderName
+        {
+            get { return aliasFolderName; }
+            set { aliasFolderName = value; }
+        }
+        private static string aliasFolderName = "Alias";
+
         /// <summary>
         /// Checks if the supplied path is a valid path within the inbox branch.
         /// </summary>

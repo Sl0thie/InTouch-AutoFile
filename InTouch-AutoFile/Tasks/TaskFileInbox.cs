@@ -50,6 +50,13 @@
             {
                 if (nextItem is Outlook.MailItem email)
                 {
+                    // Manage Alias check email before anything else.
+                    if (email.Subject.Substring(0,18) == "ALIAS PATH CHECK [")
+                    {
+                        email.Delete();
+                        continue;
+                    }
+
                     // Only process emails that don't have a flag.
                     switch (email.FlagRequest)
                     {

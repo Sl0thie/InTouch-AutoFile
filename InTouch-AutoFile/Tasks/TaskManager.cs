@@ -4,6 +4,7 @@
     using System.Threading;
     using System.Collections.Concurrent;
     using Serilog;
+    using InTouch_AutoFile.Tasks;
 
     /// <summary>
     /// TaskManager manages the background tasks.
@@ -39,13 +40,16 @@
         private readonly TaskAddinSetup taskAddinSetup; // A task to manage add-in setup.
         private readonly TaskFileInbox taskFileIndox; // A task to manage sorting the Inbox folder.
         private readonly TaskFileSentItems taskFileSentItems; // A task to manage sorting the Sent Items folder.
+        private readonly TaskMonitorAliases taskMonitorAliases; // A task to monitor aliases.
+
 
         public TaskManager()
         {
             // Create task objects.
             taskAddinSetup = new TaskAddinSetup(TaskFinished);
             taskFileIndox = new TaskFileInbox(TaskFinished);
-            taskFileSentItems = new TaskFileSentItems(TaskFinished);        
+            taskFileSentItems = new TaskFileSentItems(TaskFinished);
+            taskMonitorAliases = new TaskMonitorAliases(TaskFinished);
 
             // Configure and start a background thread.
             Thread backgroundThread = new Thread(new ThreadStart(BackgroundProcess))
@@ -106,6 +110,11 @@
         public void EnqueueInboxTask()
         {
             backgroundTasks.Enqueue(taskFileIndox.RunTask);
+        }
+
+        public void EnqueueMonitorAliase()
+        {
+            backgroundTasks.Enqueue(taskMonitorAliases.RunTask);
         }
     }
 }

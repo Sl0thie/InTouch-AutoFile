@@ -502,10 +502,14 @@
             }
         }
 
-        #endregion
 
         #endregion
 
-        
+        #endregion
+
+        private void treeView1_AfterSelect(object sender, System.Windows.Forms.TreeViewEventArgs e)
+        {
+
+        }
     }
 }
