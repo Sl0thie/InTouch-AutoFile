@@ -515,6 +515,9 @@
                             contact.Save();
                             //contact.Display(true);
 
+                            // Move to junk email folder.
+                            email.Move(Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderJunk));
+
                             lastEntryID = "";
                             Parallel.Invoke(() => CheckEmailSender());
                         }
