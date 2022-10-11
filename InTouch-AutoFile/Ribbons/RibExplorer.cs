@@ -336,10 +336,10 @@
 
                             contact.Save();
                             contact.Display(true);
-
+                            Contacts.AddContactToEmailLookup(contact, (Outlook.Folder)contactsFolder);
                             lastEntryID = "";
-                            //TODO Remove these.
                             Parallel.Invoke(() => CheckEmailSender());
+                            InTouch.TaskManager.EnqueueInboxTask();
                         }
                         catch (Exception ex)
                         {
@@ -424,11 +424,13 @@
 
                             contact.UserProperties["InTouchContact"].Value = data;
 
+                            // Save and display the contact to the user.
                             contact.Save();
                             contact.Display(true);
-
+                            Contacts.AddContactToEmailLookup(contact, (Outlook.Folder)contactsFolder);
                             lastEntryID = "";
                             Parallel.Invoke(() => CheckEmailSender());
+                            InTouch.TaskManager.EnqueueInboxTask();
                         }
                         catch (Exception ex)
                         {

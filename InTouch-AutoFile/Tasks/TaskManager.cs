@@ -104,15 +104,33 @@
 
         public void EnqueueSentItemsTask()
         {
+            // Check if the task is already queued before adding to the queue.
+            foreach (var task in backgroundTasks)
+            {
+                if (task.GetType() == typeof(TaskFileSentItems))
+                {
+                    return;
+                }
+            }
+
             backgroundTasks.Enqueue(taskFileSentItems.RunTask);
         }
 
         public void EnqueueInboxTask()
         {
+            // Check if the task is already queued before adding to the queue.
+            foreach (var task in backgroundTasks)
+            {
+                if(task.GetType() == typeof(TaskFileInbox))
+                {
+                    return;
+                }
+            }
+
             backgroundTasks.Enqueue(taskFileIndox.RunTask);
         }
 
-        public void EnqueueMonitorAliase()
+        public void EnqueueMonitorAliases()
         {
             backgroundTasks.Enqueue(taskMonitorAliases.RunTask);
         }

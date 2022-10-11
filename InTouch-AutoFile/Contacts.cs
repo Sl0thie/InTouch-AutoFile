@@ -146,7 +146,7 @@
             }
         }
 
-        private static void AddContactToEmailLookup(Outlook.ContactItem contact, Outlook.Folder contactsFolder)
+        public static void AddContactToEmailLookup(Outlook.ContactItem contact, Outlook.Folder contactsFolder)
         {
             try
             {
