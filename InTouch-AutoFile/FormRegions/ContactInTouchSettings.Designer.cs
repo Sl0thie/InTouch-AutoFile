@@ -85,7 +85,7 @@ namespace InTouch_AutoFile
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.CheckBoxUseSamePathDelivery = new System.Windows.Forms.CheckBox();
-            this.treeView1 = new System.Windows.Forms.TreeView();
+            this.treeView = new System.Windows.Forms.TreeView();
             this.PanelSend.SuspendLayout();
             this.PanelRead.SuspendLayout();
             this.PanelDelivery.SuspendLayout();
@@ -411,23 +411,24 @@ namespace InTouch_AutoFile
             this.CheckBoxUseSamePathDelivery.Visible = false;
             this.CheckBoxUseSamePathDelivery.CheckedChanged += new System.EventHandler(this.CheckBoxUseSamePathDelivery_CheckedChanged);
             // 
-            // treeView1
+            // treeView
             // 
-            this.treeView1.Location = new System.Drawing.Point(673, 207);
-            this.treeView1.Name = "treeView1";
+            this.treeView.Location = new System.Drawing.Point(590, 82);
+            this.treeView.Name = "treeView";
             treeNode1.Name = "Node0";
             treeNode1.Text = "InBox";
-            this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            this.treeView.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode1});
-            this.treeView1.Size = new System.Drawing.Size(373, 398);
-            this.treeView1.TabIndex = 166;
-            this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
+            this.treeView.Size = new System.Drawing.Size(486, 448);
+            this.treeView.TabIndex = 166;
+            this.treeView.Visible = false;
+            this.treeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
             // ContactInTouchSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.treeView1);
+            this.Controls.Add(this.treeView);
             this.Controls.Add(this.CheckBoxUseSamePathDelivery);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -496,7 +497,7 @@ namespace InTouch_AutoFile
         private System.Windows.Forms.CheckBox CheckBoxUseSamePathDelivery;
         private System.Windows.Forms.RadioButton RadioButtonDeliveryJunk;
         private System.Windows.Forms.RadioButton RadioButtonReadJunk;
-        private System.Windows.Forms.TreeView treeView1;
+        private System.Windows.Forms.TreeView treeView;
 
         public partial class ContactInTouchSettingsFactory : Microsoft.Office.Tools.Outlook.IFormRegionFactory
         {

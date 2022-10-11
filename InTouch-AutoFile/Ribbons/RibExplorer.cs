@@ -27,6 +27,7 @@
         /// <param name="e"></param>
         private void RibExplorer_Load(object sender, RibbonUIEventArgs e)
         {
+            // Hook into the current explorer object and wire up the selection change event.
             explorer = Globals.ThisAddIn.Application.ActiveExplorer();
             explorer.SelectionChange += Explorer_SelectionChange;
 
@@ -69,6 +70,7 @@
                     }
                 }
 
+                // Release Outlook objects.
                 if (selectedObject is object)
                 {
                     Marshal.ReleaseComObject(selectedObject);
