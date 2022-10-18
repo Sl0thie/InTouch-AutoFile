@@ -19,7 +19,6 @@ namespace InTouch_AutoFile
     public partial class ThisAddIn
     {
         //TODO fix fav icon lookup.
-        //TODO Make junk button fully automatic.
         //TODO Make ribbon icon change color to suit theme.
         private void ThisAddIn_Startup(object sender, EventArgs e)
         {
@@ -43,7 +42,8 @@ namespace InTouch_AutoFile
             InTouch.TaskManager.EnqueueAddinSetupTask();
             InTouch.TaskManager.EnqueueInboxTask();
             InTouch.TaskManager.EnqueueSentItemsTask();
-            InTouch.TaskManager.EnqueueMonitorAliases();
+            InTouch.TaskManager.EnqueueMonitorAliases(); 
+            InTouch.TaskManager.EnqueueFindIcon();
             ManageOutlookTheme();
         }
 
@@ -79,7 +79,7 @@ namespace InTouch_AutoFile
 
         private void Application_OptionsPagesAdd(Outlook.PropertyPages pages)
         {
-            pages.Add(new UCPropertPage(), "");
+            pages.Add(new UCPropertyPage(), "");
         }
 
         private void Application_ItemSend(object item, ref bool cancel)

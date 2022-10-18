@@ -13,7 +13,7 @@
     using Outlook = Microsoft.Office.Interop.Outlook;
 
     [ComVisible(true)]
-    public sealed partial class UCPropertPage : UserControl, Outlook.PropertyPage
+    public sealed partial class UCPropertyPage : UserControl, Outlook.PropertyPage
     {
 
         #region Required
@@ -22,7 +22,7 @@
         private bool isDirty = false;
         private Outlook.PropertyPageSite ppSite;
 
-        public UCPropertPage()
+        public UCPropertyPage()
         {
             InitializeComponent();
         }

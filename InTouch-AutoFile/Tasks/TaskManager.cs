@@ -41,7 +41,7 @@
         private readonly TaskFileInbox taskFileIndox; // A task to manage sorting the Inbox folder.
         private readonly TaskFileSentItems taskFileSentItems; // A task to manage sorting the Sent Items folder.
         private readonly TaskMonitorAliases taskMonitorAliases; // A task to monitor aliases.
-
+        private readonly TaskFindIcon taskFindIcon;
 
         public TaskManager()
         {
@@ -50,6 +50,8 @@
             taskFileIndox = new TaskFileInbox(TaskFinished);
             taskFileSentItems = new TaskFileSentItems(TaskFinished);
             taskMonitorAliases = new TaskMonitorAliases(TaskFinished);
+            taskFindIcon = new TaskFindIcon(TaskFinished);
+
 
             // Configure and start a background thread.
             Thread backgroundThread = new Thread(new ThreadStart(BackgroundProcess))
@@ -133,6 +135,11 @@
         public void EnqueueMonitorAliases()
         {
             backgroundTasks.Enqueue(taskMonitorAliases.RunTask);
+        }
+
+        public void EnqueueFindIcon()
+        {
+            backgroundTasks.Enqueue(taskFindIcon.RunTask);
         }
     }
 }

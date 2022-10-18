@@ -51,15 +51,18 @@
                 if (nextItem is Outlook.MailItem email)
                 {
                     // Manage Alias check email before anything else.
-                    if(email.Subject.Length > 18)
+                    if (email.Subject is object)
                     {
-                        if (email.Subject.Substring(0, 18) == "ALIAS PATH CHECK [")
+                        if (email.Subject.Length > 18)
                         {
-                            email.Delete();
-                            continue;
+                            if (email.Subject.Substring(0, 18) == "ALIAS PATH CHECK [")
+                            {
+                                email.Delete();
+                                continue;
+                            }
                         }
-                    }              
-
+                    }
+                    
                     // Only process emails that don't have a flag.
                     switch (email.FlagRequest)
                     {
@@ -111,7 +114,16 @@
 
             try
             {
-                contact = Contacts.FindContactFromEmailAddress(email.Sender.Address);
+                if(email is object)
+                {
+                    if(email.Sender is object)
+                    {
+                        if(email.Sender.Address is object)
+                        {
+                            contact = Contacts.FindContactFromEmailAddress(email.Sender.Address);
+                        }
+                    }
+                }
             }
             catch (InvalidComObjectException ex)
             {

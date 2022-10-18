@@ -1,7 +1,7 @@
 ﻿
 namespace InTouch_AutoFile
 {
-    sealed partial class UCPropertPage
+    sealed partial class UCPropertyPage
     {
         /// <summary> 
         /// Required designer variable.

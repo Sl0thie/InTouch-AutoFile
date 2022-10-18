@@ -263,12 +263,13 @@
     </Compile>
     <Compile Include="Stores.cs" />
     <Compile Include="Tasks\TaskAddinSetup.cs" />
+    <Compile Include="Tasks\TaskFindIcon.cs" />
     <Compile Include="Tasks\TaskMonitorAliases.cs" />
-    <Compile Include="UCPropertPage.cs">
+    <Compile Include="UCPropertyPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UCPropertPage.Designer.cs">
-      <DependentUpon>UCPropertPage.cs</DependentUpon>
+    <Compile Include="UCPropertyPage.Designer.cs">
+      <DependentUpon>UCPropertyPage.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="FormRegions\ContactInTouchSettings.resx">
       <DependentUpon>ContactInTouchSettings.cs</DependentUpon>
@@ -299,8 +300,8 @@
     <EmbeddedResource Include="Ribbons\RibExplorer.resx">
       <DependentUpon>RibExplorer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UCPropertPage.resx">
-      <DependentUpon>UCPropertPage.cs</DependentUpon>
+    <EmbeddedResource Include="UCPropertyPage.resx">
+      <DependentUpon>UCPropertyPage.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />
     <None Include="InTouch-AutoFile.snk" />
