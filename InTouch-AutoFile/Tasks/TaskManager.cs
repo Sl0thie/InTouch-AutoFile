@@ -52,7 +52,6 @@
             taskMonitorAliases = new TaskMonitorAliases(TaskFinished);
             taskFindIcon = new TaskFindIcon(TaskFinished);
 
-
             // Configure and start a background thread.
             Thread backgroundThread = new Thread(new ThreadStart(BackgroundProcess))
             {
@@ -107,7 +106,7 @@
         public void EnqueueSentItemsTask()
         {
             // Check if the task is already queued before adding to the queue.
-            foreach (var task in backgroundTasks)
+            foreach (Action task in backgroundTasks)
             {
                 if (task.GetType() == typeof(TaskFileSentItems))
                 {
@@ -121,7 +120,7 @@
         public void EnqueueInboxTask()
         {
             // Check if the task is already queued before adding to the queue.
-            foreach (var task in backgroundTasks)
+            foreach (Action task in backgroundTasks)
             {
                 if(task.GetType() == typeof(TaskFileInbox))
                 {

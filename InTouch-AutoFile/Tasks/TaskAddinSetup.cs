@@ -8,6 +8,7 @@
     using System.Threading.Tasks;
     using Outlook = Microsoft.Office.Interop.Outlook;
     using Serilog;
+    using System.Runtime.InteropServices;
 
     internal class TaskAddinSetup
     {
@@ -41,10 +42,10 @@
             callBack?.Invoke();
         }
 
-        private void SetupAddin()
+        private static void SetupAddin()
         {
             // Check if contacts stores exist. If not create them.
-            Outlook.MAPIFolder contactsFolder = Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderContacts); ;
+            Outlook.MAPIFolder contactsFolder = Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderContacts);
             Outlook.MAPIFolder contactsFolderJunk = null;
             Outlook.MAPIFolder contactsFolderOthers = null;
 
@@ -92,19 +93,21 @@
                 Log.Error(ex.Message, ex);
             }
 
-            //Outlook.MAPIFolder contactsFolderJunk = Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderContacts).Folders["Junk Contacts"];
+            //Release Outlook objects.
+            if (contactsFolder is object)
+            {
+                Marshal.ReleaseComObject(contactsFolder);
+            }
 
-            //Outlook.MAPIFolder contactsFolderOthers = Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderContacts).Folders["Others"];
+            if (contactsFolderJunk is object)
+            {
+                Marshal.ReleaseComObject(contactsFolderJunk);
+            }
 
-            //if(contactsFolderOthers is null)
-            //{
-            //    contactsFolder.Folders.Add("Others");
-            //}
-
-            //if (contactsFolderJunk is null)
-            //{
-            //    contactsFolder.Folders.Add("Junk Contacts");
-            //}
+            if (contactsFolderOthers is object)
+            {
+                Marshal.ReleaseComObject(contactsFolderOthers);
+            }
         }
     }
 }

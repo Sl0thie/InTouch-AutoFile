@@ -1,15 +1,10 @@
 ﻿namespace InTouch_AutoFile.Tasks
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
     using System.Runtime.InteropServices;
     using System.Threading;
     using Outlook = Microsoft.Office.Interop.Outlook;
     using Serilog;
-    using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
     internal class TaskMonitorAliases
     {
@@ -53,24 +48,11 @@
             callBack?.Invoke();
         }
 
-        private void ProcessAliases()
+        private static void ProcessAliases()
         {
-            Outlook.MAPIFolder aliasesFolder = null;
-
             try
             {
-                aliasesFolder = Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderContacts).Folders[InTouch.AliasFolderName];
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex.Message, ex);
-                Log.Information($"Can't find {InTouch.AliasFolderName} folder.");
-                return;
-            }
-
-            try
-            {
-                foreach (object nextObject in aliasesFolder.Items)
+                foreach (object nextObject in Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderContacts).Folders[InTouch.AliasFolderName].Items)
                 {
                     if (nextObject is Outlook.ContactItem contact)
                     {
@@ -113,7 +95,7 @@
             }
         }
 
-        private void SendEmail(string address)
+        private static void SendEmail(string address)
         {
             Log.Information($"Sending Email to {address}");
 

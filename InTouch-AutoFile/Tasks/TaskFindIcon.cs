@@ -20,7 +20,7 @@
             this.callBack = callBack;
         }
 
-        Outlook.Folder contactsFolderOthers = null;
+        private Outlook.Folder contactsFolderOthers = null;
 
         public void RunTask()
         {
@@ -73,10 +73,9 @@
             {
                 Log.Error(ex.Message, ex);
             }
-
         }
 
-        private void ProcessContact(Outlook.ContactItem contact)
+        private static void ProcessContact(Outlook.ContactItem contact)
         {
             string website = "";
 
@@ -136,7 +135,6 @@
                     case "outlook.com.au":
                     case "hotmail.com":
                         return "";
-                        break;
                 }
 
                 website = "https://www." + website;

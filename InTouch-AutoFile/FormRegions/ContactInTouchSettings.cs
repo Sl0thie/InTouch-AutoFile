@@ -505,47 +505,8 @@
             }
         }
 
-
         #endregion
 
         #endregion
-
-        private void treeView1_AfterSelect(object sender, System.Windows.Forms.TreeViewEventArgs e)
-        {
-
-        }
-
-        private void LoadInboxFolders()
-        {
-            treeView.Nodes.Clear();
-            Outlook.Folder inBoxFolder = (Outlook.Folder)Globals.ThisAddIn.Application.GetNamespace("MAPI").GetDefaultFolder(Outlook.OlDefaultFolders.olFolderInbox);
-
-            TreeNode root = new TreeNode();
-            root.Text = "Inbox";
-            root.Expand();
-            treeView.Nodes.Add(root);
-
-            if(inBoxFolder.Folders.Count > 0)
-            {
-                EnumerateFolders(root,inBoxFolder);
-            }
-        }
-
-        private void EnumerateFolders(TreeNode node, Outlook.Folder folder)
-        {
-
-            foreach(Outlook.Folder item in node.Nodes)
-            {
-                TreeNode nextNode = new TreeNode();
-                nextNode.Text = item.Name;
-                
-                node.Nodes.Add(nextNode);
-
-                if(folder.Folders.Count > 0)
-                {
-                    EnumerateFolders(nextNode, item);
-                }
-            }
-        }
     }
 }
