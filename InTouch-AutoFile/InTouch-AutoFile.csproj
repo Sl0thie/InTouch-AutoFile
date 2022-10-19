@@ -138,6 +138,7 @@
     <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=4.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.4.3.1\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>..\packages\Serilog.2.12.0\lib\net47\Serilog.dll</HintPath>
     </Reference>
@@ -181,6 +182,7 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Office.Tools.v4.0.Framework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -239,12 +241,6 @@
     <Compile Include="FormRegions\ContactInTouchSettings.Designer.cs">
       <DependentUpon>ContactInTouchSettings.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormInTouchNewContact.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormInTouchNewContact.Designer.cs">
-      <DependentUpon>FormInTouchNewContact.cs</DependentUpon>
-    </Compile>
     <Compile Include="InTouch.cs" />
     <Compile Include="FormRegions\MailItemHeader.cs">
       <SubType>UserControl</SubType>
@@ -274,9 +270,6 @@
     <EmbeddedResource Include="FormRegions\ContactInTouchSettings.resx">
       <DependentUpon>ContactInTouchSettings.cs</DependentUpon>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormInTouchNewContact.resx">
-      <DependentUpon>FormInTouchNewContact.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormRegions\MailItemHeader.resx">
       <DependentUpon>MailItemHeader.cs</DependentUpon>
