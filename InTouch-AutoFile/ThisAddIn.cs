@@ -42,7 +42,7 @@ namespace InTouch_AutoFile
             InTouch.TaskManager.EnqueueAddinSetupTask();
             InTouch.TaskManager.EnqueueInboxTask();
             InTouch.TaskManager.EnqueueSentItemsTask();
-            InTouch.TaskManager.EnqueueMonitorAliases(); 
+            //InTouch.TaskManager.EnqueueMonitorAliases(); 
             InTouch.TaskManager.EnqueueFindIcon();
             ManageOutlookTheme();
         }
