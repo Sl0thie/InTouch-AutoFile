@@ -70,7 +70,7 @@
                     }
                 }
 
-                Log.Information(storeList);
+                //Log.Information(storeList);
             }
             finally
             {

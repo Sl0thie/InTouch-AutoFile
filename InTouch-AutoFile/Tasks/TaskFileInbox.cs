@@ -71,13 +71,13 @@
                             break;
                         case "Follow up":
                             // Don't process follow up. This leave them in the inbox for manual processing.
-                            Log.Information("Move Email : Email has a flag set.");
+                            //Log.Information("Move Email : Email has a flag set.");
                             break;
                         case null:
                             mailToProcess.Add(email);
                             break;
                         default:
-                            Log.Information("Move Email : Unknown Flag Request Type.");
+                            //Log.Information("Move Email : Unknown Flag Request Type.");
                             break;
                     }
                 }
@@ -152,21 +152,21 @@
                     switch (mailContact.DeliveryAction)
                     {
                         case EmailAction.None: // Don't do anything to the email.
-                            Log.Information("Move Email : Delivery Action set to None. " + email.Sender.Address);
+                            //Log.Information("Move Email : Delivery Action set to None. " + email.Sender.Address);
                             break;
 
                         case EmailAction.Delete: // Delete the email if it is passed its action date.
-                            Log.Information("Move Email : Deleting email from " + email.Sender.Address);
+                            //Log.Information("Move Email : Deleting email from " + email.Sender.Address);
                             email.Delete();
                             break;
 
                         case EmailAction.Move: // Move the email if its passed its action date.
-                            Log.Information("Move Email : Moving email from " + email.Sender.Address);
+                            //Log.Information("Move Email : Moving email from " + email.Sender.Address);
                             MoveEmailToFolder(mailContact.InboxPath, email);
                             break;
 
                         case EmailAction.Junk:
-                            Log.Information("Move Email to Junk: Moving email from " + email.Sender.Address);
+                            //Log.Information("Move Email to Junk: Moving email from " + email.Sender.Address);
                             email.Move(Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderJunk));
                             break;
                     }
@@ -176,21 +176,21 @@
                     switch (mailContact.ReadAction)
                     {
                         case EmailAction.None: // Don't do anything to the email.
-                            Log.Information("Move Email : Read Action set to None. " + email.Sender.Address);
+                            //Log.Information("Move Email : Read Action set to None. " + email.Sender.Address);
                             break;
 
                         case EmailAction.Delete: // Delete the email.
-                            Log.Information("Move Email : Deleting email from " + email.Sender.Address);
+                            //Log.Information("Move Email : Deleting email from " + email.Sender.Address);
                             email.Delete();
                             break;
 
                         case EmailAction.Move: // Move the email.
-                            Log.Information("Move Email : Moving email from " + email.Sender.Address);
+                            //Log.Information("Move Email : Moving email from " + email.Sender.Address);
                             MoveEmailToFolder(mailContact.InboxPath, email);
                             break;
 
                         case EmailAction.Junk:
-                            Log.Information("Move Email to Junk: Moving email from " + email.Sender.Address);
+                            //Log.Information("Move Email to Junk: Moving email from " + email.Sender.Address);
                             email.Move(Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderJunk));
                             break;
                     }
@@ -225,16 +225,16 @@
                     {
                         if (email.SenderEmailAddress is object)
                         {
-                            Log.Information("Move Email : No Contact for " + email.SenderEmailAddress);
+                            //Log.Information("Move Email : No Contact for " + email.SenderEmailAddress);
                         }
                         else
                         {
-                            Log.Information("Move Email : No Contact (detatched object?)");
+                            //Log.Information("Move Email : No Contact (detatched object?)");
                         }
                     }
                     else
                     {
-                        Log.Information("Move Email : No email object");
+                        //Log.Information("Move Email : No email object");
                     }
                 }
                 catch (Exception ex)
@@ -271,7 +271,7 @@
             }
             catch (KeyNotFoundException)
             {
-                Log.Information("Exception managed > Store not found. (" + folders[0] + ")");
+                //Log.Information("Exception managed > Store not found. (" + folders[0] + ")");
                 return;
             }
 
@@ -287,7 +287,7 @@
             {
                 if (ex.HResult == -2147221233)
                 {
-                    Log.Information("Exception Managed > Folder not found. (" + folderPath + ")");
+                    //Log.Information("Exception Managed > Folder not found. (" + folderPath + ")");
                     return;
                 }
                 else

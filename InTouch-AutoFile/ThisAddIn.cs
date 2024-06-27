@@ -2,6 +2,8 @@
 using System.Resources;
 using Outlook = Microsoft.Office.Interop.Outlook;
 using Serilog;
+using System.IO;
+using System.Reflection;
 
 [assembly: CLSCompliant(false)]
 [assembly: NeutralResourcesLanguage("en-US")]
@@ -22,14 +24,21 @@ namespace InTouch_AutoFile
         //TODO Make ribbon icon change color to suit theme.
         private void ThisAddIn_Startup(object sender, EventArgs e)
         {
-            // Setup logging for the application.
+            // Start logging for the extension.
+            //string logpath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Logs");
+            string logpath = "F:\\Logs";
+
+            if (!Directory.Exists(logpath))
+            {
+                _ = Directory.CreateDirectory(logpath);
+            }
+            logpath = logpath + "\\" + MethodBase.GetCurrentMethod().DeclaringType.Namespace + " - .txt";
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .WriteTo.Debug()
-                .WriteTo.File("InTouch-Autofile - .txt", rollingInterval: RollingInterval.Day)
+                .WriteTo.File(logpath, rollingInterval: RollingInterval.Day)
                 .CreateLogger();
-
-            Log.Information("Add-in Startup");
+            Log.Information("Logging Started.");
 
             // Add event handlers for when mail is incoming or outgoing.
             Application.NewMailEx += Application_NewMailEx;

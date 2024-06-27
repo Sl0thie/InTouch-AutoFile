@@ -84,7 +84,7 @@
             }
             catch (System.Collections.Generic.KeyNotFoundException)
             {
-                Log.Information("Exception managed > Store not found. (" + folders[0] + ")");
+                //Log.Information("Exception managed > Store not found. (" + folders[0] + ")");
                 returnValue = false;
             }
 
@@ -104,7 +104,7 @@
                     {
                         Log.Error(ex.Message, ex);
                         returnValue = false;
-                        Log.Information("Exception Managed > Folder not found. (" + folderPath + ")");
+                        //Log.Information("Exception Managed > Folder not found. (" + folderPath + ")");
                     }
                     else
                     {
@@ -151,7 +151,7 @@
                 {
                     if (ex.HResult == -2147221233)
                     {
-                        Log.Information("Exception Managed > Creating Folder.");
+                        //Log.Information("Exception Managed > Creating Folder.");
                         folder.Folders.Add(folders[i]);
                         folder = subFolders[folders[i]] as Outlook.Folder;
                     }

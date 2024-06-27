@@ -103,7 +103,7 @@
 
                 if (website != "")
                 {
-                    Log.Information($"{contact.FullName} {website}");
+                    //Log.Information($"{contact.FullName} {website}");
 
                     GetWebsitesFavicon(website);
 
@@ -223,14 +223,14 @@
                             htmlString = website + htmlString;
                         }
 
-                        Log.Information("HTML String : " + htmlString);
+                        //Log.Information("HTML String : " + htmlString);
                     }
                     catch (WebException ex)
                     {
                         switch (ex.HResult)
                         {
                             case -2146233079:
-                                Log.Information("Exception Managed > The remote name could not be resolved.");
+                                //Log.Information("Exception Managed > The remote name could not be resolved.");
                                 break;
 
                             default:

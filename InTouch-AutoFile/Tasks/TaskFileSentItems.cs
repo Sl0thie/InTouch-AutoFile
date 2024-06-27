@@ -25,7 +25,7 @@
             // If task is enabled in the settings then start task.
             if (Properties.Settings.Default.TaskInbox)
             {
-                Log.Information("Starting FileSent Task.");
+                //Log.Information("Starting FileSent Task.");
                 Thread backgroundThread = new Thread(new ThreadStart(BackgroundProcess))
                 {
                     Name = "AF.FileSent",
@@ -64,13 +64,13 @@
                                 break;
                             case "Follow up":
                                 //Don't process follow up. This leave them in the inbox for manual processing.
-                                Log.Information("Move Email : Email has a flag set.");
+                                //Log.Information("Move Email : Email has a flag set.");
                                 break;
                             case null:
                                 EntryIds.Add(email.EntryID);
                                 break;
                             default:
-                                Log.Information("Move Email : Unknown Flag Request Type.");
+                                //Log.Information("Move Email : Unknown Flag Request Type.");
                                 break;
                         }
                     }
@@ -132,16 +132,16 @@
                                 switch (mailContact.SentAction)
                                 {
                                     case EmailAction.None: // Don't do anything to the email.
-                                        Log.Information("Sent Email : Delivery Action set to None. " + recipient.Address);
+                                        //Log.Information("Sent Email : Delivery Action set to None. " + recipient.Address);
                                         break;
 
                                     case EmailAction.Delete: // Delete the email if it is passed its action date.
-                                        Log.Information("Sent Email : Deleting email from " + recipient.Address);
+                                        //Log.Information("Sent Email : Deleting email from " + recipient.Address);
                                         email.Delete();
                                         break;
 
                                     case EmailAction.Move: // Move the email if its passed its action date.
-                                        Log.Information("Sent Email : Moving email from " + recipient.Address);
+                                        //Log.Information("Sent Email : Moving email from " + recipient.Address);
                                         MoveEmailToFolder(mailContact.SentPath, email);
                                         break;
                                 }
@@ -169,12 +169,12 @@
                             }
 
                             // Log the details.                           
-                            Log.Information("Sent Email : No Contact for " + email.SenderEmailAddress);
-                            Log.Information("SenderName         : " + email.SenderName);
-                            Log.Information("SentOnBehalfOfName : " + email.SentOnBehalfOfName);
-                            Log.Information("ReplyRecipientNames: " + email.ReplyRecipientNames);
-                            Log.Information("On Behalf: " + onBehalfEmailAddress);
-                            Log.Information("");
+                            //Log.Information("Sent Email : No Contact for " + email.SenderEmailAddress);
+                            //Log.Information("SenderName         : " + email.SenderName);
+                            //Log.Information("SentOnBehalfOfName : " + email.SentOnBehalfOfName);
+                            //Log.Information("ReplyRecipientNames: " + email.ReplyRecipientNames);
+                            //Log.Information("On Behalf: " + onBehalfEmailAddress);
+                            //Log.Information("");
                         }
                         catch (System.Exception ex)
                         {
@@ -221,16 +221,16 @@
                                 switch (mailContact.SentAction)
                                 {
                                     case EmailAction.None: // Don't do anything to the email.
-                                        Log.Information("Sent Email : Delivery Action set to None. " + recipient.Address);
+                                        //Log.Information("Sent Email : Delivery Action set to None. " + recipient.Address);
                                         break;
 
                                     case EmailAction.Delete: // Delete the email if it is passed its action date.
-                                        Log.Information("Sent Email : Deleting email from " + recipient.Address);
+                                        //Log.Information("Sent Email : Deleting email from " + recipient.Address);
                                         email.Delete();
                                         break;
 
                                     case EmailAction.Move: // Move the email if its passed its action date.
-                                        Log.Information("Sent Email : Moving email from " + recipient.Address);
+                                        //Log.Information("Sent Email : Moving email from " + recipient.Address);
                                         MoveEmailToFolder(mailContact.SentPath, email);
                                         break;
                                 }
@@ -258,12 +258,12 @@
                             }
 
                             // Log the details.                           
-                            Log.Information("Sent Email : No Contact for " + email.SenderEmailAddress);
-                            Log.Information("SenderName         : " + email.SenderName);
-                            Log.Information("SentOnBehalfOfName : " + email.SentOnBehalfOfName);
-                            Log.Information("ReplyRecipientNames: " + email.ReplyRecipientNames);
-                            Log.Information("On Behalf: " + onBehalfEmailAddress);
-                            Log.Information("");
+                            //Log.Information("Sent Email : No Contact for " + email.SenderEmailAddress);
+                            //Log.Information("SenderName         : " + email.SenderName);
+                            //Log.Information("SentOnBehalfOfName : " + email.SentOnBehalfOfName);
+                            //Log.Information("ReplyRecipientNames: " + email.ReplyRecipientNames);
+                            //Log.Information("On Behalf: " + onBehalfEmailAddress);
+                            //Log.Information("");
                         }
                         catch (System.Exception ex)
                         {
@@ -291,7 +291,7 @@
             }
             catch (KeyNotFoundException)
             {
-                Log.Information("Exception managed > Store not found. (" + folders[0] + ")");
+                //Log.Information("Exception managed > Store not found. (" + folders[0] + ")");
                 return;
             }
 
@@ -307,7 +307,7 @@
             {
                 if (ex.HResult == -2147221233)
                 {
-                    Log.Information("Exception Managed > Folder not found. (" + folderPath + ")");
+                    //Log.Information("Exception Managed > Folder not found. (" + folderPath + ")");
                     return;
                 }
                 else

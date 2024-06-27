@@ -2600,11 +2600,11 @@
             catch(FormatException)
             {
                 // Contact data is from an older format. It will be saved in the newer format when the contact is saved.
-                Log.Information("Exception Managed.");
+                //Log.Information("Exception Managed.");
             }
             catch(IndexOutOfRangeException)
             {
-                Log.Information("Exception Managed.");
+                //Log.Information("Exception Managed.");
 
                 inboxPath = "";
                 sentPath = "";
@@ -2654,7 +2654,7 @@
             {
                 if(ex.HResult == -1906048758)
                 {
-                    Log.Information("Exception Handled. > The item (contact) has been moved or deleted.");
+                    //Log.Information("Exception Handled. > The item (contact) has been moved or deleted.");
                 }
 
                 Log.Error(ex.Message,ex);
@@ -2711,7 +2711,7 @@
                 if (!InTouch.CheckFolderPath(inboxPath))
                 {
                     returnValue = false;
-                    Log.Information(FullName + " Inbox Folder Path is Invalid : " + inboxPath);
+                    //Log.Information(FullName + " Inbox Folder Path is Invalid : " + inboxPath);
                 }
             }
             else
@@ -2724,7 +2724,7 @@
                 if (!InTouch.CheckFolderPath(sentPath))
                 {
                     returnValue = false;
-                    Log.Information(FullName + " Sent Folder Path is Invalid : " + sentPath);
+                    //Log.Information(FullName + " Sent Folder Path is Invalid : " + sentPath);
                 }
             }
             else

@@ -457,7 +457,7 @@
                     folderPath = folderPath.Remove(0, 2);
                 }
 
-                Log.Information("FolderPath : " + folderPath);
+                //Log.Information("FolderPath : " + folderPath);
             }
             else
             {

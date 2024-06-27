@@ -61,7 +61,7 @@
             {
                 if (contactsFolderJunk is null)
                 {
-                    Log.Information($"Creating {InTouch.JunkFolderName} folder.");
+                    //Log.Information($"Creating {InTouch.JunkFolderName} folder.");
                     contactsFolder.Folders.Add(InTouch.JunkFolderName);
                 }
             }
@@ -83,7 +83,7 @@
             {
                 if (contactsFolderJunk is null)
                 {
-                    Log.Information($"Creating {InTouch.OtherFolderName} folder.");
+                    //Log.Information($"Creating {InTouch.OtherFolderName} folder.");
                     contactsFolder.Folders.Add(InTouch.OtherFolderName);
                 }
             }

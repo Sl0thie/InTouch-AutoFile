@@ -87,7 +87,7 @@
                     {
                         taskRunning = true;
                         BackgroundTasks.TryDequeue(out currentAction);
-                        Log.Information("TaskManager Starting " + currentAction.Target + "." + currentAction.Method.Name.ToString());
+                        //Log.Information("TaskManager Starting " + currentAction.Target + "." + currentAction.Method.Name.ToString());
                         currentAction.Invoke();
                     }            
                 }

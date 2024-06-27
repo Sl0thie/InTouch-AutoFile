@@ -25,7 +25,7 @@
             // If task is enabled in the settings then start task.
             if (Properties.Settings.Default.TaskInbox)
             {
-                Log.Information("Starting MonitorAliases Task.");
+                //Log.Information("Starting MonitorAliases Task.");
                 Thread backgroundThread = new Thread(new ThreadStart(BackgroundProcess))
                 {
                     Name = "AF.MonitorAliases",
@@ -64,7 +64,7 @@
             catch (Exception ex)
             {
                 Log.Error(ex.Message, ex);
-                Log.Information($"Can't find {InTouch.AliasFolderName} folder.");
+                //Log.Information($"Can't find {InTouch.AliasFolderName} folder.");
                 return;
             }
 
@@ -74,7 +74,7 @@
                 {
                     if (nextObject is Outlook.ContactItem contact)
                     {
-                        Log.Information($"Alias {((Outlook.ContactItem)nextObject).FullName}");
+                        //Log.Information($"Alias {((Outlook.ContactItem)nextObject).FullName}");
 
                         if(((Outlook.ContactItem)nextObject).Email1Address is object)
                         {
@@ -115,7 +115,7 @@
 
         private void SendEmail(string address)
         {
-            Log.Information($"Sending Email to {address}");
+            //Log.Information($"Sending Email to {address}");
 
             Outlook.MailItem eMail = (Outlook.MailItem)Globals.ThisAddIn.Application.CreateItem(Outlook.OlItemType.olMailItem);
             eMail.Subject = $"ALIAS PATH CHECK [{Properties.Settings.Default.CurrentAliasGUID}]";
