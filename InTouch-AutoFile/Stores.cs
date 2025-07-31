@@ -56,13 +56,20 @@
                 {
                     store = stores[i];
 
+
                     ITStore nextStore = new ITStore
                     {
                         DisplayName = store.DisplayName,
                         RootFolder = store.GetRootFolder(),
                         StoreID = store.StoreID
                     };
-                    storesLookup.Add(store.DisplayName, nextStore) ;
+
+                    if(!storesLookup.ContainsKey(store.DisplayName))
+                    {
+                        storesLookup.Add(store.DisplayName, nextStore);
+                    }
+
+                    
 
                     if (store is object)
                     {
@@ -71,6 +78,10 @@
                 }
 
                 //Log.Information(storeList);
+            }
+            catch(Exception ex)
+            {
+                Log.Error(ex.Message, ex);
             }
             finally
             {

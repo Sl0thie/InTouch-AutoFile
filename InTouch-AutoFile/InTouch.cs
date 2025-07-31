@@ -82,9 +82,10 @@
             {
                 folder = Stores.StoresLookup[folders[0]].RootFolder;
             }
-            catch (System.Collections.Generic.KeyNotFoundException)
+            catch (System.Collections.Generic.KeyNotFoundException ex)
             {
-                //Log.Information("Exception managed > Store not found. (" + folders[0] + ")");
+                Log.Information("Exception managed > Store not found. (" + folders[0] + ")");
+                Log.Information($"{ex.Message} {ex.StackTrace} {ex.Source}");
                 returnValue = false;
             }
 
@@ -104,10 +105,11 @@
                     {
                         Log.Error(ex.Message, ex);
                         returnValue = false;
-                        //Log.Information("Exception Managed > Folder not found. (" + folderPath + ")");
+                        Log.Information("Exception Managed > Folder not found. (" + folderPath + ")");
                     }
                     else
                     {
+                        Log.Information($"{ex.Message} {ex.StackTrace} {ex.Source} {ex.ErrorCode}");
                         Log.Error(ex.Message, ex);
                         throw;
                     }
@@ -135,6 +137,7 @@
             }
             catch (System.Collections.Generic.KeyNotFoundException ex)
             {
+                Log.Information($"{ex.Message} {ex.StackTrace} {ex.Source}");
                 Log.Error(ex.Message, ex);
                 throw;
             }
@@ -151,10 +154,12 @@
                 {
                     if (ex.HResult == -2147221233)
                     {
-                        //Log.Information("Exception Managed > Creating Folder.");
+                        Log.Information("Exception Managed > Creating Folder.");
                         folder.Folders.Add(folders[i]);
                         folder = subFolders[folders[i]] as Outlook.Folder;
                     }
+
+                    Log.Information($"cp {ex.Message} {ex.StackTrace} {ex.Source} {ex.ErrorCode}");
                 }
             }
 

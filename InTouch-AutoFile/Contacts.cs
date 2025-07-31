@@ -136,6 +136,8 @@
                 {
                     if (nextObject is Outlook.ContactItem contact)
                     {
+
+
                         AddContactToEmailLookup(contact, contactsFolder);
                     }
                 }
@@ -152,7 +154,7 @@
             {
                 if (contact.Email1Address is object)
                 {
-                    if (!emailLookup.ContainsKey(contact.Email1Address))
+                    if (!emailLookup.ContainsKey(contact.Email1Address.ToLower()))
                     {
                         emailLookup.Add(contact.Email1Address.ToLower(), new Tuple<string, string>(contact.EntryID, contactsFolder.StoreID));
                     }
@@ -160,7 +162,7 @@
 
                 if (contact.Email2Address is object)
                 {
-                    if (!emailLookup.ContainsKey(contact.Email2Address))
+                    if (!emailLookup.ContainsKey(contact.Email2Address.ToLower()))
                     {
                         emailLookup.Add(contact.Email2Address.ToLower(), new Tuple<string, string>(contact.EntryID, contactsFolder.StoreID));
                     }
@@ -168,7 +170,7 @@
 
                 if (contact.Email3Address is object)
                 {
-                    if (!emailLookup.ContainsKey(contact.Email3Address))
+                    if (!emailLookup.ContainsKey(contact.Email3Address.ToLower()))
                     {
                         emailLookup.Add(contact.Email3Address.ToLower(), new Tuple<string, string>(contact.EntryID, contactsFolder.StoreID));
                     }
